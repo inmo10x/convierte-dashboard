@@ -894,10 +894,11 @@ function clearCartolas(){
 // ═══════════════════════════════════════════════
 // MODELO RETRIBUTIVO PROPUESTO
 // ═══════════════════════════════════════════════
-const FLOOR_USD    = 42000;  // cobros mínimos para 20% margen neto
-const VAR_POOL_PCT = 0.03;   // 3 % del exceso sobre el piso → pool variable
-const JUAN_SHARE   = 0.60;
-const ELBER_SHARE  = 0.40;
+const FLOOR_USD       = 42000;  // cobros mínimos para 20% margen neto
+const VAR_POOL_PCT    = 0.03;   // 3 % del exceso sobre el piso → pool variable
+const JUAN_SHARE      = 0.60;
+const ELBER_SHARE     = 0.40;
+const IGNACIO_COMM_PCT= 0.09;   // ~9% de ventas generadas (cobros como proxy; histórico promedio 5.5%)
 
 // PREVIRED — 24 % sobre imponible bruto de los 3 empleados formales (desde mayo, sin Alexander)
 const GROSS_KARIM     = Math.round(4000000 / 0.819); // ~4,884,006
@@ -957,7 +958,8 @@ function renderCompModel(){
       ${rows}
       <tr class="rt"><td>TOTAL FIJO NUEVO</td><td>${fmt(totalFixed)}</td><td>${fmu(totalFixed/r,0)}</td><td></td></tr>
       <tr class="rs"><td style="color:var(--muted2)">Estructura anterior (estimado)</td><td style="color:var(--muted2)">${fmt(OLD_TOTAL_CLP)}</td><td style="color:var(--muted2)">${fmu(OLD_TOTAL_CLP/r,0)}</td><td></td></tr>
-      <tr class="rs"><td style="color:var(--green)">💰 Ahorro mensual</td><td style="color:var(--green)">${fmt(saving)}</td><td style="color:var(--green)">${fmu(saving/r,0)}</td><td></td></tr>
+      <tr class="rs"><td style="color:var(--green)">💰 Ahorro en costos fijos</td><td style="color:var(--green)">${fmt(saving)}</td><td style="color:var(--green)">${fmu(saving/r,0)}</td><td></td></tr>
+      <tr><td colspan="4" style="padding:8px 14px;font-size:10px;color:var(--yellow);background:#1a1400;border-top:1px solid var(--border)">⚠ Ignacio (Closer): +~9% de ventas generadas en comisión (boleta separada). Se proyecta dinámicamente en el simulador y el presupuesto. Histórico Ene–Abr: prom. $1.63M/mes (rango $1.0M–$2.7M)</td></tr>
     </tbody>
   </table>`;
 
@@ -979,8 +981,9 @@ function renderVarSim(){
   const juanBase = Math.round(400*r);
   const elberBase= Math.round(300*r);
 
-  const totalTeam = totalFixed + juanVar + elberVar;
-  const ingCLP    = cobUSD * r;
+  const ingCLP       = cobUSD * r;
+  const ignacioComm  = Math.round(cobUSD * IGNACIO_COMM_PCT * r); // 9% ventas → cobros como proxy
+  const totalTeam    = totalFixed + juanVar + elberVar + ignacioComm;
 
   // Pauta: usa promedio histórico si hay datos, si no 25%
   const meses = allMonths();
@@ -1028,6 +1031,10 @@ function renderVarSim(){
       <tr style="background:#12151f">
         <td style="padding:5px 10px">↳ Elber (Ops, 40%) base + var</td>
         <td style="padding:5px 10px;text-align:right;color:var(--green)">${fmt(elberBase)} + <strong>${fmt(elberVar)}</strong></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 10px">↳ Ignacio (Closer, comisión ~9% cobros)</td>
+        <td style="padding:5px 10px;text-align:right;color:var(--yellow)">${fmt(ignacioComm)}</td>
       </tr>
       <tr style="border-top:1px solid var(--border)">
         <td style="padding:6px 10px;font-weight:700">Total team (fijo + variable)</td>
@@ -1123,19 +1130,20 @@ function renderBudget(){
 
   // Calcular P&L mensual
   const rows = cobros.map((cob, i)=>{
-    const ingCLP  = cob * r;
-    const above   = Math.max(0, cob - FLOOR_USD);
-    const poolUSD = above * VAR_POOL_PCT;
-    const juanVar = Math.round(poolUSD * r * JUAN_SHARE);
-    const elberVar= Math.round(poolUSD * r * ELBER_SHARE);
-    const teamVar  = juanVar + elberVar;
-    const teamTot  = teamFixed + teamVar;
-    const pauta    = Math.round(ingCLP * pautaPct);
-    const oh       = Math.round(ingCLP * OH_PCT);
-    const res      = ingCLP - pauta - teamTot - oh;
-    const margin   = ingCLP ? res/ingCLP*100 : 0;
-    const mc       = margin>=20?'var(--green)':margin>0?'var(--yellow)':'var(--red)';
-    return {lbl:BUDGET_MONTHS_LBL[i], cob, ingCLP, teamFixed, teamVar, teamTot, pauta, oh, res, margin, mc, juanVar, elberVar};
+    const ingCLP      = cob * r;
+    const above       = Math.max(0, cob - FLOOR_USD);
+    const poolUSD     = above * VAR_POOL_PCT;
+    const juanVar     = Math.round(poolUSD * r * JUAN_SHARE);
+    const elberVar    = Math.round(poolUSD * r * ELBER_SHARE);
+    const ignacioComm = Math.round(cob * IGNACIO_COMM_PCT * r); // 9% ventas
+    const teamVar     = juanVar + elberVar + ignacioComm;
+    const teamTot     = teamFixed + teamVar;
+    const pauta       = Math.round(ingCLP * pautaPct);
+    const oh          = Math.round(ingCLP * OH_PCT);
+    const res         = ingCLP - pauta - teamTot - oh;
+    const margin      = ingCLP ? res/ingCLP*100 : 0;
+    const mc          = margin>=20?'var(--green)':margin>0?'var(--yellow)':'var(--red)';
+    return {lbl:BUDGET_MONTHS_LBL[i], cob, ingCLP, teamFixed, teamVar, teamTot, pauta, oh, res, margin, mc, juanVar, elberVar, ignacioComm};
   });
 
   const totCob     = rows.reduce((s,x)=>s+x.cob,0);
@@ -1162,8 +1170,9 @@ function renderBudget(){
     <tbody>
       ${pRow('Cobros (USD K)',     [...rows.map(x=>`<span style="color:var(--cyan)">$${(x.cob/1000).toFixed(0)}K</span>`), `<span style="color:var(--cyan)">$${(totCob/1000).toFixed(0)}K</span>`])}
       ${pRow('Cobros (CLP)',       [...rows.map(x=>fmt(x.ingCLP)), fmt(totIng)])}
-      ${pRow('Team fijo',          [...rows.map(x=>`<span style="color:var(--red)">(${fmt(x.teamFixed)})</span>`), `<span style="color:var(--red)">(${fmt(rows.reduce((s,x)=>s+x.teamFixed,0))})</span>`])}
-      ${pRow('Team variable (J+E)',  [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.teamVar)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.teamVar,0))})</span>`])}
+      ${pRow('Team fijo',                [...rows.map(x=>`<span style="color:var(--red)">(${fmt(x.teamFixed)})</span>`),      `<span style="color:var(--red)">(${fmt(rows.reduce((s,x)=>s+x.teamFixed,0))})</span>`])}
+      ${pRow('Ignacio comisión (~9%)',    [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.ignacioComm)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.ignacioComm,0))})</span>`])}
+      ${pRow('Juan+Elber variable',       [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.juanVar+x.elberVar)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.juanVar+x.elberVar,0))})</span>`])}
       ${pRow('Pauta est.',         [...rows.map(x=>`<span style="color:var(--red)">(${fmt(x.pauta)})</span>`), `<span style="color:var(--red)">(${fmt(totPauta)})</span>`])}
       ${pRow('Overhead (5%)',      [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.oh)})</span>`), `<span style="color:var(--yellow)">(${fmt(totOH)})</span>`])}
       <tr style="border-top:2px solid var(--accent)">

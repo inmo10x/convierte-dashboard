@@ -929,6 +929,12 @@ const COMP_ITEMS = [
 // Costos únicos transición: may = ind. María $2M + Josna último mes $950K; jun = ind. Alexandra $2M
 const BUDGET_ONETIME = [2950000, 2000000, 0, 0, 0, 0, 0, 0];
 
+// PREVIRED real por mes de transición (Nury y Alexandra son formales hasta migrar a USD)
+// May: K+G $3.3M + Ignacio + Nury + Alexandra (sin Alexander/María)  = ~$2,567K
+// Jun: K+G $3.3M + Ignacio + Nury (sin Alexandra)                    = ~$2,329K
+// Jul+: K+G $3.3M + Ignacio (Nury pasa a USD freelance)              = ~$2,089K (target)
+const PREVIRED_BY_MONTH = [2566638, 2329380, 2089377, 2089377, 2089377, 2089377, 2089377, 2089377];
+
 // Estructura anterior (antes de todas las salidas): ref. para badge de ahorro
 const OLD_TOTAL_CLP = 20255000;
 
@@ -1114,9 +1120,9 @@ function setBScen(s){
 function renderBudget(){
   const r = rate();
 
-  // Calcular costos fijos del nuevo modelo
-  const fixedItems = COMP_ITEMS.map(x=>({...x, clp: x.usd ? Math.round(x.usd*r) : x.clp}));
-  const teamFixed  = fixedItems.reduce((s,x)=>s+x.clp, 0);
+  // Calcular costos fijos del nuevo modelo (sin PREVIRED — se inyecta por mes)
+  const fixedItems     = COMP_ITEMS.map(x=>({...x, clp: x.usd ? Math.round(x.usd*r) : x.clp}));
+  const teamFixedNoPrev= fixedItems.filter(x=>x.type!=='previred').reduce((s,x)=>s+x.clp, 0);
 
   // Cobros por escenario
   let cobros, pautaPct;
@@ -1135,6 +1141,8 @@ function renderBudget(){
 
   // Calcular P&L mensual
   const rows = cobros.map((cob, i)=>{
+    const previredM   = PREVIRED_BY_MONTH[i] || PREVIRED_CLP; // real por mes de transición
+    const teamFixed   = teamFixedNoPrev + previredM;
     const ingCLP      = cob * r;
     const above       = Math.max(0, cob - FLOOR_USD);
     const poolUSD     = above * VAR_POOL_PCT;

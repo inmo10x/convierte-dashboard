@@ -207,10 +207,10 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
 <!-- KPI Row 2: P&L -->
 <div class="kpi-row r5" style="margin-bottom:16px">
   <div class="kpi"><div class="lbl">Ingresos (CLP)</div><div class="val" id="k-ing">—</div><div class="sub" id="k-ing-s">—</div></div>
-  <div class="kpi"><div class="lbl">Pauta Digital</div><div class="val warn" id="k-pauta">—</div><div class="sub" id="k-pauta-s">—</div></div>
-  <div class="kpi"><div class="lbl">Team Spend</div><div class="val warn" id="k-team">—</div><div class="sub" id="k-team-s">—</div></div>
-  <div class="kpi"><div class="lbl">Overhead</div><div class="val warn" id="k-oh">—</div><div class="sub" id="k-oh-s">—</div></div>
-  <div class="kpi"><div class="lbl">Resultado Neto</div><div class="val" id="k-res">—</div><div class="delta" id="k-res-p">—</div></div>
+  <div class="kpi"><div class="lbl">Pauta Digital <span style="color:var(--cyan);font-size:9px">USD</span></div><div class="val warn" id="k-pauta">—</div><div class="sub" id="k-pauta-s">—</div></div>
+  <div class="kpi"><div class="lbl">Team Spend <span style="color:var(--cyan);font-size:9px">USD</span></div><div class="val warn" id="k-team">—</div><div class="sub" id="k-team-s">—</div></div>
+  <div class="kpi"><div class="lbl">Overhead <span style="color:var(--cyan);font-size:9px">USD</span></div><div class="val warn" id="k-oh">—</div><div class="sub" id="k-oh-s">—</div></div>
+  <div class="kpi"><div class="lbl">Resultado Neto <span style="color:var(--cyan);font-size:9px">USD</span></div><div class="val" id="k-res">—</div><div class="delta" id="k-res-p">—</div></div>
 </div>
 
 <!-- Sección Comercial -->
@@ -664,14 +664,16 @@ function renderKPIs(){
   vEl.textContent=fmu(d.vencidoUSD);
   vEl.className='val '+(d.vencidoUSD>0?'neg':'pos');
   document.getElementById('k-venc-s').textContent=d.vencidoUSD>0?'⚠ Requiere gestión':'✓ Sin vencidos';
-  // P&L
-  setK('k-ing',   fmt(d.cobCLP),     `${fmu(d.cobUSD)} × $${rate()}`);
-  setK('k-pauta', fmt(d.pauta),      d.cobCLP?`${(d.pauta/d.cobCLP*100).toFixed(1)}% del ingreso`:'—');
-  setK('k-team',  fmt(d.totalTeam),  d.cobCLP?`${(d.totalTeam/d.cobCLP*100).toFixed(1)}% del ingreso`:'—');
-  setK('k-oh',    fmt(d.totalOH),    d.cobCLP?`${(d.totalOH/d.cobCLP*100).toFixed(1)}% del ingreso`:'—');
+  // P&L — valores en USD usando rate() manual; CLP en subtítulo
+  const r=rate();
+  setK('k-ing',   fmt(d.cobCLP), `${fmu(d.cobUSD)} × $${r}`);
+  const pctSub=(v)=>d.cobCLP?`${fmt(v)} · ${(v/d.cobCLP*100).toFixed(1)}% ing`:'—';
+  setK('k-pauta', fmu(d.pauta/r,0),     pctSub(d.pauta));
+  setK('k-team',  fmu(d.totalTeam/r,0), pctSub(d.totalTeam));
+  setK('k-oh',    fmu(d.totalOH/r,0),   pctSub(d.totalOH));
   const rEl=document.getElementById('k-res');
-  rEl.textContent=fmt(d.res); rEl.className='val '+(d.res>=0?'pos':'neg');
-  document.getElementById('k-res-p').innerHTML=pct(d.cobCLP?d.res/d.cobCLP*100:0)+' margen neto';
+  rEl.innerHTML=fmu(d.res/r,0); rEl.className='val '+(d.res>=0?'pos':'neg');
+  document.getElementById('k-res-p').innerHTML=pct(d.cobCLP?d.res/d.cobCLP*100:0)+' margen · '+fmt(d.res);
 }
 function setK(id,val,sub){ document.getElementById(id).innerHTML=val; document.getElementById(id+'-s').textContent=sub; }
 
@@ -900,31 +902,34 @@ const JUAN_SHARE      = 0.60;
 const ELBER_SHARE     = 0.40;
 const IGNACIO_COMM_PCT= 0.09;   // ~9% de ventas generadas (cobros como proxy; histórico promedio 5.5%)
 
-// PREVIRED — 24 % sobre imponible bruto de los 3 empleados formales (desde mayo, sin Alexander)
-const GROSS_KARIM     = Math.round(4000000 / 0.819); // ~4,884,006
-const GROSS_GUILLERMO = Math.round(4000000 / 0.819); // ~4,884,006
+// PREVIRED — 24% sobre bruto de 3 formales (K+G bajan a $3.3M NET; Alexander sale de nómina)
+const GROSS_KARIM     = Math.round(3300000 / 0.819); // ~4,029,304
+const GROSS_GUILLERMO = Math.round(3300000 / 0.819); // ~4,029,304
 const GROSS_IGNACIO   = Math.round(530000  / 0.819); // ~  647,130
-const PREVIRED_CLP    = Math.round((GROSS_KARIM + GROSS_GUILLERMO + GROSS_IGNACIO) * 0.24); // ~2,499,634
+const PREVIRED_CLP    = Math.round((GROSS_KARIM + GROSS_GUILLERMO + GROSS_IGNACIO) * 0.24); // ~2,089,377
 
-// Costos fijos nuevos — CLP líquidos o USD × rate()
-// Nury y Alexandra pasan a USD (mismo valor, sin generar PREVIRED empresa)
+// Estructura objetivo (estable desde ~julio 2026)
 const COMP_ITEMS = [
-  {name:'Karim (Director)',         clp:4000000,      type:'nomina'  },
-  {name:'Guillermo (Socio)',        clp:4000000,      type:'nomina'  },
-  {name:'Ignacio (Closer, base)',   clp:530000,       type:'nomina'  },
-  {name:'Nury (KAM)',               usd:862,          type:'colab'   },
-  {name:'Alexandra (Social Media)', usd:852,          type:'colab'   },
-  {name:'Claudia (Confirmer)',      clp:690000,       type:'comision'},
-  {name:'Sebastián (Comisiones)',   clp:486000,       type:'comision'},
-  {name:'Minerva (Diseño)',         usd:470,          type:'colab'   },
-  {name:'Patricia (Ops)',           usd:500,          type:'colab'   },
-  {name:'Juan — base $400 USD',     usd:400,          type:'variable'},
-  {name:'Elber — base $300 USD',    usd:300,          type:'variable'},
-  {name:'PREVIRED (est.)',          clp:PREVIRED_CLP, type:'previred'},
+  {name:'Karim (Director)',              clp:3300000,      type:'nomina'  }, // bajó de $4M
+  {name:'Guillermo (Socio)',             clp:3300000,      type:'nomina'  }, // bajó de $4M
+  {name:'Ignacio (Closer, base)',        clp:530000,       type:'nomina'  },
+  {name:'Alexander (freelance USD)',     usd:600,          type:'colab'   }, // sale nómina → G66
+  {name:'Nury (KAM)',                    usd:862,          type:'colab'   },
+  {name:'Reemplazo María',               usd:400,          type:'colab'   }, // fijo; max ~$700 con variables
+  {name:'Reemplazo Alexandra (TBD)',     usd:300,          type:'colab'   }, // fijo; + variables/renovación
+  {name:'Claudia (Confirmer)',           clp:690000,       type:'comision'},
+  {name:'Sebastián (Comisiones)',        clp:486000,       type:'comision'},
+  {name:'Minerva (Diseño)',              usd:470,          type:'colab'   },
+  {name:'Patricia (Ops)',                usd:600,          type:'colab'   }, // +$100 (suma funciones Josna)
+  {name:'Juan — base $400 USD',          usd:400,          type:'variable'},
+  {name:'Elber — base $300 USD',         usd:300,          type:'variable'},
+  {name:'PREVIRED (est.)',               clp:PREVIRED_CLP, type:'previred'},
 ];
 
-// Estructura anterior: +Alexander (~$1.76M NET formal) +María (~$1.76M NET formal)
-// +Josna ($950K G66) +Nury/Alexandra en CLP +PREVIRED histórico promedio ~$3.53M
+// Costos únicos transición: may = ind. María $2M + Josna último mes $950K; jun = ind. Alexandra $2M
+const BUDGET_ONETIME = [2950000, 2000000, 0, 0, 0, 0, 0, 0];
+
+// Estructura anterior (antes de todas las salidas): ref. para badge de ahorro
 const OLD_TOTAL_CLP = 20255000;
 
 let _simCobros = 50000; // estado del slider
@@ -1140,10 +1145,11 @@ function renderBudget(){
     const teamTot     = teamFixed + teamVar;
     const pauta       = Math.round(ingCLP * pautaPct);
     const oh          = Math.round(ingCLP * OH_PCT);
-    const res         = ingCLP - pauta - teamTot - oh;
+    const onetime     = BUDGET_ONETIME[i] || 0;
+    const res         = ingCLP - pauta - teamTot - oh - onetime;
     const margin      = ingCLP ? res/ingCLP*100 : 0;
     const mc          = margin>=20?'var(--green)':margin>0?'var(--yellow)':'var(--red)';
-    return {lbl:BUDGET_MONTHS_LBL[i], cob, ingCLP, teamFixed, teamVar, teamTot, pauta, oh, res, margin, mc, juanVar, elberVar, ignacioComm};
+    return {lbl:BUDGET_MONTHS_LBL[i], cob, ingCLP, teamFixed, teamVar, teamTot, pauta, oh, onetime, res, margin, mc, juanVar, elberVar, ignacioComm};
   });
 
   const totCob     = rows.reduce((s,x)=>s+x.cob,0);
@@ -1151,6 +1157,7 @@ function renderBudget(){
   const totTeam    = rows.reduce((s,x)=>s+x.teamTot,0);
   const totPauta   = rows.reduce((s,x)=>s+x.pauta,0);
   const totOH      = rows.reduce((s,x)=>s+x.oh,0);
+  const totOnetime = rows.reduce((s,x)=>s+x.onetime,0);
   const totRes     = rows.reduce((s,x)=>s+x.res,0);
   const avgMargin  = totIng ? totRes/totIng*100 : 0;
   const totMC      = avgMargin>=20?'var(--green)':avgMargin>0?'var(--yellow)':'var(--red)';
@@ -1174,7 +1181,8 @@ function renderBudget(){
       ${pRow('Ignacio comisión (~9%)',    [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.ignacioComm)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.ignacioComm,0))})</span>`])}
       ${pRow('Juan+Elber variable',       [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.juanVar+x.elberVar)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.juanVar+x.elberVar,0))})</span>`])}
       ${pRow('Pauta est.',         [...rows.map(x=>`<span style="color:var(--red)">(${fmt(x.pauta)})</span>`), `<span style="color:var(--red)">(${fmt(totPauta)})</span>`])}
-      ${pRow('Overhead (5%)',      [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.oh)})</span>`), `<span style="color:var(--yellow)">(${fmt(totOH)})</span>`])}
+      ${pRow('Overhead (5%)',        [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.oh)})</span>`), `<span style="color:var(--yellow)">(${fmt(totOH)})</span>`])}
+      ${pRow('Indemnizaciones',      [...rows.map(x=>x.onetime?`<span style="color:var(--red)">(${fmt(x.onetime)})</span>`:`<span style="color:var(--muted)">—</span>`), `<span style="color:var(--red)">(${fmt(rows.reduce((s,x)=>s+x.onetime,0))})</span>`])}
       <tr style="border-top:2px solid var(--accent)">
         <td style="text-align:left;font-weight:700">Resultado neto</td>
         ${rows.map(x=>`<td style="text-align:right;font-weight:700;color:${x.mc}">${fmt(x.res)}</td>`).join('')}

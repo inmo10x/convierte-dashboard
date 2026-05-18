@@ -909,51 +909,57 @@ function clearCartolas(){
 }
 
 // ═══════════════════════════════════════════════
-// MODELO RETRIBUTIVO PROPUESTO
+// MODELO RETRIBUTIVO (actualizado mayo 2026)
 // ═══════════════════════════════════════════════
-const FLOOR_USD       = 42000;  // cobros mínimos para 20% margen neto
-const VAR_POOL_PCT    = 0.03;   // 3 % del exceso sobre el piso → pool variable
-const JUAN_SHARE      = 0.60;
-const ELBER_SHARE     = 0.40;
-const IGNACIO_COMM_PCT= 0.09;   // ~9% de ventas generadas (cobros como proxy; histórico promedio 5.5%)
 
-// PREVIRED — 24% sobre bruto de 3 formales (K+G bajan a $3.3M NET; Alexander sale de nómina)
+// ── Tasas comisión variable (sobre VENTAS nuevas o renovaciones) ──────────────
+const IGNACIO_COMM_PCT = 0.09;   // 9% sus ventas (es el único closer)
+const CLAUDIA_COMM_PCT = 0.03;   // 3% ventas totales (Call Confirmer, 100% variable)
+const JUAN_VAR_PCT     = 0.01;   // 1% ventas totales
+const ELBER_VAR_PCT    = 0.005;  // 0.5% ventas totales
+const PATRICIA_VAR_PCT = 0.01;   // 1% ventas totales
+const NURY_REN_PCT     = 0.05;   // 5% renovaciones clientes propios (KAM)
+const ROI_PAUTA        = 8;      // Pauta = ventas / ROI_PAUTA (hist avg ≈ $5K/mes a ~$40K ventas)
+// Bono trimestral: $200 USD × persona si renovación >50% (Juan/Elber/Patricia/Nury)
+
+// ── PREVIRED — 24% bruto imponible de empleados formales ────────────────────
 const GROSS_KARIM     = Math.round(3300000 / 0.819); // ~4,029,304
 const GROSS_GUILLERMO = Math.round(3300000 / 0.819); // ~4,029,304
 const GROSS_IGNACIO   = Math.round(530000  / 0.819); // ~  647,130
-const PREVIRED_CLP    = Math.round((GROSS_KARIM + GROSS_GUILLERMO + GROSS_IGNACIO) * 0.24); // ~2,089,377
+const GROSS_NURY      = Math.round(800000  / 0.819); // ~  976,800
+const PREVIRED_CLP    = Math.round((GROSS_KARIM + GROSS_GUILLERMO + GROSS_IGNACIO + GROSS_NURY) * 0.24); // ~2,323,809
 
-// Estructura objetivo (estable desde ~julio 2026)
+// ── Equipo — costos fijos base (sin variable ni PREVIRED) ────────────────────
 const COMP_ITEMS = [
-  {name:'Karim (Director)',              clp:3300000,      type:'nomina'  }, // bajó de $4M
-  {name:'Guillermo (Socio)',             clp:3300000,      type:'nomina'  }, // bajó de $4M
-  {name:'Ignacio (Closer, base)',        clp:530000,       type:'nomina'  },
-  {name:'Alexander (freelance USD)',     usd:600,          type:'colab'   }, // sale nómina → G66
-  {name:'Nury (KAM)',                    usd:862,          type:'colab'   },
-  {name:'Reemplazo María',               usd:400,          type:'colab'   }, // fijo; max ~$700 con variables
-  {name:'Reemplazo Alexandra (TBD)',     usd:300,          type:'colab'   }, // fijo; + variables/renovación
-  {name:'Claudia (Confirmer)',           clp:690000,       type:'comision'},
-  {name:'Sebastián (Comisiones)',        clp:486000,       type:'comision'},
-  {name:'Minerva (Diseño)',              usd:470,          type:'colab'   },
-  {name:'Patricia (Ops)',                usd:600,          type:'colab'   }, // +$100 (suma funciones Josna)
-  {name:'Juan — base $400 USD',          usd:400,          type:'variable'},
-  {name:'Elber — base $300 USD',         usd:300,          type:'variable'},
-  {name:'PREVIRED (est.)',               clp:PREVIRED_CLP, type:'previred'},
+  {name:'Karim (Director)',           clp:3300000,      type:'nomina'  },
+  {name:'Guillermo (Socio)',          clp:3300000,      type:'nomina'  },
+  {name:'Nury (KAM, base)',           clp:800000,       type:'nomina'  }, // + 5% renovaciones variable
+  {name:'Ignacio (Closer, base)',     clp:530000,       type:'nomina'  }, // + 9% ventas variable
+  {name:'Juan (Traffic, base)',       usd:400,          type:'colab'   }, // + 1% ventas variable
+  {name:'Elber (Ops, base)',          usd:300,          type:'colab'   }, // + 0.5% ventas variable
+  {name:'Patricia (Ops, base)',       usd:400,          type:'colab'   }, // + 1% ventas variable
+  {name:'Alexander (freelance, est)', usd:700,          type:'colab'   }, // 100% variable por tarea
+  {name:'PREVIRED (est.)',            clp:PREVIRED_CLP, type:'previred'},
+  // Claudia (Confirmer): 100% variable = 3% ventas totales → ver costos variables
 ];
 
-// Costos únicos transición: may = ind. María $2M + Josna último mes $950K; jun = ind. Alexandra $2M
+// ── Costos únicos transición ─────────────────────────────────────────────────
+// May: ind. María $2M + último mes Josna $950K; Jun: ind. Alexandra $2M
 const BUDGET_ONETIME = [2950000, 2000000, 0, 0, 0, 0, 0, 0];
 
-// PREVIRED real por mes de transición (Nury y Alexandra son formales hasta migrar a USD)
-// May: K+G $3.3M + Ignacio + Nury + Alexandra (sin Alexander/María)  = ~$2,567K
-// Jun: K+G $3.3M + Ignacio + Nury (sin Alexandra)                    = ~$2,329K
-// Jul+: K+G $3.3M + Ignacio (Nury pasa a USD freelance)              = ~$2,089K (target)
-const PREVIRED_BY_MONTH = [2566638, 2329380, 2089377, 2089377, 2089377, 2089377, 2089377, 2089377];
+// ── PREVIRED por mes de transición ───────────────────────────────────────────
+// May: K+G $3.3M + Ignacio + Nury @$800K + Alexandra @$809K  ≈ 2,561,067
+// Jun: K+G $3.3M + Ignacio + Nury (sin Alexandra)             ≈ 2,323,809
+// Jul+: K+G $3.3M + Ignacio + Nury (régimen permanente)       ≈ 2,323,809
+const PREVIRED_BY_MONTH = [2561067, 2323809, 2323809, 2323809, 2323809, 2323809, 2323809, 2323809];
 
-// Estructura anterior (antes de todas las salidas): ref. para badge de ahorro
+// ── Ref. estructura anterior (badge de ahorro) ────────────────────────────────
 const OLD_TOTAL_CLP = 20255000;
 
-let _simCobros = 50000; // estado del slider
+// ── Estado del simulador ──────────────────────────────────────────────────────
+let _simCobros     = 50000; // USD/mes — cobros recibidos
+let _simVentas     = 15000; // USD/mes — nuevas ventas cerradas
+let _simRenovacion = 32000; // USD/mes — renovaciones de clientes (cobros - ventas aprox.)
 
 function renderCompModel(){
   const r = rate();
@@ -993,8 +999,10 @@ function renderCompModel(){
 }
 
 function renderVarSim(){
-  const r      = rate();
-  const cobUSD = _simCobros;
+  const r        = rate();
+  const cobUSD   = _simCobros;
+  const ventUSD  = _simVentas;
+  const renUSD   = _simRenovacion;
 
   const items      = COMP_ITEMS.map(x => ({...x, clp: x.usd ? Math.round(x.usd*r) : x.clp}));
   const previredIt = items.find(x => x.type === 'previred');
@@ -1002,89 +1010,82 @@ function renderVarSim(){
   const fixedItems = items.filter(x => x.type !== 'previred');
   const totalFixed = items.reduce((s,x)=>s+x.clp, 0);
 
-  const above    = Math.max(0, cobUSD - FLOOR_USD);
-  const poolUSD  = above * VAR_POOL_PCT;
-  const poolCLP  = Math.round(poolUSD * r);
-  const juanVar  = Math.round(poolCLP * JUAN_SHARE);
-  const elberVar = Math.round(poolCLP * ELBER_SHARE);
-
-  const ingCLP      = cobUSD * r;
-  const ignacioComm = Math.round(cobUSD * IGNACIO_COMM_PCT * r);
-  const totalVar    = juanVar + elberVar + ignacioComm;
+  // Costos variables (sobre ventas nuevas o renovaciones)
+  const ignacioComm = Math.round(ventUSD * IGNACIO_COMM_PCT * r);
+  const claudiaComm = Math.round(ventUSD * CLAUDIA_COMM_PCT * r);
+  const juanVar     = Math.round(ventUSD * JUAN_VAR_PCT * r);
+  const elberVar    = Math.round(ventUSD * ELBER_VAR_PCT * r);
+  const patriciaVar = Math.round(ventUSD * PATRICIA_VAR_PCT * r);
+  const nuryRen     = Math.round(renUSD  * NURY_REN_PCT * r);
+  const totalVar    = ignacioComm + claudiaComm + juanVar + elberVar + patriciaVar + nuryRen;
   const totalTeam   = totalFixed + totalVar;
 
-  const meses = allMonths();
-  let pautaEst;
-  if(meses.length){
-    const avgPauta = meses.map(k=>plData(k)).reduce((s,p)=>s+(p.cobCLP?p.pauta/p.cobCLP:0),0)/meses.length;
-    pautaEst = ingCLP * avgPauta;
-  } else {
-    pautaEst = ingCLP * 0.25;
-  }
-
-  const ohEst     = ingCLP * 0.05;
-  const res       = ingCLP - pautaEst - totalTeam - ohEst;
-  const margin    = ingCLP ? res/ingCLP*100 : 0;
+  const ingCLP  = cobUSD * r;
+  const pautaEst= Math.round(ventUSD / ROI_PAUTA * r);
+  const ohEst   = Math.round(ingCLP * 0.05);
+  const res     = ingCLP - pautaEst - totalTeam - ohEst;
+  const margin  = ingCLP ? res/ingCLP*100 : 0;
   const liquidUSD = res / r;
 
   const pct30k = Math.min(100, Math.max(0, liquidUSD/30000*100));
   const barCol = liquidUSD>=30000?'var(--green)':liquidUSD>=15000?'var(--yellow)':'var(--red)';
 
-  const C = (v,c)=>`style="padding:4px 10px;text-align:right;font-size:11px;${c?'color:'+c:''}"`;
-  const CL= (v,c,pl=20)=>`style="padding:4px ${pl}px 4px ${pl}px;font-size:11px;${c?'color:'+c:''}"`;
   function secH(lbl){
     return `<tr style="background:#0c0f1a"><td colspan="3" style="padding:5px 10px 3px;font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);font-weight:700">${lbl}</td></tr>`;
   }
-  function frow(label, clpVal, color='', indent=20, altBg=false){
-    const bg = altBg?'background:#111420':'';
-    return `<tr style="${bg}">
-      <td style="padding:4px 10px 4px ${indent}px;font-size:11px">${label}</td>
-      <td style="padding:4px 10px;text-align:right;font-size:11px;${color?'color:'+color:''}">${fmt(clpVal)}</td>
-      <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(clpVal/r,0)}</td>
-    </tr>`;
-  }
-  function subtotal(label, clpVal, color='var(--muted2)'){
+  function subtotal(label, clpVal){
     return `<tr style="border-top:1px solid var(--border);background:#0f1220">
       <td style="padding:5px 10px;font-weight:700;font-size:11px">${label}</td>
-      <td style="padding:5px 10px;text-align:right;font-weight:700;font-size:11px;color:${color}">(${fmt(clpVal)})</td>
+      <td style="padding:5px 10px;text-align:right;font-weight:700;font-size:11px;color:var(--muted2)">(${fmt(clpVal)})</td>
       <td style="padding:5px 10px;text-align:right;font-size:10px;color:var(--muted2)">(${fmu(clpVal/r,0)})</td>
+    </tr>`;
+  }
+  function frow(label, clpVal, color='', altBg=false, indent=20){
+    return `<tr style="${altBg?'background:#111420':''}">
+      <td style="padding:4px 10px 4px ${indent}px;font-size:11px">${label}</td>
+      <td style="padding:4px 10px;text-align:right;font-size:11px${color?';color:'+color:''}">${fmt(clpVal)}</td>
+      <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(clpVal/r,0)}</td>
     </tr>`;
   }
 
   // Build fixed team rows
-  const typeOrder = ['nomina','colab','comision','variable'];
   let fixedRows = '';
   let alt = false;
-  typeOrder.forEach(type => {
+  ['nomina','colab'].forEach(type => {
     fixedItems.filter(x=>x.type===type).forEach(x => {
-      const usdNote = x.usd ? ` <span style="font-size:9px;color:var(--muted)">${fmu(x.usd,0)}/mes</span>` : '';
-      fixedRows += `<tr style="${alt?'background:#111420':''}">
-        <td style="padding:4px 10px 4px 20px;font-size:11px">${x.name}${usdNote}</td>
-        <td style="padding:4px 10px;text-align:right;font-size:11px">${fmt(x.clp)}</td>
-        <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(x.clp/r,0)}</td>
-      </tr>`;
+      const usdNote = x.usd ? ` <span style="font-size:9px;color:var(--muted)">${fmu(x.usd,0)}</span>` : '';
+      fixedRows += frow(x.name + usdNote, x.clp, '', alt);
       alt = !alt;
     });
   });
-  // PREVIRED
-  fixedRows += `<tr style="${alt?'background:#111420':''}">
-    <td style="padding:4px 10px 4px 20px;font-size:11px">PREVIRED (estimado régimen permanente)</td>
-    <td style="padding:4px 10px;text-align:right;font-size:11px;color:var(--yellow)">${fmt(previredCLP)}</td>
-    <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(previredCLP/r,0)}</td>
-  </tr>`;
+  fixedRows += frow('PREVIRED (régimen permanente)', previredCLP, 'var(--yellow)', alt);
 
   document.getElementById('comp-sim').innerHTML = `
-    <div style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
-        <label style="font-size:11px;color:var(--muted2)">Cobros proyectados (USD/mes)</label>
-        <span style="font-size:18px;font-weight:700;color:var(--accent)">$${cobUSD.toLocaleString('en-US')}</span>
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <label style="font-size:11px;color:var(--muted2)">Cobros recibidos (USD/mes)</label>
+        <span style="font-size:17px;font-weight:700;color:var(--cyan)">$${cobUSD.toLocaleString('en-US')}</span>
       </div>
       <input type="range" min="20000" max="150000" step="1000" value="${cobUSD}"
         oninput="_simCobros=+this.value;renderVarSim()"
-        style="width:100%;accent-color:var(--accent);margin-bottom:4px">
-      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)">
-        <span>$20K</span><span style="color:var(--yellow)">Piso $${FLOOR_USD.toLocaleString('en-US')}</span><span>$150K</span>
+        style="width:100%;accent-color:var(--accent);margin-bottom:10px">
+
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <label style="font-size:11px;color:var(--muted2)">Ventas nuevas (USD/mes)</label>
+        <span style="font-size:17px;font-weight:700;color:var(--accent)">$${ventUSD.toLocaleString('en-US')}</span>
       </div>
+      <input type="range" min="0" max="80000" step="500" value="${ventUSD}"
+        oninput="_simVentas=+this.value;renderVarSim()"
+        style="width:100%;accent-color:var(--accent);margin-bottom:10px">
+
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <label style="font-size:11px;color:var(--muted2)">Renovaciones clientes (USD/mes)</label>
+        <span style="font-size:17px;font-weight:700;color:#a78bfa">$${renUSD.toLocaleString('en-US')}</span>
+      </div>
+      <input type="range" min="0" max="100000" step="1000" value="${renUSD}"
+        oninput="_simRenovacion=+this.value;renderVarSim()"
+        style="width:100%;accent-color:#a78bfa;margin-bottom:4px">
+      <div style="font-size:9px;color:var(--muted);text-align:right">afecta comisión Nury (5%) y bono trimestral</div>
     </div>
 
     <table style="width:100%;border-collapse:collapse;font-size:11px">
@@ -1096,36 +1097,24 @@ function renderVarSim(){
       <tbody>
 
       ${secH('▸ INGRESOS')}
-      <tr><td style="padding:4px 10px 4px 20px;font-size:11px">Cobros proyectados</td>
-        <td style="padding:4px 10px;text-align:right;font-size:11px;color:var(--green)">${fmt(ingCLP)}</td>
-        <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(cobUSD,0)}</td></tr>
+      ${frow('Cobros recibidos', ingCLP, 'var(--green)')}
 
       ${secH('▸ EQUIPO — COSTOS FIJOS')}
       ${fixedRows}
       ${subtotal('Subtotal equipo fijo', totalFixed)}
 
-      ${secH('▸ EQUIPO — COSTOS VARIABLES')}
-      <tr><td style="padding:4px 10px 4px 20px;font-size:11px;color:var(--muted2)">Pool variable (3% sobre piso $42K USD)</td>
-        <td style="padding:4px 10px;text-align:right;font-size:11px">${fmt(poolCLP)}</td>
-        <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(poolUSD,0)}</td></tr>
-      <tr style="background:#0f1a10"><td style="padding:4px 10px 4px 28px;font-size:11px">↳ Juan variable (Traffic · 60% pool)</td>
-        <td style="padding:4px 10px;text-align:right;font-size:11px;color:var(--green)">${fmt(juanVar)}</td>
-        <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(juanVar/r,0)}</td></tr>
-      <tr><td style="padding:4px 10px 4px 28px;font-size:11px">↳ Elber variable (Ops · 40% pool)</td>
-        <td style="padding:4px 10px;text-align:right;font-size:11px;color:var(--green)">${fmt(elberVar)}</td>
-        <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(elberVar/r,0)}</td></tr>
-      <tr style="background:#1a1400"><td style="padding:4px 10px 4px 20px;font-size:11px">Ignacio comisión (~9% de cobros, boleta)</td>
-        <td style="padding:4px 10px;text-align:right;font-size:11px;color:var(--yellow)">${fmt(ignacioComm)}</td>
-        <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">${fmu(ignacioComm/r,0)}</td></tr>
+      ${secH('▸ EQUIPO — COSTOS VARIABLES  (base ventas $${ventUSD.toLocaleString("en-US")} | renov. $${renUSD.toLocaleString("en-US")})')}
+      ${frow('Ignacio comisión 9% ventas', ignacioComm, 'var(--yellow)')}
+      ${frow('Claudia 3% ventas (boleta, 100% var.)', claudiaComm, 'var(--yellow)', true)}
+      ${frow('Juan 1% ventas', juanVar, 'var(--green)')}
+      ${frow('Elber 0.5% ventas', elberVar, 'var(--green)', true)}
+      ${frow('Patricia 1% ventas', patriciaVar, 'var(--green)')}
+      ${frow('Nury 5% renovaciones', nuryRen, '#a78bfa', true)}
       ${subtotal('Subtotal equipo variable', totalVar)}
 
       ${secH('▸ OTROS COSTOS')}
-      <tr><td style="padding:4px 10px 4px 20px;font-size:11px">Pauta digital (promedio histórico)</td>
-        <td style="padding:4px 10px;text-align:right;font-size:11px;color:var(--red)">(${fmt(pautaEst)})</td>
-        <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">(${fmu(pautaEst/r,0)})</td></tr>
-      <tr style="background:#12151f"><td style="padding:4px 10px 4px 20px;font-size:11px">Overhead operacional (5% ing.)</td>
-        <td style="padding:4px 10px;text-align:right;font-size:11px;color:var(--yellow)">(${fmt(ohEst)})</td>
-        <td style="padding:4px 10px;text-align:right;font-size:10px;color:var(--muted2)">(${fmu(ohEst/r,0)})</td></tr>
+      ${frow('Pauta digital (ventas ÷ 8, ROI target)', pautaEst, 'var(--red)')}
+      ${frow('Overhead operacional (5% cobros)', ohEst, 'var(--yellow)', true)}
 
       <tr style="border-top:2px solid var(--accent)">
         <td style="padding:8px 10px;font-size:13px;font-weight:700">RESULTADO NETO</td>
@@ -1153,7 +1142,7 @@ function renderVarSim(){
       </div>
       ${liquidUSD>=30000
         ? `<div style="font-size:10px;color:var(--green);margin-top:6px">✓ Meta de $30K/mes alcanzada</div>`
-        : `<div style="font-size:10px;color:var(--yellow);margin-top:6px">⚠ Para $30K líquidos se necesitan ~$80K+ en cobros/mes</div>`
+        : `<div style="font-size:10px;color:var(--yellow);margin-top:6px">⚠ Falta ${fmu(30000-liquidUSD,0)} para la meta de $30K</div>`
       }
     </div>
   `;
@@ -1164,14 +1153,18 @@ function renderVarSim(){
 // ═══════════════════════════════════════════════
 const BUDGET_MONTHS_LBL = ['May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
-// cobros en USD por mes para cada escenario
+// cobros y ventas nuevas en USD por mes para cada escenario
+// renovaciones = cobros - ventas (proxy: clientes recurrentes pagando)
 const BUDGET_SCENARIOS = {
   conservador: { label:'🟡 Conservador', color:'#f59e0b',
-    cobros:[38000,38000,39000,40000,40000,41000,42000,42000], pauta:0.28 },
+    cobros:[38000,38000,39000,40000,40000,41000,42000,42000],
+    ventas:[11000,11000,12000,12000,13000,13000,14000,14000] },
   base:        { label:'🔵 Base',        color:'#3b82f6',
-    cobros:[45000,49000,53000,57000,60000,64000,67000,70000], pauta:0.25 },
+    cobros:[45000,49000,53000,57000,60000,64000,67000,70000],
+    ventas:[15000,17000,19000,21000,22000,24000,25000,27000] },
   optimista:   { label:'🟢 Optimista',   color:'#22c55e',
-    cobros:[58000,65000,73000,80000,86000,92000,97000,103000],pauta:0.22 },
+    cobros:[58000,65000,73000,80000,86000,92000,97000,103000],
+    ventas:[20000,24000,27000,31000,34000,37000,40000,43000] },
 };
 
 let _budgetScen = 'conservador';
@@ -1192,40 +1185,43 @@ function renderBudget(){
   const fixedItems     = COMP_ITEMS.map(x=>({...x, clp: x.usd ? Math.round(x.usd*r) : x.clp}));
   const teamFixedNoPrev= fixedItems.filter(x=>x.type!=='previred').reduce((s,x)=>s+x.clp, 0);
 
-  // Cobros por escenario
-  let cobros, pautaPct;
+  // Cobros y ventas nuevas por escenario
+  let budgetCobros, budgetVentas;
   if(_budgetScen === 'custom'){
     const start  = +(document.getElementById('bc-start')?.value||45000);
     const growth = +(document.getElementById('bc-growth')?.value||5)/100;
-    pautaPct     = +(document.getElementById('bc-pauta')?.value||25)/100;
-    cobros = BUDGET_MONTHS_LBL.map((_,i)=> Math.round(start * Math.pow(1+growth, i)));
+    budgetCobros = BUDGET_MONTHS_LBL.map((_,i)=> Math.round(start * Math.pow(1+growth, i)));
+    budgetVentas = budgetCobros.map(c => Math.round(c * 0.35)); // ventas ≈ 35% de cobros
   } else {
-    const sc = BUDGET_SCENARIOS[_budgetScen];
-    cobros   = sc.cobros;
-    pautaPct = sc.pauta;
+    const sc     = BUDGET_SCENARIOS[_budgetScen];
+    budgetCobros = sc.cobros;
+    budgetVentas = sc.ventas;
   }
 
   const OH_PCT = 0.05;
 
-  // Calcular P&L mensual
-  const rows = cobros.map((cob, i)=>{
-    const previredM   = PREVIRED_BY_MONTH[i] || PREVIRED_CLP; // real por mes de transición
+  // P&L mensual con nuevo modelo retributivo (comisiones sobre ventas, pauta = ventas÷ROI)
+  const rows = budgetCobros.map((cob, i)=>{
+    const vent        = budgetVentas[i] || 0;
+    const ren         = Math.max(0, cob - vent); // renovaciones ≈ cobros - ventas nuevas
+    const previredM   = PREVIRED_BY_MONTH[i] || PREVIRED_CLP;
     const teamFixed   = teamFixedNoPrev + previredM;
     const ingCLP      = cob * r;
-    const above       = Math.max(0, cob - FLOOR_USD);
-    const poolUSD     = above * VAR_POOL_PCT;
-    const juanVar     = Math.round(poolUSD * r * JUAN_SHARE);
-    const elberVar    = Math.round(poolUSD * r * ELBER_SHARE);
-    const ignacioComm = Math.round(cob * IGNACIO_COMM_PCT * r); // 9% ventas
-    const teamVar     = juanVar + elberVar + ignacioComm;
+    const claudiaComm = Math.round(vent * CLAUDIA_COMM_PCT * r);
+    const juanVar     = Math.round(vent * JUAN_VAR_PCT * r);
+    const elberVar    = Math.round(vent * ELBER_VAR_PCT * r);
+    const patriciaVar = Math.round(vent * PATRICIA_VAR_PCT * r);
+    const ignacioComm = Math.round(vent * IGNACIO_COMM_PCT * r);
+    const nuryRen     = Math.round(ren  * NURY_REN_PCT * r);
+    const teamVar     = claudiaComm + juanVar + elberVar + patriciaVar + ignacioComm + nuryRen;
     const teamTot     = teamFixed + teamVar;
-    const pauta       = Math.round(ingCLP * pautaPct);
+    const pauta       = Math.round(vent / ROI_PAUTA * r);
     const oh          = Math.round(ingCLP * OH_PCT);
     const onetime     = BUDGET_ONETIME[i] || 0;
     const res         = ingCLP - pauta - teamTot - oh - onetime;
     const margin      = ingCLP ? res/ingCLP*100 : 0;
     const mc          = margin>=20?'var(--green)':margin>0?'var(--yellow)':'var(--red)';
-    return {lbl:BUDGET_MONTHS_LBL[i], cob, ingCLP, teamFixed, teamVar, teamTot, pauta, oh, onetime, res, margin, mc, juanVar, elberVar, ignacioComm};
+    return {lbl:BUDGET_MONTHS_LBL[i], cob, vent, ingCLP, teamFixed, teamVar, teamTot, pauta, oh, onetime, res, margin, mc, claudiaComm, juanVar, elberVar, patriciaVar, ignacioComm, nuryRen};
   });
 
   const totCob     = rows.reduce((s,x)=>s+x.cob,0);
@@ -1251,12 +1247,15 @@ function renderBudget(){
       <th>Total / Prom.</th>
     </tr></thead>
     <tbody>
-      ${pRow('Cobros (USD K)',     [...rows.map(x=>`<span style="color:var(--cyan)">$${(x.cob/1000).toFixed(0)}K</span>`), `<span style="color:var(--cyan)">$${(totCob/1000).toFixed(0)}K</span>`])}
-      ${pRow('Cobros (CLP)',       [...rows.map(x=>fmt(x.ingCLP)), fmt(totIng)])}
-      ${pRow('Team fijo',                [...rows.map(x=>`<span style="color:var(--red)">(${fmt(x.teamFixed)})</span>`),      `<span style="color:var(--red)">(${fmt(rows.reduce((s,x)=>s+x.teamFixed,0))})</span>`])}
-      ${pRow('Ignacio comisión (~9%)',    [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.ignacioComm)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.ignacioComm,0))})</span>`])}
-      ${pRow('Juan+Elber variable',       [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.juanVar+x.elberVar)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.juanVar+x.elberVar,0))})</span>`])}
-      ${pRow('Pauta est.',         [...rows.map(x=>`<span style="color:var(--red)">(${fmt(x.pauta)})</span>`), `<span style="color:var(--red)">(${fmt(totPauta)})</span>`])}
+      ${pRow('Cobros (USD K)',      [...rows.map(x=>`<span style="color:var(--cyan)">$${(x.cob/1000).toFixed(0)}K</span>`), `<span style="color:var(--cyan)">$${(totCob/1000).toFixed(0)}K</span>`])}
+      ${pRow('Ventas nuevas (USD K)',[...rows.map(x=>`<span style="color:#60a5fa">$${(x.vent/1000).toFixed(0)}K</span>`), `<span style="color:#60a5fa">$${(rows.reduce((s,x)=>s+x.vent,0)/1000).toFixed(0)}K</span>`])}
+      ${pRow('Cobros (CLP)',        [...rows.map(x=>fmt(x.ingCLP)), fmt(totIng)])}
+      ${pRow('Team fijo',           [...rows.map(x=>`<span style="color:var(--red)">(${fmt(x.teamFixed)})</span>`),   `<span style="color:var(--red)">(${fmt(rows.reduce((s,x)=>s+x.teamFixed,0))})</span>`])}
+      ${pRow('Ignacio ~9% ventas',  [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.ignacioComm)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.ignacioComm,0))})</span>`])}
+      ${pRow('Claudia 3% ventas',   [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.claudiaComm)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.claudiaComm,0))})</span>`])}
+      ${pRow('Juan+Elber+Patricia', [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.juanVar+x.elberVar+x.patriciaVar)})</span>`), `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.juanVar+x.elberVar+x.patriciaVar,0))})</span>`])}
+      ${pRow('Nury 5% renovaciones',[...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.nuryRen)})</span>`),  `<span style="color:var(--yellow)">(${fmt(rows.reduce((s,x)=>s+x.nuryRen,0))})</span>`])}
+      ${pRow('Pauta (ventas÷8)',    [...rows.map(x=>`<span style="color:var(--red)">(${fmt(x.pauta)})</span>`), `<span style="color:var(--red)">(${fmt(totPauta)})</span>`])}
       ${pRow('Overhead (5%)',        [...rows.map(x=>`<span style="color:var(--yellow)">(${fmt(x.oh)})</span>`), `<span style="color:var(--yellow)">(${fmt(totOH)})</span>`])}
       ${pRow('Indemnizaciones',      [...rows.map(x=>x.onetime?`<span style="color:var(--red)">(${fmt(x.onetime)})</span>`:`<span style="color:var(--muted)">—</span>`), `<span style="color:var(--red)">(${fmt(rows.reduce((s,x)=>s+x.onetime,0))})</span>`])}
       <tr style="border-top:2px solid var(--accent)">
@@ -1273,32 +1272,45 @@ function renderBudget(){
   </table>`;
 
   // Variable pay summary por escenario
-  const totJuan  = rows.reduce((s,x)=>s+x.juanVar,0);
-  const totElber = rows.reduce((s,x)=>s+x.elberVar,0);
-  const juanBaseAno  = Math.round(400*r)*8;
-  const elberBaseAno = Math.round(300*r)*8;
+  const totIgnVar   = rows.reduce((s,x)=>s+x.ignacioComm,0);
+  const totClaudia  = rows.reduce((s,x)=>s+x.claudiaComm,0);
+  const totJuan     = rows.reduce((s,x)=>s+x.juanVar,0);
+  const totElber    = rows.reduce((s,x)=>s+x.elberVar,0);
+  const totPatricia = rows.reduce((s,x)=>s+x.patriciaVar,0);
+  const totNuryRen  = rows.reduce((s,x)=>s+x.nuryRen,0);
+  const nuryBaseAno   = 800000 * 8;
+  const ignacioBaseAno= 530000 * 8;
+  const juanBaseAno   = Math.round(400*r) * 8;
+  const elberBaseAno  = Math.round(300*r) * 8;
+  const patriciaBaseAno = Math.round(400*r) * 8;
+  function varCard(title, baseAno, varAno){
+    return `<div style="background:#12151f;border-radius:8px;padding:10px 14px">
+      <div style="color:var(--muted2);margin-bottom:6px;font-size:10px;text-transform:uppercase;letter-spacing:.5px">${title}</div>
+      <div style="display:flex;justify-content:space-between"><span>Base anual</span><span style="color:var(--cyan)">${baseAno>0?fmt(baseAno):'100% variable'}</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Variable anual</span><span style="color:var(--green)">${fmt(varAno)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid var(--border);margin-top:4px;padding-top:4px">
+        <span>Total año</span><span style="color:var(--accent)">${fmt(baseAno+varAno)}</span>
+      </div>
+    </div>`;
+  }
   document.getElementById('budget-varsum').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11px">
-      <div style="background:#12151f;border-radius:8px;padding:10px 14px">
-        <div style="color:var(--muted2);margin-bottom:6px;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Juan (Traffic) — Mayo–Dic</div>
-        <div style="display:flex;justify-content:space-between"><span>Base anual</span><span style="color:var(--cyan)">${fmt(juanBaseAno)}</span></div>
-        <div style="display:flex;justify-content:space-between"><span>Variable anual</span><span style="color:var(--green)">${fmt(totJuan)}</span></div>
-        <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid var(--border);margin-top:4px;padding-top:4px"><span>Total año</span><span style="color:var(--accent)">${fmt(juanBaseAno+totJuan)}</span></div>
-        <div style="display:flex;justify-content:space-between;color:var(--muted2)"><span>≈ USD/mes promedio</span><span>${fmu((juanBaseAno+totJuan)/r/8,0)}</span></div>
-      </div>
-      <div style="background:#12151f;border-radius:8px;padding:10px 14px">
-        <div style="color:var(--muted2);margin-bottom:6px;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Elber (Ops) — Mayo–Dic</div>
-        <div style="display:flex;justify-content:space-between"><span>Base anual</span><span style="color:var(--cyan)">${fmt(elberBaseAno)}</span></div>
-        <div style="display:flex;justify-content:space-between"><span>Variable anual</span><span style="color:var(--green)">${fmt(totElber)}</span></div>
-        <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid var(--border);margin-top:4px;padding-top:4px"><span>Total año</span><span style="color:var(--accent)">${fmt(elberBaseAno+totElber)}</span></div>
-        <div style="display:flex;justify-content:space-between;color:var(--muted2)"><span>≈ USD/mes promedio</span><span>${fmu((elberBaseAno+totElber)/r/8,0)}</span></div>
-      </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px;margin-bottom:8px">
+      ${varCard('Ignacio (Closer) — 9% ventas', ignacioBaseAno, totIgnVar)}
+      ${varCard('Claudia (Confirmer) — 3% ventas', 0, totClaudia)}
+      ${varCard('Nury (KAM) — 5% renovaciones', nuryBaseAno, totNuryRen)}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px">
+      ${varCard('Juan (Traffic) — 1% ventas', juanBaseAno, totJuan)}
+      ${varCard('Elber (Ops) — 0.5% ventas', elberBaseAno, totElber)}
+      ${varCard('Patricia (Ops) — 1% ventas', patriciaBaseAno, totPatricia)}
+    </div>
+    <div style="margin-top:8px;padding:8px 12px;background:#0d0f18;border-radius:6px;font-size:10px;color:var(--muted2)">
+      ⚡ Bono trimestral +$200 USD × persona (Juan/Elber/Patricia/Nury) si tasa renovación &gt;50%
     </div>`;
 
   // Chart (cobros vs resultado neto)
   const ctx = document.getElementById('budget-chart');
   if(!ctx) return;
-  const scen = BUDGET_SCENARIOS[_budgetScen] || BUDGET_SCENARIOS.base;
   const barColor = _budgetScen==='conservador'?'#f59e0b':_budgetScen==='optimista'?'#22c55e':'#3b82f6';
   if(_budgetChart){ _budgetChart.destroy(); _budgetChart=null; }
   _budgetChart = new Chart(ctx, {

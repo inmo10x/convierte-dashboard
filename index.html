@@ -421,9 +421,9 @@ function pm(s){
 function pd(s){
   if(!s) return null;
   const str=String(s).trim();
-  let m=str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  let m=str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
   if(m) return new Date(+m[3],+m[2]-1,+m[1]);
-  m=str.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})$/);
+  m=str.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})/); // handles ISO with or without time
   if(m) return new Date(+m[1],+m[2]-1,+m[3]);
   const n=parseFloat(str);
   if(!isNaN(n)&&n>40000) return new Date((n-25569)*86400*1000);
@@ -584,7 +584,10 @@ function ingest(data,src,fname,type){
   const newt=[];
   for(const r of rows){
     const date=pd(get(r,'fecha','date','f.'));
-    const desc=String(get(r,'descripcion','detalle','glosa','descripci','concept')||'').trim();
+    // Global66: tipo de transacción + nombre tercero; Santander: descripción; otros: detalle/glosa
+    const descA=String(get(r,'descripcion','detalle','glosa','descripci','concept','tipo','comentario')||'').trim();
+    const descB=String(get(r,'nombre','comercio','tercero')||'').trim();
+    const desc=[descA,descB].filter(Boolean).join(' — ');
     const cargo=pm(get(r,'cargo','debito','debit','egreso'));
     const abono=pm(get(r,'abono','credito','credit','ingreso'));
     // Fallback: columna MONTO firmada (Santander: positivo=abono, negativo=cargo)

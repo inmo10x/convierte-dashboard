@@ -561,12 +561,25 @@ function ingest(data,src,fname,type){
   let rows;
   if(type==='xlsx'){
     const wb=XLSX.read(data,{type:'array'});
-    rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    // Obtener filas crudas para detectar el encabezado real (bancos añaden metadata arriba)
+    const rawArr=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+    let hdrRow=0;
+    for(let i=0;i<Math.min(rawArr.length,25);i++){
+      const norm=rawArr[i].map(c=>String(c||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''));
+      if(norm.some(c=>c==='fecha'||c.includes('fecha'))&&
+         norm.some(c=>c==='monto'||c.includes('cargo')||c.includes('abono')||c.includes('debito'))){
+        hdrRow=i; break;
+      }
+    }
+    const hdrs=rawArr[hdrRow];
+    rows=rawArr.slice(hdrRow+1)
+      .filter(r=>r.some(c=>c!==''&&c!==null&&c!==undefined))
+      .map(r=>{ const o={}; hdrs.forEach((h,i)=>{if(h!=null&&h!=='')o[String(h)]=r[i]??'';}); return o; });
   } else {
     const sep=String(data).includes(';')?';':',';
     rows=Papa.parse(data,{delimiter:sep,header:true,skipEmptyLines:true}).data;
   }
-  const g=k=>Object.keys(rows[0]||{}).find(x=>x.toLowerCase().includes(k.toLowerCase()));
   const get=(r,...ns)=>{ for(const n of ns){ const k=Object.keys(r).find(x=>x.toLowerCase().includes(n.toLowerCase())); if(k&&r[k]!=='') return r[k]; } return ''; };
   const newt=[];
   for(const r of rows){
@@ -574,11 +587,16 @@ function ingest(data,src,fname,type){
     const desc=String(get(r,'descripcion','detalle','glosa','descripci','concept')||'').trim();
     const cargo=pm(get(r,'cargo','debito','debit','egreso'));
     const abono=pm(get(r,'abono','credito','credit','ingreso'));
-    const rawRut=String(get(r,'rut','identificador','id')||'').replace(/[.\-kK]/g,'').replace(/\D/g,'');
-    // Santander usa dos formatos: "16.608.090-8" → "16608090", o "0166080908" (0+RUT+dv)
+    // Fallback: columna MONTO firmada (Santander: positivo=abono, negativo=cargo)
+    let monto;
+    if(cargo||abono){ monto=abono>0?abono:-cargo; }
+    else { monto=pm(get(r,'monto')); }
+    if(!date||isNaN(date)||!monto) continue;
+    // RUT: desde columna dedicada O embebido en descripción (Santander: "0166080908 Transf a …")
+    const rawRutCol=String(get(r,'rut','identificador','id')||'').replace(/[.\-kK]/g,'').replace(/\D/g,'');
+    const rawRutDesc=(desc.match(/^(\d{8,10})\s/)||[])[1]||'';
+    const rawRut=rawRutCol||rawRutDesc;
     const rut=rawRut.length>=10&&rawRut[0]==='0'?rawRut.slice(1,9):rawRut.slice(0,8);
-    if(!date||isNaN(date)||(!cargo&&!abono)) continue;
-    const monto=abono>0?abono:-cargo;
     const cat=categorize(desc,rut,monto);
     newt.push({date,desc,monto,rut,src,fname,...cat});
   }

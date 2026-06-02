@@ -560,22 +560,27 @@ function handleCartola(file,src){
 function ingest(data,src,fname,type){
   let rows;
   if(type==='xlsx'){
-    const wb=XLSX.read(data,{type:'array'});
+    // Asegurar Uint8Array (XLSX.js lo requiere; ArrayBuffer directo puede fallar)
+    const buf = data instanceof ArrayBuffer ? new Uint8Array(data) : data;
+    const wb=XLSX.read(buf,{type:'array'});
     const ws=wb.Sheets[wb.SheetNames[0]];
     // Obtener filas crudas para detectar el encabezado real (bancos añaden metadata arriba)
     const rawArr=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+    console.log('[ingest] rawArr rows:', rawArr.length, 'fname:', fname);
     let hdrRow=0;
     for(let i=0;i<Math.min(rawArr.length,25);i++){
       const norm=rawArr[i].map(c=>String(c||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''));
-      if(norm.some(c=>c==='fecha'||c.includes('fecha'))&&
-         norm.some(c=>c==='monto'||c.includes('cargo')||c.includes('abono')||c.includes('debito'))){
-        hdrRow=i; break;
-      }
+      const hasFecha=norm.some(c=>c==='fecha'||c.includes('fecha'));
+      const hasMonto=norm.some(c=>c==='monto'||c.includes('cargo')||c.includes('abono')||c.includes('debito'));
+      console.log(`[ingest] row ${i}: hasFecha=${hasFecha} hasMonto=${hasMonto}`, norm.slice(0,5));
+      if(hasFecha&&hasMonto){ hdrRow=i; break; }
     }
+    console.log('[ingest] hdrRow=', hdrRow, 'headers:', rawArr[hdrRow]?.slice(0,6));
     const hdrs=rawArr[hdrRow];
     rows=rawArr.slice(hdrRow+1)
       .filter(r=>r.some(c=>c!==''&&c!==null&&c!==undefined))
       .map(r=>{ const o={}; hdrs.forEach((h,i)=>{if(h!=null&&h!=='')o[String(h)]=r[i]??'';}); return o; });
+    console.log('[ingest] data rows after header:', rows.length);
   } else {
     const sep=String(data).includes(';')?';':',';
     rows=Papa.parse(data,{delimiter:sep,header:true,skipEmptyLines:true}).data;
@@ -603,6 +608,8 @@ function ingest(data,src,fname,type){
     const cat=categorize(desc,rut,monto);
     newt.push({date,desc,monto,rut,src,fname,...cat});
   }
+  console.log('[ingest] newt accepted:', newt.length, '| rows total:', rows.length);
+  if(rows.length>0&&newt.length===0) console.warn('[ingest] TODAS DESCARTADAS — primer row:', rows[0], '| date:', pd(Object.values(rows[0]||{})[1]), '| cargo:', rows[0]);
   const ex=new Set(txns.map(t=>`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`));
   const added=newt.filter(t=>{ const k=`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`; if(ex.has(k)) return false; ex.add(k); return true; });
   txns=[...txns,...added].sort((a,b)=>a.date-b.date);

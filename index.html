@@ -579,8 +579,8 @@ function ingest(data,src,fname,type){
     let hdrRow=0;
     for(let i=0;i<Math.min(rawArr.length,25);i++){
       const norm=rawArr[i].map(c=>String(c||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''));
-      if(norm.some(c=>c==='fecha'||c.includes('fecha'))&&
-         norm.some(c=>c==='monto'||c.includes('cargo')||c.includes('abono')||c.includes('debito'))){
+      if(norm.some(c=>c.includes('fecha'))&&
+         norm.some(c=>c.includes('monto')||c.includes('cargo')||c.includes('abono')||c.includes('debit'))){
         hdrRow=i; break;
       }
     }

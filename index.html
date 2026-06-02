@@ -571,16 +571,25 @@ function handleDrop(ev,src){
 
 function handlePlatform(file,src){
   if(!file) return;
-  const inputId = src==='whop'?'fi-whop':'fi-mp';
-  const el = document.getElementById(inputId);
-  if(el) el.value='';
+  const inputId=src==='whop'?'fi-whop':'fi-mp';
+  const el=document.getElementById(inputId); if(el) el.value='';
+  const ext=file.name.split('.').pop().toLowerCase();
+  const isBin=!['csv','txt'].includes(ext);
   const r=new FileReader();
   r.onerror=()=>alert2(`Error leyendo archivo: ${file.name}`,'err');
-  r.onload=e=>{ try{
-    if(src==='whop') ingestWhop(e.target.result, file.name);
-    else            ingestMP(e.target.result, file.name);
-  }catch(err){ alert2('Error: '+err.message,'err'); }};
-  r.readAsText(file);
+  if(isBin){
+    r.onload=e=>{try{
+      if(src==='whop') ingestWhop(e.target.result,file.name);
+      else             ingestMP(e.target.result,file.name,'xlsx');
+    }catch(err){alert2('Error: '+err.message,'err');}};
+    r.readAsArrayBuffer(file);
+  } else {
+    r.onload=e=>{try{
+      if(src==='whop') ingestWhop(e.target.result,file.name);
+      else             ingestMP(e.target.result,file.name,'csv');
+    }catch(err){alert2('Error: '+err.message,'err');}};
+    r.readAsText(file);
+  }
 }
 function handleCartola(file,src){
   if(!file) return;
@@ -712,10 +721,63 @@ function ingestWhop(data, fname){
   _savePlatform(newt,'whop','Whop');
 }
 
-function ingestMP(data, fname){
-  // Parser de Mercado Pago — se construye una vez que tengamos el formato del extracto
-  alert2('⚠ Sube el extracto de Mercado Pago para analizar su formato', 'warn');
-  // TODO: implementar cuando se confirme el formato del CSV/XLSX de MP Chile
+function ingestMP(data, fname, format='csv'){
+  const src='mp';
+  let rows;
+  if(format==='xlsx'){
+    const buf=data instanceof ArrayBuffer?new Uint8Array(data):data;
+    const wb=XLSX.read(buf,{type:'array'});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+    // Encontrar fila de cabecera (contiene TRANSACTION_TYPE)
+    let hdr=0;
+    for(let i=0;i<Math.min(raw.length,5);i++){
+      if(raw[i].some(c=>String(c).includes('TRANSACTION_TYPE'))){hdr=i;break;}
+    }
+    const hdrs=raw[hdr];
+    rows=raw.slice(hdr+1).filter(r=>r.some(c=>c!==''&&c!=null))
+      .map(r=>{const o={};hdrs.forEach((h,i)=>{if(h)o[String(h)]=r[i]??'';});return o;});
+  } else {
+    rows=Papa.parse(data,{delimiter:';',header:true,skipEmptyLines:true}).data;
+  }
+
+  const newt=[];
+  for(const row of rows){
+    const type=(row.TRANSACTION_TYPE||'').trim();
+    if(type==='PAYOUTS') continue; // transferencia al banco → ya aparece en Santander
+
+    const date=pd(row.TRANSACTION_DATE||row.SETTLEMENT_DATE);
+    if(!date||isNaN(date)) continue;
+
+    const net=pm(row.SETTLEMENT_NET_AMOUNT||row.REAL_AMOUNT);
+    if(!net) continue;
+
+    const payType=(row.PAYMENT_METHOD_TYPE||'').trim();
+    const subUnit=(row.SUB_UNIT||'').trim();
+    const fee=Math.abs(pm(row.FEE_AMOUNT||0));
+
+    let cat,sub,desc;
+    if(net>0){
+      // Cobro de cliente recibido
+      cat='ingreso'; sub='mercadopago';
+      const method=payType==='bank_transfer'?'TEF':
+                   payType==='debit_card'?'Débito':
+                   payType==='credit_card'?'Crédito':payType||'Pago';
+      desc=`MP: ${method}${subUnit?' — '+subUnit:''}`;
+    } else {
+      // Cargo desde saldo MP (comisiones, cargos, compras con saldo)
+      cat='overhead'; sub='financiero';
+      desc=payType==='available_money'?'MP: cargo saldo disponible':'MP: cargo balance';
+    }
+    newt.push({date,desc,monto:net,rut:'',src,fname,cat,sub,name:desc});
+
+    // Registrar comisión MP como gasto separado (si existe y el cobro fue positivo)
+    if(net>0&&fee>0){
+      newt.push({date,desc:'MP: comisión plataforma',monto:-fee,rut:'',src,fname,
+                 cat:'overhead',sub:'financiero',name:'MP: comisión plataforma'});
+    }
+  }
+  _savePlatform(newt,'mp','Mercado Pago');
 }
 
 function categorize(desc,rut,monto){

@@ -552,10 +552,20 @@ function setSyncState(state,text){
 function handleDrop(ev,src){ ev.preventDefault(); ev.currentTarget.classList.remove('drag'); handleCartola(ev.dataTransfer.files[0],src); }
 function handleCartola(file,src){
   if(!file) return;
+  // Resetear el input para que onchange dispare aunque se seleccione el mismo archivo
+  const inputId = src==='santander' ? 'fi-san' : 'fi-g66';
+  const inputEl = document.getElementById(inputId);
+  if(inputEl) inputEl.value='';
   const ext=file.name.split('.').pop().toLowerCase();
   const r=new FileReader();
-  if(['csv','txt'].includes(ext)){ r.onload=e=>ingest(e.target.result,src,file.name,'csv'); r.readAsText(file); }
-  else { r.onload=e=>ingest(e.target.result,src,file.name,'xlsx'); r.readAsArrayBuffer(file); }
+  r.onerror=()=>alert2(`Error leyendo archivo: ${file.name}`,'err');
+  if(['csv','txt'].includes(ext)){
+    r.onload=e=>{ try{ ingest(e.target.result,src,file.name,'csv'); }catch(err){ alert2('Error CSV: '+err.message,'err'); } };
+    r.readAsText(file);
+  } else {
+    r.onload=e=>{ try{ ingest(e.target.result,src,file.name,'xlsx'); }catch(err){ alert2('Error XLSX: '+err.message,'err'); } };
+    r.readAsArrayBuffer(file);
+  }
 }
 function ingest(data,src,fname,type){
   let rows;

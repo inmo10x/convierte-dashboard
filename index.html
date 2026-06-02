@@ -53,7 +53,7 @@ input[type=file]{display:none;}
 .alert-info{background:#0f1a2a;color:var(--blue);border:1px solid #1a3050;}
 
 /* Sources strip */
-.sources{display:grid;grid-template-columns:repeat(5,1fr) 160px;gap:10px;margin-bottom:20px;}
+.sources{display:grid;grid-template-columns:repeat(7,1fr) 160px;gap:10px;margin-bottom:20px;}
 .src-card{background:var(--card);border:1.5px dashed var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:border-color .2s;}
 .src-card:hover,.src-card.drag{border-color:var(--accent);}
 .src-card.live{border-style:solid;border-color:#1a3a1a;background:#0f1a10;}
@@ -145,7 +145,7 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
   .main{padding:10px 12px;}
   header{flex-wrap:wrap;gap:8px;padding:10px 14px;}
   .hright{gap:5px;flex-wrap:wrap;}
-  .sources{grid-template-columns:repeat(3,1fr);}
+  .sources{grid-template-columns:repeat(4,1fr);}
   .kpi-row.r5,.kpi-row.r4{grid-template-columns:repeat(2,1fr);}
   .two,.charts3,.charts2,.three{grid-template-columns:1fr;}
   #budget-tbl{overflow-x:auto;}
@@ -167,11 +167,15 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
     <button class="btn btn-g btn-sm" onclick="clearCartolas()">Limpiar cartolas</button>
     <button class="btn btn-p btn-sm" onclick="document.getElementById('fi-san').click()">↑ Santander</button>
     <button class="btn btn-p btn-sm" onclick="document.getElementById('fi-g66').click()">↑ Global66</button>
+    <button class="btn btn-p btn-sm" onclick="document.getElementById('fi-whop').click()">↑ Whop</button>
+    <button class="btn btn-p btn-sm" onclick="document.getElementById('fi-mp').click()">↑ MercadoPago</button>
   </div>
 </header>
 
-<input type="file" id="fi-san" accept=".csv,.xlsx,.xls,.txt" onchange="handleCartola(this.files[0],'santander')">
-<input type="file" id="fi-g66" accept=".csv,.xlsx,.xls,.txt" onchange="handleCartola(this.files[0],'g66')">
+<input type="file" id="fi-san"  accept=".csv,.xlsx,.xls,.txt" onchange="handleCartola(this.files[0],'santander')">
+<input type="file" id="fi-g66"  accept=".csv,.xlsx,.xls,.txt" onchange="handleCartola(this.files[0],'g66')">
+<input type="file" id="fi-whop" accept=".csv,.txt"            onchange="handlePlatform(this.files[0],'whop')">
+<input type="file" id="fi-mp"   accept=".csv,.xlsx,.xls,.txt" onchange="handlePlatform(this.files[0],'mp')">
 
 <div class="main">
 <div id="alert-bar"></div>
@@ -197,6 +201,14 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
   <div class="src-card" id="sc-g66" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'g66')" onclick="document.getElementById('fi-g66').click()">
     <div class="src-icon">💱</div>
     <div><div class="src-name">Cartola Global66</div><div class="src-status" id="ss-g66">Haz clic para subir</div></div>
+  </div>
+  <div class="src-card" id="sc-whop" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'whop')" onclick="document.getElementById('fi-whop').click()">
+    <div class="src-icon">🛍</div>
+    <div><div class="src-name">Whop</div><div class="src-status" id="ss-whop">Haz clic para subir</div></div>
+  </div>
+  <div class="src-card" id="sc-mp" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'mp')" onclick="document.getElementById('fi-mp').click()">
+    <div class="src-icon">💳</div>
+    <div><div class="src-name">Mercado Pago</div><div class="src-status" id="ss-mp">Haz clic para subir</div></div>
   </div>
   <div class="src-card" style="cursor:default">
     <div class="src-icon">⚙️</div>
@@ -337,6 +349,7 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
       <select id="f-src" onchange="renderTxns()">
         <option value="">Todas las fuentes</option>
         <option value="santander">Santander</option><option value="g66">Global66</option>
+        <option value="whop">Whop</option><option value="mp">Mercado Pago</option>
       </select>
       <span id="txn-n" style="margin-left:auto;font-size:10px;color:var(--muted2)"></span>
     </div>
@@ -383,7 +396,8 @@ const KW_MAP = [
   {kw:['INTERESES ABONADOS','INTERESES PAGADOS'],                             cat:'ingreso',  sub:'intereses'            },
   // ──────────────────────────────────────────────────────────────────────────
   {kw:['PREVIRED','AFP ','ISAPRE','FONASA','CCAF','COMPIN'],               cat:'team',     sub:'previred'   },
-  {kw:['GLOBAL66','JOSNA','PATRICIA PAUL','JUAN S','MINERVA','CADENA'],    cat:'team',     sub:'colab_usd'  },
+  {kw:['GLOBAL66','JOSNA','PATRICIA PAUL','JUAN S','MINERVA','CADENA','ELBER','ALEXANDER G'],cat:'team',sub:'colab_usd'},
+  {kw:['WHOP*'],                                                              cat:'overhead', sub:'herramienta'},  // compra en Whop (suscripción/curso)
   {kw:['FACEBK','FACEBOOK','META ADS','GOOGLE','TIKTOK ADS','INSTAGRAM ADS'], cat:'pauta', sub:'digital'    },
   {kw:['HIGHLEVEL','HIGH LEVEL','APPLEVEL','APP LEVEL'],                    cat:'overhead', sub:'herramienta'},
   {kw:['SKOOL','WASABIL','KUTT','CLICKUP','CLAUDE AI','GAMMA','NOTION'],    cat:'overhead', sub:'herramienta'},
@@ -549,7 +563,25 @@ function setSyncState(state,text){
 // ═══════════════════════════════════════════════
 // CARTOLA UPLOAD
 // ═══════════════════════════════════════════════
-function handleDrop(ev,src){ ev.preventDefault(); ev.currentTarget.classList.remove('drag'); handleCartola(ev.dataTransfer.files[0],src); }
+function handleDrop(ev,src){
+  ev.preventDefault(); ev.currentTarget.classList.remove('drag');
+  if(src==='whop'||src==='mp') handlePlatform(ev.dataTransfer.files[0],src);
+  else handleCartola(ev.dataTransfer.files[0],src);
+}
+
+function handlePlatform(file,src){
+  if(!file) return;
+  const inputId = src==='whop'?'fi-whop':'fi-mp';
+  const el = document.getElementById(inputId);
+  if(el) el.value='';
+  const r=new FileReader();
+  r.onerror=()=>alert2(`Error leyendo archivo: ${file.name}`,'err');
+  r.onload=e=>{ try{
+    if(src==='whop') ingestWhop(e.target.result, file.name);
+    else            ingestMP(e.target.result, file.name);
+  }catch(err){ alert2('Error: '+err.message,'err'); }};
+  r.readAsText(file);
+}
 function handleCartola(file,src){
   if(!file) return;
   // Resetear el input para que onchange dispare aunque se seleccione el mismo archivo
@@ -606,6 +638,8 @@ function ingest(data,src,fname,type){
     let monto;
     if(cargo||abono){ monto=abono>0?abono:-cargo; }
     else { monto=pm(get(r,'monto')); }
+    // G66 exporta en USD — convertir a CLP para P&L consistente
+    if(src==='g66') monto=Math.round(monto*rate());
     if(!date||isNaN(date)||!monto) continue;
     // RUT: desde columna dedicada O embebido en descripción (Santander: "0166080908 Transf a …")
     const rawRutCol=String(get(r,'rut','identificador','id')||'').replace(/[.\-kK]/g,'').replace(/\D/g,'');
@@ -625,6 +659,63 @@ function ingest(data,src,fname,type){
   alert2(`${added.length} movimientos agregados de ${label}`, 'ok');
   updateTxnFilter();
   renderAll();
+}
+
+function _savePlatform(newt, src, label){
+  const ex=new Set(txns.map(t=>`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`));
+  const added=newt.filter(t=>{ const k=`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`; if(ex.has(k)) return false; ex.add(k); return true; });
+  txns=[...txns,...added].sort((a,b)=>a.date-b.date);
+  saveTxns();
+  const sc=document.getElementById(`sc-${src}`);
+  if(sc) sc.classList.add('loaded');
+  const ss=document.getElementById(`ss-${src}`);
+  if(ss) ss.textContent=`${txns.filter(t=>t.src===src).length} movimientos`;
+  alert2(`${added.length} movimientos agregados de ${label}`, added.length>0?'ok':'warn');
+  updateTxnFilter(); renderAll();
+}
+
+function ingestWhop(data, fname){
+  const r=rate();
+  const rows=Papa.parse(data,{header:true,skipEmptyLines:true}).data;
+  const SKIP=new Set(['withdrawal','withdrawal_reversal','withdrawal_fee_reversal',
+                      'balance_reservation','balance_reservation_reversal']);
+  const newt=[];
+  for(const row of rows){
+    if(row.Status!=='finalized') continue;
+    const type=row['Credit type']||'';
+    if(SKIP.has(type)) continue;
+    const currency=(row.Currency||'usd').toLowerCase();
+    if(currency!=='usd') continue; // COP/otras divisas: omitir por ahora
+    const date=pd(row['Created at']||row['Finalized at']);
+    if(!date||isNaN(date)) continue;
+    const netUSD=pm(row['Net amount']);
+    if(!netUSD) continue;
+    const monto=Math.round(netUSD*r);
+    const product=(row['Product name']||'').trim();
+    const customer=(row['Customer name']||row['Customer email']||'').trim();
+    let cat,sub,desc;
+    if(type==='payment_payout'){
+      cat='ingreso'; sub='whop';
+      desc=`Whop: ${product}${customer?' — '+customer.split('@')[0]:''}`.slice(0,70);
+    } else if(type==='payment_refund'){
+      cat='ingreso'; sub='whop';
+      desc=`Whop refund: ${product}`.slice(0,60);
+    } else if(type==='withdrawal_fee'){
+      cat='overhead'; sub='financiero'; desc='Whop — comisión retiro';
+    } else if(type==='platform_balance_payment'){
+      cat='overhead'; sub='herramienta'; desc=`Whop: ${product}`.slice(0,60);
+    } else {
+      cat='other'; sub='whop'; desc=type;
+    }
+    newt.push({date,desc,monto,rut:'',src:'whop',fname,cat,sub,name:desc});
+  }
+  _savePlatform(newt,'whop','Whop');
+}
+
+function ingestMP(data, fname){
+  // Parser de Mercado Pago — se construye una vez que tengamos el formato del extracto
+  alert2('⚠ Sube el extracto de Mercado Pago para analizar su formato', 'warn');
+  // TODO: implementar cuando se confirme el formato del CSV/XLSX de MP Chile
 }
 
 function categorize(desc,rut,monto){

@@ -616,10 +616,6 @@ function ingest(data,src,fname,type){
     const cat=categorize(desc,rut,monto);
     newt.push({date,desc,monto,rut,src,fname,...cat});
   }
-  if(rows.length>0&&newt.length===0){
-    const r0=rows[0]; const keys=Object.keys(r0).slice(0,4);
-    alert2(`⚠ DEBUG: ${rows.length} filas detectadas pero 0 aceptadas. Primer row: ${keys.map(k=>k+'='+JSON.stringify(r0[k])).join(', ')}`, 'warn');
-  }
   const ex=new Set(txns.map(t=>`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`));
   const added=newt.filter(t=>{ const k=`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`; if(ex.has(k)) return false; ex.add(k); return true; });
   txns=[...txns,...added].sort((a,b)=>a.date-b.date);
@@ -627,7 +623,16 @@ function ingest(data,src,fname,type){
   const label=src==='santander'?'Santander':'Global66';
   document.getElementById(`sc-${src}`).classList.add('loaded');
   document.getElementById(`ss-${src}`).textContent=`${txns.filter(t=>t.src===src).length} movimientos`;
-  alert2(`${added.length} movimientos agregados de ${label}`, 'ok');
+  // DEBUG: mostrar diagnóstico completo en pantalla
+  if(added.length===0){
+    const r0=rows[0]||{};
+    const firstDate=pd(Object.values(r0)[1]);
+    const firstCargo=pm(Object.values(r0)[2]);
+    const firstAbono=pm(Object.values(r0)[3]);
+    alert2(`⚠ DIAGNÓSTICO: rawRows=${rows.length} | parseados=${newt.length} | dedup=${added.length} | fecha0=${firstDate?.toISOString?.()?.slice(0,10)||'null'} | cargo0=${firstCargo} | abono0=${firstAbono} | keys=${Object.keys(r0).slice(0,3).join('/')}`, 'warn');
+  } else {
+    alert2(`✓ ${added.length} movimientos agregados de ${label}`, 'ok');
+  }
   updateTxnFilter();
   renderAll();
 }

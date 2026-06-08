@@ -53,7 +53,7 @@ input[type=file]{display:none;}
 .alert-info{background:#0f1a2a;color:var(--blue);border:1px solid #1a3050;}
 
 /* Sources strip */
-.sources{display:grid;grid-template-columns:repeat(7,1fr) 160px;gap:10px;margin-bottom:20px;}
+.sources{display:grid;grid-template-columns:repeat(8,1fr) 160px;gap:10px;margin-bottom:20px;}
 .src-card{background:var(--card);border:1.5px dashed var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:border-color .2s;}
 .src-card:hover,.src-card.drag{border-color:var(--accent);}
 .src-card.live{border-style:solid;border-color:#1a3a1a;background:#0f1a10;}
@@ -210,6 +210,18 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
     <div class="src-icon">💳</div>
     <div><div class="src-name">Mercado Pago</div><div class="src-status" id="ss-mp">Haz clic para subir</div></div>
   </div>
+  <div class="src-card" id="sc-wasabil" style="min-width:0">
+    <div class="src-icon" style="flex-shrink:0">🧾</div>
+    <div style="flex:1;min-width:0">
+      <div class="src-name" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">Wasabil
+        <button class="btn btn-p btn-sm" onclick="loadWasabilDocs()" style="padding:2px 7px;font-size:10px">↻</button>
+      </div>
+      <input type="password" id="wasabil-key-input" placeholder="API key..."
+        style="width:100%;background:var(--card2);border:1px solid var(--border);color:var(--text);padding:3px 7px;border-radius:5px;font-size:11px;margin-top:4px;"
+        oninput="saveWasabilKey(this.value)">
+      <div class="src-status" id="ss-wasabil" style="margin-top:3px">Ingresa API key</div>
+    </div>
+  </div>
   <div class="src-card" style="cursor:default">
     <div class="src-icon">⚙️</div>
     <div>
@@ -334,6 +346,12 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
   </div>
 </div>
 
+<!-- Wasabil Facturación -->
+<div class="sec" id="s-wasabil">
+  <div class="sec-label">Facturación Wasabil — Devengado vs. Cobrado CRM</div>
+  <div id="s-wasabil-body"><div class="no-data">Configura tu Wasabil API key (🧾) y haz clic en ↻ para cargar</div></div>
+</div>
+
 <!-- Movimientos -->
 <div class="sec">
   <div class="sec-label">Movimientos de Cartola</div>
@@ -420,6 +438,7 @@ const KW_MAP = [
 // STATE
 // ═══════════════════════════════════════════════
 let cobros=[], ventas=[], cuotas=[], txns=[];
+let wasabilDocs = {sales:[], expenses:[]};
 let activeMonth=null;
 let _charts={};
 
@@ -836,7 +855,7 @@ function plData(m){
 // ═══════════════════════════════════════════════
 // RENDER ALL
 // ═══════════════════════════════════════════════
-function renderAll(){ renderTabs(); renderKPIs(); renderCharts(); renderPL(); renderCompModel(); renderBudget(); renderCloserTbl(); renderForecast(); renderAR(); renderTxns(); }
+function renderAll(){ renderTabs(); renderKPIs(); renderCharts(); renderPL(); renderCompModel(); renderBudget(); renderCloserTbl(); renderForecast(); renderAR(); renderWasabilSection(); renderTxns(); }
 
 function renderTabs(){
   const ms=allMonths();
@@ -1092,6 +1111,169 @@ function clearCartolas(){
   txns=[];localStorage.removeItem('cv_txns');
   ['san','g66'].forEach(s=>{ document.getElementById(`sc-${s}`).classList.remove('loaded'); document.getElementById(`ss-${s}`).textContent='Haz clic para subir'; });
   renderAll();
+}
+
+// ═══════════════════════════════════════════════
+// WASABIL — FACTURACIÓN SII
+// ═══════════════════════════════════════════════
+function saveWasabilKey(v){ localStorage.setItem('wasabil_key', v); }
+function getWasabilKey(){ return localStorage.getItem('wasabil_key')||''; }
+
+async function fetchWasabilPage(trxType, page, apiKey, from, to){
+  const params = new URLSearchParams({
+    trx_type: trxType,
+    dateFilterMode: 'range',
+    dateFilterFrom: from,
+    dateFilterTo: to,
+    perPage: 200,
+    page: page
+  });
+  params.append('statusIds[]', 'issued');
+  const res = await fetch(`https://api.wasabil.com/api/documents?${params}`, {
+    headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json' }
+  });
+  if(!res.ok) throw new Error(`Wasabil API ${res.status}`);
+  const j = await res.json();
+  return j.data.list; // { items, total, lastPage }
+}
+
+async function loadWasabilDocs(){
+  const key = getWasabilKey();
+  if(!key){ alert2('Ingresa tu Wasabil API Key primero','warn'); return; }
+  const ss = document.getElementById('ss-wasabil');
+  const sc = document.getElementById('sc-wasabil');
+  ss.textContent = 'Cargando…';
+  const year = new Date().getFullYear();
+  const from = `${year}-01-01`, to = `${year}-12-31`;
+  try {
+    let sales=[], expenses=[];
+    for(let p=1;;p++){
+      const pg = await fetchWasabilPage('sale', p, key, from, to);
+      sales.push(...pg.items);
+      if(p >= pg.lastPage) break;
+    }
+    for(let p=1;;p++){
+      const pg = await fetchWasabilPage('expense', p, key, from, to);
+      expenses.push(...pg.items);
+      if(p >= pg.lastPage) break;
+    }
+    wasabilDocs = { sales, expenses };
+    localStorage.setItem('wasabil_docs_'+year, JSON.stringify(wasabilDocs));
+    sc.classList.add('loaded');
+    ss.textContent = `${sales.length} ventas · ${expenses.length} gastos`;
+    renderWasabilSection();
+    alert2(`Wasabil: ${sales.length} facturas emitidas, ${expenses.length} gastos`, 'ok');
+  } catch(e) {
+    sc.classList.remove('loaded');
+    ss.textContent = 'Error — ver alerta';
+    if(e.message.includes('Failed to fetch')||e.message.includes('NetworkError')||e.message.includes('CORS')){
+      alert2('⚠ CORS: la API de Wasabil bloqueó la llamada desde el browser. Prueba desde red local o contacta soporte@wasabil.com para habilitar CORS para inmo10x.github.io', 'err');
+    } else {
+      alert2('Error Wasabil: '+e.message, 'err');
+    }
+  }
+}
+
+function wasabilByMonth(){
+  const m = {};
+  const init = () => ({ ventas:0, nc:0, gastos:0, meta:0 });
+  for(const doc of wasabilDocs.sales){
+    const key = doc.document_date ? doc.document_date.slice(0,7) : null;
+    if(!key) continue;
+    if(!m[key]) m[key] = init();
+    if(doc.trx_sign >= 0) m[key].ventas += doc.sent_ntotal;
+    else m[key].nc += doc.sent_ntotal;
+  }
+  for(const doc of wasabilDocs.expenses){
+    const key = doc.document_date ? doc.document_date.slice(0,7) : null;
+    if(!key) continue;
+    if(!m[key]) m[key] = init();
+    m[key].gastos += doc.sent_ntotal;
+    if(doc.supplier_id === 626) m[key].meta += doc.sent_ntotal; // Meta Ads
+  }
+  return m;
+}
+
+function renderWasabilSection(){
+  const container = document.getElementById('s-wasabil-body');
+  if(!container) return;
+  const wbm = wasabilByMonth();
+  const months = Object.keys(wbm).sort();
+  if(!months.length){
+    container.innerHTML = '<div class="no-data">Configura tu Wasabil API key (🧾) y haz clic en ↻ para cargar</div>';
+    return;
+  }
+  const r = rate();
+  // YTD aggregates
+  const ytdFact  = months.reduce((s,m_)=>s+wbm[m_].ventas,0);
+  const ytdNC    = months.reduce((s,m_)=>s+wbm[m_].nc,0);
+  const ytdNeto  = ytdFact - ytdNC;
+  const ytdGasto = months.reduce((s,m_)=>s+wbm[m_].gastos,0);
+  const ytdMeta  = months.reduce((s,m_)=>s+wbm[m_].meta,0);
+  // Vendido CRM para los mismos meses (USD→CLP)
+  const ytdVendido = months.reduce((s,m_)=>{
+    return s + ventas.filter(v=>mk(v.date)===m_).reduce((ss,v)=>ss+v.venta*r,0);
+  },0);
+  const ytdPct = ytdVendido>0 ? (ytdNeto/ytdVendido*100) : 0;
+  // KPIs
+  const kpis=`<div class="kpi-row r4" style="margin-bottom:14px">
+    <div class="kpi">
+      <div class="lbl">Facturado YTD (neto NC)</div>
+      <div class="val pos">${fmt(ytdNeto)}</div>
+      <div class="sub">${ytdNC>0?`${fmt(ytdFact)} bruto − NC ${fmt(ytdNC)}`:`${wasabilDocs.sales.length} facturas emitidas`}</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Vendido CRM → CLP</div>
+      <div class="val">${ytdVendido>0?fmt(ytdVendido):'—'}</div>
+      <div class="sub">Hoja Ventas × $${r} USD/CLP</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">% Facturado / Vendido</div>
+      <div class="val ${ytdPct>=70?'pos':ytdPct>=40?'warn':'neg'}">${ytdVendido>0?ytdPct.toFixed(0)+'%':'—'}</div>
+      <div class="sub">Devengado formal vs CRM</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Gastos c/factura YTD</div>
+      <div class="val warn">${fmt(ytdGasto)}</div>
+      <div class="sub">${ytdMeta>0?`incl. Meta Ads ${fmt(ytdMeta)}`:`${wasabilDocs.expenses.length} documentos`}</div>
+    </div>
+  </div>`;
+  // Monthly rows
+  const trows = months.map(m_=>{
+    const wm=wbm[m_];
+    const neto=wm.ventas-wm.nc;
+    const vCLP=ventas.filter(v=>mk(v.date)===m_).reduce((s,v)=>s+v.venta*r,0);
+    const pctM=vCLP>0?(neto/vCLP*100):0;
+    const pc=pctM>=70?'var(--green)':pctM>=40?'var(--yellow)':pctM>0?'var(--red)':'';
+    return `<tr>
+      <td>${ml(m_)}</td>
+      <td>${fmt(wm.ventas)}</td>
+      <td class="rs">${wm.nc>0?fmt(wm.nc):'—'}</td>
+      <td class="pos">${fmt(neto)}</td>
+      <td class="rs">${vCLP>0?fmt(vCLP):'—'}</td>
+      <td ${pc?`style="color:${pc}"`:``}>${vCLP>0?pctM.toFixed(0)+'%':'—'}</td>
+      <td class="warn">${wm.gastos>0?fmt(wm.gastos):'—'}</td>
+      <td class="rs">${wm.meta>0?fmt(wm.meta):'—'}</td>
+    </tr>`;
+  }).join('');
+  const tfoot=`<tr class="rt">
+    <td>Total YTD</td><td>${fmt(ytdFact)}</td>
+    <td>${ytdNC>0?fmt(ytdNC):'—'}</td><td class="pos">${fmt(ytdNeto)}</td>
+    <td>${ytdVendido>0?fmt(ytdVendido):'—'}</td>
+    <td>${ytdVendido>0?ytdPct.toFixed(0)+'%':'—'}</td>
+    <td>${fmt(ytdGasto)}</td><td>${ytdMeta>0?fmt(ytdMeta):'—'}</td>
+  </tr>`;
+  container.innerHTML = kpis + `<div class="tcard"><div class="twrap"><table>
+    <thead><tr>
+      <th class="left">Mes</th><th>Fact. emitidas</th><th>NC</th>
+      <th>Neto ventas</th><th>Vendido CRM</th><th>% Fact.</th>
+      <th>Gastos c/fact</th><th>Meta Ads</th>
+    </tr></thead>
+    <tbody>${trows}${tfoot}</tbody>
+  </table></div>
+  <div style="padding:7px 14px;font-size:10px;color:var(--muted)">
+    * % Facturado = facturado formal Wasabil ÷ vendido CRM (USD×TCC). &lt;100% es normal — clientes individuales pagan via Whop/MP sin factura CLP.
+  </div></div>`;
 }
 
 // ═══════════════════════════════════════════════
@@ -1555,6 +1737,23 @@ async function loadHistorico(){
 // ═══════════════════════════════════════════════
 loadSettings();
 loadTxns();
+
+// Restaurar Wasabil API key y cache
+(function(){
+  const key = localStorage.getItem('wasabil_key')||'';
+  if(key){ document.getElementById('wasabil-key-input').value = key; }
+  const year = new Date().getFullYear();
+  const cached = localStorage.getItem('wasabil_docs_'+year);
+  if(cached){ try{
+    wasabilDocs = JSON.parse(cached);
+    const n = wasabilDocs.sales.length + wasabilDocs.expenses.length;
+    if(n>0){
+      document.getElementById('sc-wasabil').classList.add('loaded');
+      document.getElementById('ss-wasabil').textContent =
+        `${wasabilDocs.sales.length} ventas · ${wasabilDocs.expenses.length} gastos`;
+    }
+  }catch(e){} }
+})();
 
 // Load cached sheets immediately
 ['cobros','ventas','cuotas'].forEach(key=>{

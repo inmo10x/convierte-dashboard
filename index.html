@@ -214,12 +214,9 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
     <div class="src-icon" style="flex-shrink:0">🧾</div>
     <div style="flex:1;min-width:0">
       <div class="src-name" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">Wasabil
-        <button class="btn btn-p btn-sm" onclick="loadWasabilDocs()" style="padding:2px 7px;font-size:10px">↻</button>
+        <button class="btn btn-p btn-sm" onclick="loadWasabilJSON()" style="padding:2px 7px;font-size:10px">↻</button>
       </div>
-      <input type="password" id="wasabil-key-input" placeholder="API key..."
-        style="width:100%;background:var(--card2);border:1px solid var(--border);color:var(--text);padding:3px 7px;border-radius:5px;font-size:11px;margin-top:4px;"
-        oninput="saveWasabilKey(this.value)">
-      <div class="src-status" id="ss-wasabil" style="margin-top:3px">Ingresa API key</div>
+      <div class="src-status" id="ss-wasabil" style="margin-top:3px">Cargando…</div>
     </div>
   </div>
   <div class="src-card" style="cursor:default">
@@ -349,7 +346,7 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
 <!-- Wasabil Facturación -->
 <div class="sec" id="s-wasabil">
   <div class="sec-label">Facturación Wasabil — Devengado vs. Cobrado CRM</div>
-  <div id="s-wasabil-body"><div class="no-data">Configura tu Wasabil API key (🧾) y haz clic en ↻ para cargar</div></div>
+  <div id="s-wasabil-body"><div class="no-data">Cargando datos Wasabil…</div></div>
 </div>
 
 <!-- Movimientos -->
@@ -1174,6 +1171,25 @@ async function loadWasabilDocs(){
   }
 }
 
+async function loadWasabilJSON(){
+  const ss = document.getElementById('ss-wasabil');
+  const sc = document.getElementById('sc-wasabil');
+  if(ss) ss.textContent = 'Cargando…';
+  try {
+    const res = await fetch('wasabil_2026.json');
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    wasabilDocs = { sales: data.sales||[], expenses: data.expenses||[] };
+    const genDate = data.generated ? data.generated.slice(0,10) : '';
+    if(sc) sc.classList.add('loaded');
+    if(ss) ss.textContent = `${wasabilDocs.sales.length} ventas · ${wasabilDocs.expenses.length} gastos${genDate ? ' · '+genDate : ''}`;
+    renderWasabilSection();
+  } catch(e) {
+    if(ss) ss.textContent = 'Sin datos';
+    console.warn('wasabil_2026.json no disponible', e);
+  }
+}
+
 function wasabilByMonth(){
   const m = {};
   const init = () => ({ ventas:0, nc:0, gastos:0, meta:0 });
@@ -1200,7 +1216,7 @@ function renderWasabilSection(){
   const wbm = wasabilByMonth();
   const months = Object.keys(wbm).sort();
   if(!months.length){
-    container.innerHTML = '<div class="no-data">Configura tu Wasabil API key (🧾) y haz clic en ↻ para cargar</div>';
+    container.innerHTML = '<div class="no-data">Cargando datos Wasabil…</div>';
     return;
   }
   const r = rate();
@@ -1738,23 +1754,6 @@ async function loadHistorico(){
 loadSettings();
 loadTxns();
 
-// Restaurar Wasabil API key y cache
-(function(){
-  const key = localStorage.getItem('wasabil_key')||'';
-  if(key){ document.getElementById('wasabil-key-input').value = key; }
-  const year = new Date().getFullYear();
-  const cached = localStorage.getItem('wasabil_docs_'+year);
-  if(cached){ try{
-    wasabilDocs = JSON.parse(cached);
-    const n = wasabilDocs.sales.length + wasabilDocs.expenses.length;
-    if(n>0){
-      document.getElementById('sc-wasabil').classList.add('loaded');
-      document.getElementById('ss-wasabil').textContent =
-        `${wasabilDocs.sales.length} ventas · ${wasabilDocs.expenses.length} gastos`;
-    }
-  }catch(e){} }
-})();
-
 // Load cached sheets immediately
 ['cobros','ventas','cuotas'].forEach(key=>{
   const raw=localStorage.getItem(`cv_raw_${key}`);
@@ -1767,8 +1766,8 @@ loadTxns();
 updateTxnFilter();
 renderAll();
 
-// Pre-cargar histórico y luego sync del Sheet
-loadHistorico().then(() => syncAll());
+// Pre-cargar histórico, luego Wasabil, luego sync del Sheet
+loadHistorico().then(() => loadWasabilJSON()).then(() => syncAll());
 </script>
 </body>
 </html>

@@ -6,7 +6,7 @@
 <title>Convierte SPA — Dashboard Financiero</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- XLSX.js (~900KB) se carga on-demand al subir un archivo Excel — ver loadXLSX() -->
 <style>
 :root {
   --bg:#0f1117; --card:#1a1d27; --card2:#1e2235; --border:#252a42;
@@ -194,19 +194,19 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
     <div class="src-icon">📅</div>
     <div><div class="src-name">Plan de Cuotas</div><div class="src-status" id="ss-cuotas">Conectando…</div></div>
   </div>
-  <div class="src-card" id="sc-san" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'santander')" onclick="document.getElementById('fi-san').click()">
+  <div class="src-card" id="sc-santander" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'santander')" onclick="document.getElementById('fi-san').click()">
     <div class="src-icon">🏦</div>
-    <div><div class="src-name">Cartola Santander</div><div class="src-status" id="ss-san">Haz clic para subir</div></div>
+    <div><div class="src-name">Cartola Santander</div><div class="src-status" id="ss-santander">Haz clic para subir</div></div>
   </div>
-  <div class="src-card" id="sc-g66" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'g66')" onclick="document.getElementById('fi-g66').click()">
+  <div class="src-card" id="sc-g66" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'g66')" onclick="document.getElementById('fi-g66').click()">
     <div class="src-icon">💱</div>
     <div><div class="src-name">Cartola Global66</div><div class="src-status" id="ss-g66">Haz clic para subir</div></div>
   </div>
-  <div class="src-card" id="sc-whop" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'whop')" onclick="document.getElementById('fi-whop').click()">
+  <div class="src-card" id="sc-whop" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'whop')" onclick="document.getElementById('fi-whop').click()">
     <div class="src-icon">🛍</div>
     <div><div class="src-name">Whop</div><div class="src-status" id="ss-whop">Haz clic para subir</div></div>
   </div>
-  <div class="src-card" id="sc-mp" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'mp')" onclick="document.getElementById('fi-mp').click()">
+  <div class="src-card" id="sc-mp" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'mp')" onclick="document.getElementById('fi-mp').click()">
     <div class="src-icon">💳</div>
     <div><div class="src-name">Mercado Pago</div><div class="src-status" id="ss-mp">Haz clic para subir</div></div>
   </div>
@@ -223,7 +223,7 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
     <div class="src-icon">⚙️</div>
     <div>
       <div class="src-name">USD/CLP</div>
-      <input type="number" id="usd-rate" value="950" style="width:72px;background:var(--card2);border:1px solid var(--border);color:var(--text);padding:3px 7px;border-radius:5px;font-size:13px;font-weight:700;margin-top:4px;" onchange="saveSettings();renderAll()">
+      <input type="number" id="usd-rate" value="950" style="width:72px;background:var(--card2);border:1px solid var(--border);color:var(--text);padding:3px 7px;border-radius:5px;font-size:13px;font-weight:700;margin-top:4px;" onchange="saveSettings();recalcUsd();renderAll()">
     </div>
   </div>
 </div>
@@ -366,6 +366,7 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
         <option value="santander">Santander</option><option value="g66">Global66</option>
         <option value="whop">Whop</option><option value="mp">Mercado Pago</option>
       </select>
+      <input type="text" id="f-search" class="finput" placeholder="Buscar descripción, sub, monto…" oninput="renderTxns()" style="flex:1;min-width:150px;max-width:280px">
       <span id="txn-n" style="margin-left:auto;font-size:10px;color:var(--muted2)"></span>
     </div>
     <div id="txn-container"><div class="no-data">Sube una cartola para ver los movimientos</div></div>
@@ -488,6 +489,45 @@ function alert2(msg,type='info'){
   b.style.display='block';
   if(type==='ok') setTimeout(()=>b.style.display='none',5000);
 }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Clave de dedup: fecha completa + descripción + monto original + fuente.
+// El sufijo #n permite N pagos idénticos el mismo día (cartolas solapadas siguen dedupando).
+function dk(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function txnKeys(arr){
+  const c={};
+  return arr.map(t=>{
+    const amt=t.usd?`U${t.montoOrig}`:`C${t.montoOrig??t.monto}`;
+    const b=`${dk(t.date)}|${t.desc}|${amt}|${t.src}`;
+    c[b]=(c[b]||0)+1;
+    return `${b}#${c[b]}`;
+  });
+}
+function mergeTxns(newt){
+  const ex=new Set(txnKeys(txns));
+  const keys=txnKeys(newt);
+  const added=newt.filter((t,i)=>!ex.has(keys[i]));
+  txns=[...txns,...added].sort((a,b)=>a.date-b.date);
+  saveTxns();
+  return added.length;
+}
+// Re-convierte a CLP los movimientos en USD cuando cambia el tipo de cambio
+function recalcUsd(){ const r=rate(); txns.forEach(t=>{ if(t.usd) t.monto=Math.round(t.montoOrig*r); }); }
+
+// XLSX.js pesa ~900KB — solo se carga cuando se sube un Excel
+let _xlsxP=null;
+function loadXLSX(){
+  if(window.XLSX) return Promise.resolve();
+  if(_xlsxP) return _xlsxP;
+  _xlsxP=new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+    s.onload=res;
+    s.onerror=()=>{ _xlsxP=null; rej(new Error('No se pudo cargar XLSX.js — revisa tu conexión')); };
+    document.head.appendChild(s);
+  });
+  return _xlsxP;
+}
 
 // ═══════════════════════════════════════════════
 // GOOGLE SHEETS FETCH
@@ -594,10 +634,10 @@ function handlePlatform(file,src){
   const r=new FileReader();
   r.onerror=()=>alert2(`Error leyendo archivo: ${file.name}`,'err');
   if(isBin){
-    r.onload=e=>{try{
+    r.onload=e=>{loadXLSX().then(()=>{
       if(src==='whop') ingestWhop(e.target.result,file.name);
       else             ingestMP(e.target.result,file.name,'xlsx');
-    }catch(err){alert2('Error: '+err.message,'err');}};
+    }).catch(err=>alert2('Error: '+err.message,'err'));};
     r.readAsArrayBuffer(file);
   } else {
     r.onload=e=>{try{
@@ -620,7 +660,7 @@ function handleCartola(file,src){
     r.onload=e=>{ try{ ingest(e.target.result,src,file.name,'csv'); }catch(err){ alert2('Error CSV: '+err.message,'err'); } };
     r.readAsText(file);
   } else {
-    r.onload=e=>{ try{ ingest(e.target.result,src,file.name,'xlsx'); }catch(err){ alert2('Error XLSX: '+err.message,'err'); } };
+    r.onload=e=>{ loadXLSX().then(()=>ingest(e.target.result,src,file.name,'xlsx')).catch(err=>alert2('Error XLSX: '+err.message,'err')); };
     r.readAsArrayBuffer(file);
   }
 }
@@ -663,8 +703,11 @@ function ingest(data,src,fname,type){
     let monto;
     if(cargo||abono){ monto=abono>0?abono:-cargo; }
     else { monto=pm(get(r,'monto')); }
-    // G66 exporta en USD — convertir a CLP para P&L consistente
-    if(src==='g66') monto=Math.round(monto*rate());
+    // G66 exporta en USD — se guarda el monto original (usd:true) y se convierte a CLP;
+    // recalcUsd() re-convierte si cambia el tipo de cambio
+    const usd = src==='g66';
+    const montoOrig = monto;
+    if(usd) monto=Math.round(monto*rate());
     if(!date||isNaN(date)||!monto) continue;
     // RUT: desde columna dedicada O embebido en descripción (Santander: "0166080908 Transf a …")
     const rawRutCol=String(get(r,'rut','identificador','id')||'').replace(/[.\-kK]/g,'').replace(/\D/g,'');
@@ -672,30 +715,24 @@ function ingest(data,src,fname,type){
     const rawRut=rawRutCol||rawRutDesc;
     const rut=rawRut.length>=10&&rawRut[0]==='0'?rawRut.slice(1,9):rawRut.slice(0,8);
     const cat=categorize(desc,rut,monto);
-    newt.push({date,desc,monto,rut,src,fname,...cat});
+    newt.push({date,desc,monto,montoOrig,usd,rut,src,fname,...cat});
   }
-  const ex=new Set(txns.map(t=>`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`));
-  const added=newt.filter(t=>{ const k=`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`; if(ex.has(k)) return false; ex.add(k); return true; });
-  txns=[...txns,...added].sort((a,b)=>a.date-b.date);
-  saveTxns();
+  const added=mergeTxns(newt);
   const label=src==='santander'?'Santander':'Global66';
   document.getElementById(`sc-${src}`).classList.add('loaded');
   document.getElementById(`ss-${src}`).textContent=`${txns.filter(t=>t.src===src).length} movimientos`;
-  alert2(`${added.length} movimientos agregados de ${label}`, 'ok');
+  alert2(`${added} movimientos agregados de ${label}`, 'ok');
   updateTxnFilter();
   renderAll();
 }
 
 function _savePlatform(newt, src, label){
-  const ex=new Set(txns.map(t=>`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`));
-  const added=newt.filter(t=>{ const k=`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`; if(ex.has(k)) return false; ex.add(k); return true; });
-  txns=[...txns,...added].sort((a,b)=>a.date-b.date);
-  saveTxns();
+  const added=mergeTxns(newt);
   const sc=document.getElementById(`sc-${src}`);
   if(sc) sc.classList.add('loaded');
   const ss=document.getElementById(`ss-${src}`);
   if(ss) ss.textContent=`${txns.filter(t=>t.src===src).length} movimientos`;
-  alert2(`${added.length} movimientos agregados de ${label}`, added.length>0?'ok':'warn');
+  alert2(`${added} movimientos agregados de ${label}`, added>0?'ok':'warn');
   updateTxnFilter(); renderAll();
 }
 
@@ -732,7 +769,7 @@ function ingestWhop(data, fname){
     } else {
       cat='other'; sub='whop'; desc=type;
     }
-    newt.push({date,desc,monto,rut:'',src:'whop',fname,cat,sub,name:desc});
+    newt.push({date,desc,monto,montoOrig:netUSD,usd:true,rut:'',src:'whop',fname,cat,sub,name:desc});
   }
   _savePlatform(newt,'whop','Whop');
 }
@@ -785,11 +822,11 @@ function ingestMP(data, fname, format='csv'){
       cat='overhead'; sub='financiero';
       desc=payType==='available_money'?'MP: cargo saldo disponible':'MP: cargo balance';
     }
-    newt.push({date,desc,monto:net,rut:'',src,fname,cat,sub,name:desc});
+    newt.push({date,desc,monto:net,montoOrig:net,usd:false,rut:'',src,fname,cat,sub,name:desc});
 
     // Registrar comisión MP como gasto separado (si existe y el cobro fue positivo)
     if(net>0&&fee>0){
-      newt.push({date,desc:'MP: comisión plataforma',monto:-fee,rut:'',src,fname,
+      newt.push({date,desc:'MP: comisión plataforma',monto:-fee,montoOrig:-fee,usd:false,rut:'',src,fname,
                  cat:'overhead',sub:'financiero',name:'MP: comisión plataforma'});
     }
   }
@@ -1074,6 +1111,8 @@ function renderTxns(){
   if(mf) t=t.filter(x=>mk(x.date)===mf);
   if(cf) t=t.filter(x=>x.cat===cf);
   if(sf) t=t.filter(x=>x.src===sf);
+  const sq=(document.getElementById('f-search')?.value||'').trim().toLowerCase();
+  if(sq) t=t.filter(x=>(x.desc||'').toLowerCase().includes(sq)||(x.sub||'').toLowerCase().includes(sq)||String(Math.abs(x.monto)).includes(sq));
   document.getElementById('txn-n').textContent=`${t.length} movimientos`;
   if(!t.length){document.getElementById('txn-container').innerHTML='<div class="no-data">Sin movimientos para los filtros seleccionados</div>';return;}
   const cb=c=>{ const m={ingreso:'b-income',team:'b-team',overhead:'b-overhead',pauta:'b-pauta',impuestos:'b-impuestos',other:'b-other'}; const l={ingreso:'Ingreso',team:'Team',overhead:'Overhead',pauta:'Pauta',impuestos:'Impuesto',other:'Otro'}; return `<span class="badge ${m[c]||'b-other'}">${l[c]||c}</span>`; };
@@ -1099,84 +1138,40 @@ function updateTxnFilter(){
 // ═══════════════════════════════════════════════
 // PERSISTENCE
 // ═══════════════════════════════════════════════
-function saveTxns(){ try{localStorage.setItem('cv_txns',JSON.stringify(txns.map(t=>({...t,date:t.date.toISOString()}))));}catch(e){} }
-function loadTxns(){ try{const r=localStorage.getItem('cv_txns');if(r) txns=JSON.parse(r).map(t=>({...t,date:new Date(t.date)}));}catch(e){txns=[];} }
+// El histórico no se persiste en localStorage — se re-merge desde historico.json en cada boot
+function saveTxns(){ try{localStorage.setItem('cv_txns',JSON.stringify(txns.filter(t=>!t.historico).map(t=>({...t,date:t.date.toISOString()}))));}catch(e){} }
+function loadTxns(){
+  try{
+    const raw=localStorage.getItem('cv_txns'); if(!raw) return;
+    const r0=rate();
+    txns=JSON.parse(raw)
+      .filter(t=>!t.historico)
+      .map(t=>{
+        // Migración: entradas antiguas sin montoOrig quedan como CLP fijo
+        const usd=!!t.usd&&t.montoOrig!=null;
+        const montoOrig=t.montoOrig!=null?t.montoOrig:t.monto;
+        return {...t,date:new Date(t.date),usd,montoOrig,monto:usd?Math.round(montoOrig*r0):t.monto};
+      });
+  }catch(e){txns=[];}
+}
 function saveSettings(){ localStorage.setItem('cv_cfg',JSON.stringify({usd:document.getElementById('usd-rate').value})); }
 function loadSettings(){ try{const s=JSON.parse(localStorage.getItem('cv_cfg')||'{}');if(s.usd) document.getElementById('usd-rate').value=s.usd;}catch(e){} }
 function clearCartolas(){
   if(!confirm('¿Limpiar cartolas? Los datos del Sheet se mantienen.')) return;
   txns=[];localStorage.removeItem('cv_txns');
-  ['san','g66'].forEach(s=>{ document.getElementById(`sc-${s}`).classList.remove('loaded'); document.getElementById(`ss-${s}`).textContent='Haz clic para subir'; });
+  ['santander','g66'].forEach(s=>{ document.getElementById(`sc-${s}`).classList.remove('loaded'); document.getElementById(`ss-${s}`).textContent='Haz clic para subir'; });
   renderAll();
 }
 
 // ═══════════════════════════════════════════════
 // WASABIL — FACTURACIÓN SII
 // ═══════════════════════════════════════════════
-function saveWasabilKey(v){ localStorage.setItem('wasabil_key', v); }
-function getWasabilKey(){ return localStorage.getItem('wasabil_key')||''; }
-
-async function fetchWasabilPage(trxType, page, apiKey, from, to){
-  const params = new URLSearchParams({
-    trx_type: trxType,
-    dateFilterMode: 'range',
-    dateFilterFrom: from,
-    dateFilterTo: to,
-    perPage: 200,
-    page: page
-  });
-  params.append('statusIds[]', 'issued');
-  const res = await fetch(`https://api.wasabil.com/api/documents?${params}`, {
-    headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json' }
-  });
-  if(!res.ok) throw new Error(`Wasabil API ${res.status}`);
-  const j = await res.json();
-  return j.data.list; // { items, total, lastPage }
-}
-
-async function loadWasabilDocs(){
-  const key = getWasabilKey();
-  if(!key){ alert2('Ingresa tu Wasabil API Key primero','warn'); return; }
-  const ss = document.getElementById('ss-wasabil');
-  const sc = document.getElementById('sc-wasabil');
-  ss.textContent = 'Cargando…';
-  const year = new Date().getFullYear();
-  const from = `${year}-01-01`, to = `${year}-12-31`;
-  try {
-    let sales=[], expenses=[];
-    for(let p=1;;p++){
-      const pg = await fetchWasabilPage('sale', p, key, from, to);
-      sales.push(...pg.items);
-      if(p >= pg.lastPage) break;
-    }
-    for(let p=1;;p++){
-      const pg = await fetchWasabilPage('expense', p, key, from, to);
-      expenses.push(...pg.items);
-      if(p >= pg.lastPage) break;
-    }
-    wasabilDocs = { sales, expenses };
-    localStorage.setItem('wasabil_docs_'+year, JSON.stringify(wasabilDocs));
-    sc.classList.add('loaded');
-    ss.textContent = `${sales.length} ventas · ${expenses.length} gastos`;
-    renderWasabilSection();
-    alert2(`Wasabil: ${sales.length} facturas emitidas, ${expenses.length} gastos`, 'ok');
-  } catch(e) {
-    sc.classList.remove('loaded');
-    ss.textContent = 'Error — ver alerta';
-    if(e.message.includes('Failed to fetch')||e.message.includes('NetworkError')||e.message.includes('CORS')){
-      alert2('⚠ CORS: la API de Wasabil bloqueó la llamada desde el browser. Prueba desde red local o contacta soporte@wasabil.com para habilitar CORS para inmo10x.github.io', 'err');
-    } else {
-      alert2('Error Wasabil: '+e.message, 'err');
-    }
-  }
-}
-
 async function loadWasabilJSON(){
   const ss = document.getElementById('ss-wasabil');
   const sc = document.getElementById('sc-wasabil');
   if(ss) ss.textContent = 'Cargando…';
   try {
-    const res = await fetch('wasabil_2026.json');
+    const res = await fetch('wasabil_2026.json', {cache:'no-store'});
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     wasabilDocs = { sales: data.sales||[], expenses: data.expenses||[] };
@@ -1721,25 +1716,22 @@ function renderBudget(){
 // HISTÓRICO PRE-CARGADO (Ene–Abr 2026)
 // ═══════════════════════════════════════════════
 async function loadHistorico(){
-  // Solo cargar si no hay datos propios ya guardados
-  if(txns.length > 0) return;
+  // Se re-merge en cada boot (mergeTxns dedupa); no se persiste en localStorage
   try {
-    const res = await fetch('historico.json?v=20260511', {cache:'no-store'});
+    const res = await fetch('historico.json', {cache:'no-store'});
     if(!res.ok) return;
     const raw = await res.json();
     const historico = raw.map(r => {
-      const monto = r.usd ? r.monto * rate() : r.monto;
+      const usd   = !!r.usd;
+      const monto = usd ? Math.round(r.monto * rate()) : r.monto;
       const cat   = categorize(r.desc, r.rut||'', monto);
       // cat_hint from G66 overrides when no RUT match
-      return { ...r, date: new Date(r.date), monto, ...cat, historico: true };
+      return { ...r, date: new Date(r.date), monto, montoOrig: r.monto, usd, ...cat, historico: true };
     });
     // Re-categorize any txns already in localStorage too
     txns = txns.map(t => ({ ...t, ...categorize(t.desc, t.rut||'', t.monto) }));
-    // Merge sin duplicar
-    const ex = new Set(txns.map(t=>`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`));
-    const added = historico.filter(t=>{ const k=`${mk(t.date)}|${t.desc}|${t.monto}|${t.src}`; if(ex.has(k)) return false; ex.add(k); return true; });
-    txns = [...txns, ...added].sort((a,b)=>a.date-b.date);
-    ['san','g66'].forEach(s=>{
+    mergeTxns(historico);
+    ['santander','g66'].forEach(s=>{
       const n=txns.filter(t=>t.src===s&&t.historico).length;
       if(n){ document.getElementById(`sc-${s}`).classList.add('loaded'); document.getElementById(`ss-${s}`).textContent=`${n} mov. históricos (Ene–Abr 2026)`; }
     });
@@ -1761,7 +1753,7 @@ loadTxns();
 });
 
 // Restore cartola status
-['san','g66'].forEach(s=>{ const n=txns.filter(t=>t.src===s).length; if(n){document.getElementById(`sc-${s}`).classList.add('loaded');document.getElementById(`ss-${s}`).textContent=`${n} movimientos`;} });
+['santander','g66'].forEach(s=>{ const n=txns.filter(t=>t.src===s).length; if(n){document.getElementById(`sc-${s}`).classList.add('loaded');document.getElementById(`ss-${s}`).textContent=`${n} movimientos`;} });
 
 updateTxnFilter();
 renderAll();

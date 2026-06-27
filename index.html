@@ -508,7 +508,7 @@ function mergeTxns(newt){
   const keys=txnKeys(newt);
   const added=newt.filter((t,i)=>!ex.has(keys[i]));
   txns=[...txns,...added].sort((a,b)=>a.date-b.date);
-  saveTxns();
+  if(added.length) saveTxns();
   return added.length;
 }
 // Re-convierte a CLP los movimientos en USD cuando cambia el tipo de cambio
@@ -1059,7 +1059,7 @@ function renderCloserTbl(){
     const tc=v.venta?v.cobrado/v.venta*100:0;
     const ticket=v.n?v.venta/v.n:0;
     const bar=`<div class="pbar-wrap"><div class="pbar ${tc>=80?'green':tc>=60?'':'red'}" style="width:${Math.min(tc,100)}%"></div></div>`;
-    return `<tr><td><strong>${name}</strong></td><td>${fmu(v.venta)}</td><td>${fmu(v.cobrado)}</td><td>${fmu(v.pendiente)}</td><td>${v.n} (${v.renov} ren.)</td><td>${fmu(ticket)}</td><td>${tc.toFixed(0)}%${bar}</td></tr>`;
+    return `<tr><td><strong>${esc(name)}</strong></td><td>${fmu(v.venta)}</td><td>${fmu(v.cobrado)}</td><td>${fmu(v.pendiente)}</td><td>${v.n} (${v.renov} ren.)</td><td>${fmu(ticket)}</td><td>${tc.toFixed(0)}%${bar}</td></tr>`;
   }).join('');
   document.getElementById('closer-tbl').innerHTML=`<div class="twrap"><table>
   <thead><tr><th class="left">Closer</th><th>Comprometido</th><th>Cobrado</th><th>Pendiente</th><th>Cierres</th><th>Ticket prom.</th><th>% Cobro</th></tr></thead>
@@ -1097,7 +1097,7 @@ function renderAR(){
     const overdue=cuotas.filter(c=>c.email===v.email&&!c.pagado&&c.porPagar>0&&c.venc<now);
     const overAmt=overdue.reduce((s,c)=>s+c.porPagar,0);
     const badge=overAmt>0?`<span class="badge b-red">Vencido ${fmu(overAmt)}</span>`:v.status==='Abono'?`<span class="badge b-warn">${v.status}</span>`:`<span class="badge b-ok">${v.status||'—'}</span>`;
-    return `<tr><td>${v.cliente}</td><td class="rs">${v.pais}</td><td>${v.closer}</td><td>${v.plan}</td><td>${fmu(v.venta)}</td><td>${fmu(v.cobrado)}</td><td class="${overAmt>0?'neg':'warn'}">${fmu(v.pendiente)}</td><td>${badge}</td></tr>`;
+    return `<tr><td>${esc(v.cliente)}</td><td class="rs">${esc(v.pais)}</td><td>${esc(v.closer)}</td><td>${esc(v.plan)}</td><td>${fmu(v.venta)}</td><td>${fmu(v.cobrado)}</td><td class="${overAmt>0?'neg':'warn'}">${fmu(v.pendiente)}</td><td>${badge}</td></tr>`;
   }).join('');
   document.getElementById('ar-container').innerHTML=`<div class="twrap"><table>
   <thead><tr><th class="left">Cliente</th><th class="left">País</th><th class="left">Closer</th><th class="left">Plan</th><th>Venta total</th><th>Cobrado</th><th>Pendiente</th><th class="left">Estado</th></tr></thead>
@@ -1112,13 +1112,13 @@ function renderTxns(){
   if(cf) t=t.filter(x=>x.cat===cf);
   if(sf) t=t.filter(x=>x.src===sf);
   const sq=(document.getElementById('f-search')?.value||'').trim().toLowerCase();
-  if(sq) t=t.filter(x=>(x.desc||'').toLowerCase().includes(sq)||(x.sub||'').toLowerCase().includes(sq)||String(Math.abs(x.monto)).includes(sq));
+  if(sq) t=t.filter(x=>(x.desc||'').toLowerCase().includes(sq)||(x.sub||'').toLowerCase().includes(sq)||String(Math.abs(x.monto)).includes(sq)||(x.usd&&x.montoOrig!=null&&String(Math.abs(x.montoOrig)).includes(sq)));
   document.getElementById('txn-n').textContent=`${t.length} movimientos`;
   if(!t.length){document.getElementById('txn-container').innerHTML='<div class="no-data">Sin movimientos para los filtros seleccionados</div>';return;}
   const cb=c=>{ const m={ingreso:'b-income',team:'b-team',overhead:'b-overhead',pauta:'b-pauta',impuestos:'b-impuestos',other:'b-other'}; const l={ingreso:'Ingreso',team:'Team',overhead:'Overhead',pauta:'Pauta',impuestos:'Impuesto',other:'Otro'}; return `<span class="badge ${m[c]||'b-other'}">${l[c]||c}</span>`; };
   const rows=t.slice(-300).reverse().map(x=>{
     const clr=x.monto>0?'pos':'neg';
-    return `<tr><td class="rs">${x.date.toLocaleDateString('es-CL')}</td><td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.desc}</td><td>${cb(x.cat)}</td><td class="rs">${x.sub||''}</td><td><span class="pill">${x.src}</span></td><td class="${clr}">${fmt(x.monto,true)}</td></tr>`;
+    return `<tr><td class="rs">${x.date.toLocaleDateString('es-CL')}</td><td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.desc)}</td><td>${cb(x.cat)}</td><td class="rs">${esc(x.sub||'')}</td><td><span class="pill">${esc(x.src)}</span></td><td class="${clr}">${fmt(x.monto,true)}</td></tr>`;
   }).join('');
   document.getElementById('txn-container').innerHTML=`<div class="twrap"><table>
   <thead><tr><th class="left">Fecha</th><th class="left">Descripción</th><th class="left">Categoría</th><th class="left">Sub</th><th class="left">Fuente</th><th>Monto</th></tr></thead>

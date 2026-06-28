@@ -485,7 +485,7 @@ function pct(n,decs=1){
 }
 function alert2(msg,type='info'){
   const b=document.getElementById('alert-bar');
-  b.innerHTML=`<div class="alert alert-${type}">${msg}</div>`;
+  b.innerHTML=`<div class="alert alert-${type}">${esc(msg)}</div>`;
   b.style.display='block';
   if(type==='ok') setTimeout(()=>b.style.display='none',5000);
 }
@@ -721,7 +721,7 @@ function ingest(data,src,fname,type){
   const label=src==='santander'?'Santander':'Global66';
   document.getElementById(`sc-${src}`).classList.add('loaded');
   document.getElementById(`ss-${src}`).textContent=`${txns.filter(t=>t.src===src).length} movimientos`;
-  alert2(`${added} movimientos agregados de ${label}`, 'ok');
+  alert2(`${added} movimientos agregados de ${label}`, added>0?'ok':'warn');
   updateTxnFilter();
   renderAll();
 }
@@ -822,10 +822,12 @@ function ingestMP(data, fname, format='csv'){
       cat='overhead'; sub='financiero';
       desc=payType==='available_money'?'MP: cargo saldo disponible':'MP: cargo balance';
     }
-    newt.push({date,desc,monto:net,montoOrig:net,usd:false,rut:'',src,fname,cat,sub,name:desc});
+    // SETTLEMENT_NET_AMOUNT ya es neto de comisión — revertir al bruto para mostrar ingreso real
+    const gross=net>0&&fee>0?net+fee:net;
+    newt.push({date,desc,monto:gross,montoOrig:gross,usd:false,rut:'',src,fname,cat,sub,name:desc});
 
-    // Registrar comisión MP como gasto separado (si existe y el cobro fue positivo)
-    if(net>0&&fee>0){
+    // Registrar comisión MP como gasto separado (ingreso bruto - comisión = net real)
+    if(gross>0&&fee>0){
       newt.push({date,desc:'MP: comisión plataforma',monto:-fee,montoOrig:-fee,usd:false,rut:'',src,fname,
                  cat:'overhead',sub:'financiero',name:'MP: comisión plataforma'});
     }
@@ -1096,7 +1098,7 @@ function renderAR(){
     // check if any overdue cuotas for this client
     const overdue=cuotas.filter(c=>c.email===v.email&&!c.pagado&&c.porPagar>0&&c.venc<now);
     const overAmt=overdue.reduce((s,c)=>s+c.porPagar,0);
-    const badge=overAmt>0?`<span class="badge b-red">Vencido ${fmu(overAmt)}</span>`:v.status==='Abono'?`<span class="badge b-warn">${v.status}</span>`:`<span class="badge b-ok">${v.status||'—'}</span>`;
+    const badge=overAmt>0?`<span class="badge b-red">Vencido ${fmu(overAmt)}</span>`:v.status==='Abono'?`<span class="badge b-warn">${esc(v.status)}</span>`:`<span class="badge b-ok">${esc(v.status)||'—'}</span>`;
     return `<tr><td>${esc(v.cliente)}</td><td class="rs">${esc(v.pais)}</td><td>${esc(v.closer)}</td><td>${esc(v.plan)}</td><td>${fmu(v.venta)}</td><td>${fmu(v.cobrado)}</td><td class="${overAmt>0?'neg':'warn'}">${fmu(v.pendiente)}</td><td>${badge}</td></tr>`;
   }).join('');
   document.getElementById('ar-container').innerHTML=`<div class="twrap"><table>
@@ -1132,7 +1134,7 @@ function updateTxnFilter(){
   // AR closer filter
   const ac=document.getElementById('f-ar-closer'), cc=ac.value;
   const cls=[...new Set(ventas.map(v=>v.closer).filter(Boolean))].sort();
-  ac.innerHTML='<option value="">Todos los closers</option>'+cls.map(c=>`<option${c===cc?' selected':''}>${c}</option>`).join('');
+  ac.innerHTML='<option value="">Todos los closers</option>'+cls.map(c=>`<option${c===cc?' selected':''}>${esc(c)}</option>`).join('');
 }
 
 // ═══════════════════════════════════════════════
@@ -1142,7 +1144,14 @@ function updateTxnFilter(){
 function saveTxns(){ try{localStorage.setItem('cv_txns',JSON.stringify(txns.filter(t=>!t.historico).map(t=>({...t,date:t.date.toISOString()}))));}catch(e){} }
 function loadTxns(){
   try{
-    const raw=localStorage.getItem('cv_txns'); if(!raw) return;
+    const raw=localStorage.getItem('cv_txns'); if(!raw){localStorage.setItem('cv_schema_v','2');return;}
+    // Schema v2: claves de dedup cambiaron (montoOrig USD vs CLP) — limpiar datos anteriores
+    if(localStorage.getItem('cv_schema_v')!=='2'){
+      localStorage.removeItem('cv_txns');
+      localStorage.setItem('cv_schema_v','2');
+      window._migrated=true;
+      return;
+    }
     const r0=rate();
     txns=JSON.parse(raw)
       .filter(t=>!t.historico)
@@ -1159,7 +1168,7 @@ function loadSettings(){ try{const s=JSON.parse(localStorage.getItem('cv_cfg')||
 function clearCartolas(){
   if(!confirm('¿Limpiar cartolas? Los datos del Sheet se mantienen.')) return;
   txns=[];localStorage.removeItem('cv_txns');
-  ['santander','g66'].forEach(s=>{ document.getElementById(`sc-${s}`).classList.remove('loaded'); document.getElementById(`ss-${s}`).textContent='Haz clic para subir'; });
+  ['santander','g66','whop','mp'].forEach(s=>{ document.getElementById(`sc-${s}`).classList.remove('loaded'); document.getElementById(`ss-${s}`).textContent='Haz clic para subir'; });
   renderAll();
 }
 
@@ -1594,7 +1603,9 @@ function renderBudget(){
     const nuryRen     = Math.round(ren  * NURY_REN_PCT * r);
     const teamVar     = claudiaComm + juanVar + elberVar + patriciaVar + ignacioComm + nuryRen;
     const teamTot     = teamFixed + teamVar;
-    const pauta       = Math.round(vent / ROI_PAUTA * r);
+    const pauta       = _budgetScen==='custom'
+      ? Math.round(cob * r * (+(document.getElementById('bc-pauta')?.value||25)/100))
+      : Math.round(vent / ROI_PAUTA * r);
     const oh          = Math.round(ingCLP * OH_PCT);
     const onetime     = BUDGET_ONETIME[i] || 0;
     const res         = ingCLP - pauta - teamTot - oh - onetime;
@@ -1726,7 +1737,7 @@ async function loadHistorico(){
       const monto = usd ? Math.round(r.monto * rate()) : r.monto;
       const cat   = categorize(r.desc, r.rut||'', monto);
       // cat_hint from G66 overrides when no RUT match
-      return { ...r, date: new Date(r.date), monto, montoOrig: r.monto, usd, ...cat, historico: true };
+      return { ...cat, ...r, date: new Date(r.date), monto, montoOrig: r.monto, usd, historico: true };
     });
     // Re-categorize any txns already in localStorage too
     txns = txns.map(t => ({ ...t, ...categorize(t.desc, t.rut||'', t.monto) }));
@@ -1759,7 +1770,9 @@ updateTxnFilter();
 renderAll();
 
 // Pre-cargar histórico, luego Wasabil, luego sync del Sheet
-loadHistorico().then(() => loadWasabilJSON()).then(() => syncAll());
+loadHistorico().then(() => loadWasabilJSON()).then(() => syncAll()).then(()=>{
+  if(window._migrated) alert2('Actualización detectada: las cartolas G66 y Whop fueron limpiadas — vuelve a subirlas.','warn');
+});
 </script>
 </body>
 </html>

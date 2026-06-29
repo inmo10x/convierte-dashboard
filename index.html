@@ -412,6 +412,7 @@ const KW_MAP = [
   {kw:['INTERESES ABONADOS','INTERESES PAGADOS'],                             cat:'ingreso',  sub:'intereses'            },
   // ──────────────────────────────────────────────────────────────────────────
   {kw:['PREVIRED','AFP ','ISAPRE','FONASA','CCAF','COMPIN'],               cat:'team',     sub:'previred'   },
+  {kw:['SEBASTIAN CADENA','CADENA CHIQUITO'],                                              cat:'team',sub:'comision'  },
   {kw:['GLOBAL66','JOSNA','PATRICIA PAUL','JUAN S','MINERVA','CADENA','ELBER','ALEXANDER G'],cat:'team',sub:'colab_usd'},
   {kw:['WHOP*'],                                                              cat:'overhead', sub:'herramienta'},  // compra en Whop (suscripción/curso)
   {kw:['FACEBK','FACEBOOK','META ADS','GOOGLE','TIKTOK ADS','INSTAGRAM ADS'], cat:'pauta', sub:'digital'    },
@@ -711,7 +712,9 @@ function ingest(data,src,fname,type){
     if(!date||isNaN(date)||!monto) continue;
     // RUT: desde columna dedicada O embebido en descripción (Santander: "0166080908 Transf a …")
     const rawRutCol=String(get(r,'rut','identificador','id')||'').replace(/[.\-kK]/g,'').replace(/\D/g,'');
-    const rawRutDesc=(desc.match(/^(\d{8,10})\s/)||[])[1]||'';
+    const m1=desc.match(/^(\d{8,10})\s/);
+    const m2=desc.match(/(\d{1,2})\.(\d{3})\.(\d{3})-[\dkK]/i);
+    const rawRutDesc=m1?m1[1]:m2?(m2[1]+m2[2]+m2[3]):'';
     const rawRut=rawRutCol||rawRutDesc;
     const rut=rawRut.length>=10&&rawRut[0]==='0'?rawRut.slice(1,9):rawRut.slice(0,8);
     const cat=categorize(desc,rut,monto);

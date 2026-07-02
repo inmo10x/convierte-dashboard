@@ -522,7 +522,7 @@ function loadXLSX(){
   if(_xlsxP) return _xlsxP;
   _xlsxP=new Promise((res,rej)=>{
     const s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+    s.src='xlsx.full.min.js';
     s.onload=res;
     s.onerror=()=>{ _xlsxP=null; rej(new Error('No se pudo cargar XLSX.js — revisa tu conexión')); };
     document.head.appendChild(s);

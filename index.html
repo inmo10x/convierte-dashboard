@@ -276,7 +276,7 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
   </div>
   <div class="xrow2">
     <div class="chart-card">
-      <h3>Evolución de Cash Collected (USD)</h3>
+      <h3>Evolución — Cobros vs Gastos (USD) · punteado = proyección del escenario de Planificación</h3>
       <div id="x-evo-hero" style="font-size:22px;font-weight:800;letter-spacing:-.5px;margin:-2px 0 10px">—</div>
       <canvas id="c-evo" style="max-height:230px"></canvas>
     </div>
@@ -1140,18 +1140,36 @@ function renderExec(){
   set('x-meta-d', deltaHTML(curM.cobUSD, prevM?.cobUSD, dlbl));
   set('x-meta-s', `${fmu(curM.cobUSD,0)} / ${fmu(meta,0)} · ${ml(ms[li])}`);
 
-  // Evolución Cash Collected — línea con área, color de marca
+  // Evolución Cobros vs Gastos — real (sólido) + proyección del escenario activo (punteado)
   set('x-evo-hero', fmu(d.cobUSD,0));
   if(_charts.evo)_charts.evo.destroy();
   const evoC=document.getElementById('c-evo');
   if(evoC){
+    const gUSD=p=>(p.pauta+p.totalTeam+p.totalOH+p.totalTax)/r;
+    const lastKey=ms[ms.length-1];
+    const proj=computeBudgetRows(r).filter(b=>b.key>lastKey);   // meses futuros del presupuesto
+    const nA=ms.length, nP=proj.length;
+    const pad=n=>Array(n).fill(null);
+    // La serie proyectada arranca en el último punto real para conectar las líneas
+    const cobA=[...pls.map(p=>p.cobUSD), ...pad(nP)];
+    const cobP=[...pad(nA-1), pls[nA-1].cobUSD, ...proj.map(b=>b.cob)];
+    const gasA=[...pls.map(gUSD), ...pad(nP)];
+    const gasP=[...pad(nA-1), gUSD(pls[nA-1]), ...proj.map(b=>b.gastoCLP/r)];
     _charts.evo=new Chart(evoC.getContext('2d'),{
       type:'line',
-      data:{labels:ms.map(ml),datasets:[{label:'Cash Collected',data:pls.map(p=>p.cobUSD),
-        borderColor:CONFIG.accent,backgroundColor:hexA(CONFIG.accent,.12),fill:true,
-        tension:.35,borderWidth:2,pointRadius:3,pointBackgroundColor:CONFIG.accent}]},
+      data:{labels:[...ms.map(ml),...proj.map(b=>b.lbl+"'26 (p)")],datasets:[
+        {label:'Cash Collected',data:cobA,borderColor:CONFIG.accent,backgroundColor:hexA(CONFIG.accent,.12),
+         fill:true,tension:.35,borderWidth:2,pointRadius:3,pointBackgroundColor:CONFIG.accent},
+        {label:'Cobros proyectados',data:cobP,borderColor:CONFIG.accent,borderDash:[5,4],
+         fill:false,tension:.35,borderWidth:1.8,pointRadius:2,pointBackgroundColor:CONFIG.accent},
+        {label:'Gastos totales',data:gasA,borderColor:'#e66767',
+         fill:false,tension:.35,borderWidth:2,pointRadius:3,pointBackgroundColor:'#e66767'},
+        {label:'Gastos proyectados',data:gasP,borderColor:'#e66767',borderDash:[5,4],
+         fill:false,tension:.35,borderWidth:1.8,pointRadius:2,pointBackgroundColor:'#e66767'},
+      ]},
       options:{responsive:true,maintainAspectRatio:true,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmu(c.raw,0)}`}}},
+        plugins:{legend:{labels:{color:'#a0a0ab',font:{size:10},padding:8,boxWidth:14}},
+                 tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmu(c.raw,0)}`}}},
         scales:{x:{ticks:{color:'#a0a0ab',font:{size:10}},grid:{color:'#242430'}},
                 y:{ticks:{color:'#a0a0ab',font:{size:10},callback:v=>`$${v>=1000?(v/1000).toFixed(0)+'K':v}`},grid:{color:'#242430'}}}}
     });
@@ -1867,11 +1885,12 @@ function setBScen(s){
   const cc = document.getElementById('budget-custom');
   if(cc) cc.style.display = s==='custom' ? 'flex' : 'none';
   renderBudget();
+  renderExec(); // la proyección de la vista Ejecutiva usa el escenario activo
 }
 
-function renderBudget(){
-  const r = rate();
-
+// P&L mensual proyectado según el escenario activo — usado por el presupuesto
+// y por la proyección de la vista Ejecutiva. key = 'YYYY-MM' (May–Dic 2026).
+function computeBudgetRows(r){
   // Calcular costos fijos del nuevo modelo (sin PREVIRED — se inyecta por mes)
   const fixedItems     = COMP_ITEMS.map(x=>({...x, clp: x.usd ? Math.round(x.usd*r) : x.clp}));
   const teamFixedNoPrev= fixedItems.filter(x=>x.type!=='previred').reduce((s,x)=>s+x.clp, 0);
@@ -1891,8 +1910,8 @@ function renderBudget(){
 
   const OH_PCT = 0.05;
 
-  // P&L mensual con nuevo modelo retributivo (comisiones sobre ventas, pauta = ventas÷ROI)
-  const rows = budgetCobros.map((cob, i)=>{
+  // Comisiones sobre ventas, pauta = ventas÷ROI
+  return budgetCobros.map((cob, i)=>{
     const vent        = budgetVentas[i] || 0;
     const ren         = Math.max(0, cob - vent); // renovaciones ≈ cobros - ventas nuevas
     const previredM   = PREVIRED_BY_MONTH[i] || PREVIRED_CLP;
@@ -1911,11 +1930,19 @@ function renderBudget(){
       : Math.round(vent / ROI_PAUTA * r);
     const oh          = Math.round(ingCLP * OH_PCT);
     const onetime     = BUDGET_ONETIME[i] || 0;
-    const res         = ingCLP - pauta - teamTot - oh - onetime;
+    const gastoCLP    = pauta + teamTot + oh + onetime;
+    const res         = ingCLP - gastoCLP;
     const margin      = ingCLP ? res/ingCLP*100 : 0;
     const mc          = margin>=20?'var(--green)':margin>0?'var(--yellow)':'var(--red)';
-    return {lbl:BUDGET_MONTHS_LBL[i], cob, vent, ingCLP, teamFixed, teamVar, teamTot, pauta, oh, onetime, res, margin, mc, claudiaComm, juanVar, elberVar, patriciaVar, ignacioComm, nuryRen};
+    return {lbl:BUDGET_MONTHS_LBL[i], key:`2026-${String(i+5).padStart(2,'0')}`,
+            cob, vent, ingCLP, teamFixed, teamVar, teamTot, pauta, oh, onetime, gastoCLP,
+            res, margin, mc, claudiaComm, juanVar, elberVar, patriciaVar, ignacioComm, nuryRen};
   });
+}
+
+function renderBudget(){
+  const r = rate();
+  const rows = computeBudgetRows(r);
 
   const totCob     = rows.reduce((s,x)=>s+x.cob,0);
   const totIng     = rows.reduce((s,x)=>s+x.ingCLP,0);
@@ -2001,7 +2028,7 @@ function renderBudget(){
       ⚡ Bono trimestral +$200 USD × persona (Juan/Elber/Patricia/Nury) si tasa renovación &gt;50%
     </div>`;
 
-  // Chart (cobros vs resultado neto)
+  // Chart (cobros vs gastos vs resultado neto)
   const ctx = document.getElementById('budget-chart');
   if(!ctx) return;
   const barColor = _budgetScen==='conservador'?'#f59e0b':_budgetScen==='optimista'?'#22c55e':'#3b82f6';
@@ -2012,6 +2039,7 @@ function renderBudget(){
       labels: rows.map(x=>x.lbl),
       datasets:[
         { label:'Cobros (CLP)', data:rows.map(x=>x.ingCLP), backgroundColor: barColor+'33', borderColor: barColor, borderWidth:1.5, yAxisID:'y' },
+        { label:'Gastos totales', data:rows.map(x=>x.gastoCLP), type:'line', borderColor:'#e66767', backgroundColor:'transparent', borderWidth:2, borderDash:[5,3], tension:.3, pointRadius:2, yAxisID:'y' },
         { label:'Resultado neto', data:rows.map(x=>x.res), type:'line', borderColor:rows.map(x=>x.res>=0?'#22c55e':'#ef4444'), backgroundColor:'transparent', borderWidth:2, tension:.3, pointRadius:3, yAxisID:'y' },
       ]
     },

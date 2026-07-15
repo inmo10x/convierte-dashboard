@@ -1158,10 +1158,10 @@ function renderExec(){
     _charts.evo=new Chart(evoC.getContext('2d'),{
       type:'line',
       data:{labels:[...ms.map(ml),...proj.map(b=>b.lbl+"'26 (p)")],datasets:[
-        {label:'Cash Collected',data:cobA,borderColor:CONFIG.accent,backgroundColor:hexA(CONFIG.accent,.12),
-         fill:true,tension:.35,borderWidth:2,pointRadius:3,pointBackgroundColor:CONFIG.accent},
-        {label:'Cobros proyectados',data:cobP,borderColor:CONFIG.accent,borderDash:[5,4],
-         fill:false,tension:.35,borderWidth:1.8,pointRadius:2,pointBackgroundColor:CONFIG.accent},
+        {label:'Cash Collected',data:cobA,borderColor:'#199e70',backgroundColor:hexA('#199e70',.12),
+         fill:true,tension:.35,borderWidth:2,pointRadius:3,pointBackgroundColor:'#199e70'},
+        {label:'Cobros proyectados',data:cobP,borderColor:'#199e70',borderDash:[5,4],
+         fill:false,tension:.35,borderWidth:1.8,pointRadius:2,pointBackgroundColor:'#199e70'},
         {label:'Gastos totales',data:gasA,borderColor:'#e66767',
          fill:false,tension:.35,borderWidth:2,pointRadius:3,pointBackgroundColor:'#e66767'},
         {label:'Gastos proyectados',data:gasP,borderColor:'#e66767',borderDash:[5,4],

@@ -585,6 +585,7 @@ const RUT_MAP = {
   '76187287':{ name:'Telefonía',                  cat:'overhead', sub:'telecom'  },
   '11498999':{ name:'Devolución cliente',         cat:'other',    sub:'devolucion'},
   '19359163':{ name:'Pago puntual (Maximiliano)', cat:'other',    sub:'puntual'  },
+  '16994268':{ name:'Daniel (Socio eXp 50%)',     cat:'team',     sub:'socio_exp'}, // 50% líquido proyecto eXp
   '77450452':{ name:'Pago interno',               cat:'other',    sub:'interno'  },
   // Formato alternativo Santander: "0RRRRRRRRD Transf a NOMBRE" → extrae 0+primeros7
   '01660809':{ name:'Karim (Director)',           cat:'team',     sub:'nomina'   },
@@ -601,6 +602,7 @@ const KW_MAP = [
   // ──────────────────────────────────────────────────────────────────────────
   {kw:['PREVIRED','AFP ','ISAPRE','FONASA','CCAF','COMPIN'],               cat:'team',     sub:'previred'   },
   {kw:['SEBASTIAN CADENA','CADENA CHIQUITO'],                                              cat:'team',sub:'comision'  },
+  {kw:['DANIEL ÁLVAREZ','DANIEL ALVAREZ','DANIEL ÁLVA','DANIEL ALVA'],                     cat:'team',sub:'socio_exp' },
   {kw:['GLOBAL66','JOSNA','PATRICIA PAUL','JUAN S','MINERVA','CADENA','ELBER','ALEXANDER G','(ALEXANDER'],cat:'team',sub:'colab_usd'},
   {kw:['WHOP*'],                                                              cat:'overhead', sub:'herramienta'},  // compra en Whop (suscripción/curso)
   {kw:['FACEBK','FACEBOOK','META ADS','GOOGLE','TIKTOK ADS','INSTAGRAM ADS'], cat:'pauta', sub:'digital'    },

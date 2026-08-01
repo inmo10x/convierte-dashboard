@@ -471,7 +471,13 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
     <button class="btn btn-p btn-sm" onclick="document.getElementById('fi-g66').click()">↑ Global66</button>
     <button class="btn btn-p btn-sm" onclick="document.getElementById('fi-whop').click()">↑ Whop</button>
     <button class="btn btn-p btn-sm" onclick="document.getElementById('fi-mp').click()">↑ MercadoPago</button>
+    <button class="btn btn-g btn-sm" onclick="exportHistorico()">⬇ Exportar historico.json</button>
     <button class="btn btn-g btn-sm" onclick="clearCartolas()">Limpiar cartolas</button>
+  </div>
+  <div class="alert alert-info" style="margin-bottom:14px">
+    💡 Las cartolas que subes viven solo en <strong>este</strong> navegador. Para hacerlas permanentes:
+    sube la cartola nueva → <strong>Exportar historico.json</strong> → reemplaza el archivo en el repo y haz commit.
+    Desde ahí se cargan solas en cualquier dispositivo y ya no hay que volver a subirlas.
   </div>
 
   <div class="sources">
@@ -603,11 +609,13 @@ const KW_MAP = [
   {kw:['PREVIRED','AFP ','ISAPRE','FONASA','CCAF','COMPIN'],               cat:'team',     sub:'previred'   },
   {kw:['SEBASTIAN CADENA','CADENA CHIQUITO'],                                              cat:'team',sub:'comision'  },
   {kw:['DANIEL ÁLVAREZ','DANIEL ALVAREZ','DANIEL ÁLVA','DANIEL ALVA'],                     cat:'team',sub:'socio_exp' },
-  {kw:['GLOBAL66','JOSNA','PATRICIA PAUL','JUAN S','MINERVA','CADENA','ELBER','ALEXANDER G','(ALEXANDER'],cat:'team',sub:'colab_usd'},
+  {kw:['GLOBAL66','JOSNA','PATRICIA PAUL','PATRICIA ACOSTA','JUAN S','MINERVA','CADENA','ELBER','ALEXANDER G','(ALEXANDER','CLARITY PROFITS'],cat:'team',sub:'colab_usd'},
   {kw:['WHOP*'],                                                              cat:'overhead', sub:'herramienta'},  // compra en Whop (suscripción/curso)
   {kw:['FACEBK','FACEBOOK','META ADS','GOOGLE','TIKTOK ADS','INSTAGRAM ADS'], cat:'pauta', sub:'digital'    },
   {kw:['HIGHLEVEL','HIGH LEVEL','APPLEVEL','APP LEVEL'],                    cat:'overhead', sub:'herramienta'},
-  {kw:['SKOOL','WASABIL','KUTT','CLICKUP','CLAUDE AI','CLAUDE.AI','GAMMA','NOTION','CANVA','NAME-CHEAP','NAMECHEAP','FIRMAVIRTUAL','ZAPSIGN','COMPRA MP'],    cat:'overhead', sub:'herramienta'},
+  {kw:['SKOOL','WASABIL','KUTT','CLICKUP','CLAUDE AI','CLAUDE.AI','ANTHROPIC','OPENAI','CHATGPT','LOVABLE','GAMMA','NOTION','CANVA','NAME-CHEAP','NAMECHEAP','FIRMAVIRTUAL','ZAPSIGN','COMPRA MP','TASKLET','HOSTINGER','RAILWAY','GITHUB','CONTENTCREATOR'],    cat:'overhead', sub:'herramienta'},
+  {kw:['LATAM.COM','GRUPO DHL','HOTEL ','OK PARKING','CONCESA','MAIPO PONIENTE','NOTARIA'],cat:'overhead', sub:'viajes_admin'},
+  {kw:['SBX ','STA ISABEL','MARINA VINA','INMOBILIARIA SACO','EDUARDO GAMBOA','UNIRED','ESSBIO','PAGOS CGE','TELEFONICA'],cat:'overhead', sub:'oficina'},
   {kw:['FLOW PROP','PROPITEQ','BLUEHACK'],                                  cat:'overhead', sub:'advisory'   },
   {kw:['MERCADO PAGO','MP ','MERCADOPAGO'],                                 cat:'overhead', sub:'financiero' },
   {kw:['ARTISAN','CAFÉ','CAFE '],                                           cat:'overhead', sub:'bienestar'  },
@@ -1547,6 +1555,29 @@ function loadTxns(){
 }
 function saveSettings(){ localStorage.setItem('cv_cfg',JSON.stringify({usd:document.getElementById('usd-rate').value, meta:document.getElementById('meta-usd')?.value})); }
 function loadSettings(){ try{const s=JSON.parse(localStorage.getItem('cv_cfg')||'{}');if(s.usd) document.getElementById('usd-rate').value=s.usd; if(s.meta&&document.getElementById('meta-usd')) document.getElementById('meta-usd').value=s.meta;}catch(e){} }
+// Exporta TODOS los movimientos (histórico del repo + los subidos en este
+// navegador) con el mismo formato de historico.json, para reemplazar el
+// archivo en el repo y que queden permanentes en cualquier dispositivo.
+function exportHistorico(){
+  if(!txns.length){ alert2('No hay movimientos que exportar','warn'); return; }
+  const out=txns.map(t=>({
+    date: dk(t.date),
+    desc: t.desc,
+    monto: t.usd&&t.montoOrig!=null ? t.montoOrig : t.monto, // USD original; CLP tal cual
+    usd: !!t.usd,
+    rut: t.rut||'',
+    src: t.src
+  })).sort((a,b)=>a.date.localeCompare(b.date));
+  const blob=new Blob([JSON.stringify(out,null,1)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='historico.json';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  const meses=[...new Set(out.map(t=>t.date.slice(0,7)))].sort();
+  alert2(`historico.json exportado — ${out.length} movimientos (${meses[0]} a ${meses[meses.length-1]}). Reemplázalo en el repo y haz commit.`,'ok');
+}
+
 function clearCartolas(){
   if(!confirm('¿Limpiar cartolas? Los datos del Sheet se mantienen.')) return;
   txns=[];localStorage.removeItem('cv_txns');

@@ -1821,7 +1821,7 @@
  {
   "date": "2026-03-08",
   "desc": "MP: Openai Chatgpt",
-  "monto": -18516.0,
+  "monto": -18153.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -1891,16 +1891,16 @@
  },
  {
   "date": "2026-03-09",
-  "desc": "MP: Venta con Link de pago",
-  "monto": 2500000.0,
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -2500000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
  },
  {
   "date": "2026-03-09",
-  "desc": "MP: Agencia Convierte Spa",
-  "monto": -2500000.0,
+  "desc": "MP: Venta con Link de pago",
+  "monto": 2500000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -2081,6 +2081,22 @@
  },
  {
   "date": "2026-03-11",
+  "desc": "MP: Devolución — INMO CRM IA",
+  "monto": -75000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-11",
+  "desc": "MP: Venta por suscripción — InmoCRM IA",
+  "monto": 75000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-11",
   "desc": "MP: Venta por suscripción — InmoCRM IA",
   "monto": 75000.0,
   "usd": false,
@@ -2145,16 +2161,16 @@
  },
  {
   "date": "2026-03-12",
-  "desc": "MP: Venta con Link de pago",
-  "monto": 3500000.0,
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -3300000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
  },
  {
   "date": "2026-03-12",
-  "desc": "MP: Agencia Convierte Spa",
-  "monto": -3300000.0,
+  "desc": "MP: Venta con Link de pago",
+  "monto": 3500000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -2176,7 +2192,7 @@
  {
   "date": "2026-03-13",
   "desc": "MP: Atlassian",
-  "monto": -26506.0,
+  "monto": -25987.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -2331,16 +2347,16 @@
  },
  {
   "date": "2026-03-20",
-  "desc": "MP: Ingreso de dinero",
-  "monto": 900000.0,
+  "desc": "MP: Crédito en Cuotas Fijas",
+  "monto": -950234.0,
   "usd": false,
   "rut": "",
   "src": "mp"
  },
  {
   "date": "2026-03-20",
-  "desc": "MP: Crédito en Cuotas Fijas (3/6)",
-  "monto": -950234.0,
+  "desc": "MP: Ingreso de dinero",
+  "monto": 900000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -2558,16 +2574,16 @@
  },
  {
   "date": "2026-03-26",
-  "desc": "MP: Venta por suscripción — InmoCRM mensual",
-  "monto": 60000.0,
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1500000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
  },
  {
   "date": "2026-03-26",
-  "desc": "MP: Venta con Link de pago",
-  "monto": 1500000.0,
+  "desc": "MP: Venta por suscripción — InmoCRM mensual",
+  "monto": 60000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -2617,7 +2633,7 @@
  {
   "date": "2026-03-29",
   "desc": "MP: Captions.ai",
-  "monto": -23533.0,
+  "monto": -23072.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -2710,16 +2726,16 @@
  },
  {
   "date": "2026-03-30",
-  "desc": "MP: Agencia Convierte Spa",
-  "monto": -5000000.0,
+  "desc": "MP: Www.make.com",
+  "monto": -9777.0,
   "usd": false,
   "rut": "",
   "src": "mp"
  },
  {
   "date": "2026-03-30",
-  "desc": "MP: Www.make.com",
-  "monto": -9972.0,
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -5000000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -3187,7 +3203,7 @@
  {
   "date": "2026-04-08",
   "desc": "MP: Openai Chatgpt",
-  "monto": -18654.0,
+  "monto": -18289.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -3239,6 +3255,22 @@
   "date": "2026-04-10",
   "desc": "MP: Agencia Convierte Spa",
   "monto": -6000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-04-11",
+  "desc": "MP: Devolución — INMO CRM IA",
+  "monto": -75000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-04-11",
+  "desc": "MP: Venta por suscripción — InmoCRM IA",
+  "monto": 75000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -3371,16 +3403,16 @@
  },
  {
   "date": "2026-04-13",
-  "desc": "MP: Venta con Link de pago",
-  "monto": 1350000.0,
+  "desc": "MP: Atlassian",
+  "monto": -25427.0,
   "usd": false,
   "rut": "",
   "src": "mp"
  },
  {
   "date": "2026-04-13",
-  "desc": "MP: Atlassian",
-  "monto": -25935.0,
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1350000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -3599,7 +3631,7 @@
  },
  {
   "date": "2026-04-20",
-  "desc": "MP: Crédito en Cuotas Fijas (4/6)",
+  "desc": "MP: Crédito en Cuotas Fijas",
   "monto": -950234.0,
   "usd": false,
   "rut": "",
@@ -4005,7 +4037,7 @@
  {
   "date": "2026-04-29",
   "desc": "MP: Captions.ai",
-  "monto": -22838.0,
+  "monto": -22391.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -4057,7 +4089,7 @@
  {
   "date": "2026-04-30",
   "desc": "MP: Www.make.com",
-  "monto": -9677.0,
+  "monto": -9488.0,
   "usd": false,
   "rut": "",
   "src": "mp"

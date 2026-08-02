@@ -528,8 +528,9 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
     <div class="src-card" style="cursor:default;border-style:solid">
       <div class="src-icon">⚙️</div>
       <div>
-        <div class="src-name">USD/CLP</div>
+        <div class="src-name">USD/CLP (respaldo)</div>
         <input type="number" id="usd-rate" value="950" style="width:90px;background:var(--card2);border:1px solid var(--border);color:var(--text);padding:3px 7px;border-radius:5px;font-size:13px;font-weight:700;margin-top:4px;" onchange="saveSettings();recalcUsd();renderAll()">
+        <div class="src-status" id="tc-status" style="margin-top:4px">—</div>
       </div>
     </div>
     <div class="src-card" style="cursor:default;border-style:solid">
@@ -592,6 +593,7 @@ const RUT_MAP = {
   '76187287':{ name:'Telefonía',                  cat:'overhead', sub:'telecom'  },
   '11498999':{ name:'Devolución cliente',         cat:'other',    sub:'devolucion'},
   '19359163':{ name:'Pago puntual (Maximiliano)', cat:'other',    sub:'puntual'  },
+  '77008658':{ name:'Pago de trámite',            cat:'other',    sub:'tramite'  },
   '13918250':{ name:'Devolución cliente (ene)',   cat:'other',    sub:'devolucion'}, // Alvaro Bonich
   '18257052':{ name:'Devolución reserva (ene)',   cat:'other',    sub:'devolucion'},
   '96572800':{ name:'Imposiciones atrasadas',     cat:'team',     sub:'previred' },
@@ -607,6 +609,8 @@ const KW_MAP = [
   {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA','MP: RETIRO','ACELERADOR INMOBILIAR'],cat:'other', sub:'transferencia_interna'},
   {kw:['MP: COMISIÓN','MP: COMISION'],                                        cat:'overhead', sub:'financiero'           },
   {kw:['MP: PAGO RECIBIDO'],                                                  cat:'ingreso',  sub:'mercadopago'          },
+  {kw:['MP: SUELDO'],                                                         cat:'team',     sub:'nomina'               },
+  {kw:['MP: PAGO META ADS'],                                                  cat:'pauta',    sub:'digital'              },
   // ── Relay (cuenta USD de la LLC) ────────────────────────────────────────
   {kw:['SUELDO GUILLERMO','SUELDO KARIM'],                                    cat:'team',     sub:'nomina'               },
   {kw:['LISDEY CASTRO'],                                                      cat:'other',    sub:'devolucion'           },
@@ -656,6 +660,23 @@ let _charts={};
 // UTILS
 // ═══════════════════════════════════════════════
 const rate = () => parseFloat(document.getElementById('usd-rate').value)||950;
+
+// ── Tipo de cambio mensual (dólar observado promedio, SII) ────────────────
+// Cada movimiento en USD se convierte con el TC del mes al que pertenece.
+// Los meses en null caen al valor manual de Fuentes & Config.
+// Fuente oficial: sii.cl → Valores y Fechas → Dólar observado (promedio mensual)
+const TC_MENSUAL = {
+  '2026-01': null, '2026-02': null, '2026-03': null, '2026-04': null,
+  '2026-05': null, '2026-06': null, '2026-07': null, '2026-08': null,
+};
+function tcFor(d){
+  const k = d instanceof Date ? mk(d) : String(d||'').slice(0,7);
+  return TC_MENSUAL[k] || rate();
+}
+// ¿Cuántos meses del período usan el TC manual en vez del promedio SII?
+function tcPendientes(){
+  return allMonths().filter(m => !TC_MENSUAL[m]);
+}
 
 function pm(s){
   if(s===null||s===undefined||s==='') return 0;
@@ -724,7 +745,7 @@ function mergeTxns(newt){
   return added.length;
 }
 // Re-convierte a CLP los movimientos en USD cuando cambia el tipo de cambio
-function recalcUsd(){ const r=rate(); txns.forEach(t=>{ if(t.usd) t.monto=Math.round(t.montoOrig*r); }); }
+function recalcUsd(){ txns.forEach(t=>{ if(t.usd) t.monto=Math.round(t.montoOrig*tcFor(t.date)); }); }
 
 // XLSX.js pesa ~900KB — solo se carga cuando se sube un Excel
 let _xlsxP=null;
@@ -919,7 +940,7 @@ function ingest(data,src,fname,type){
     // recalcUsd() re-convierte si cambia el tipo de cambio
     const usd = src==='g66';
     const montoOrig = monto;
-    if(usd) monto=Math.round(monto*rate());
+    if(usd) monto=Math.round(monto*tcFor(date));
     if(!date||isNaN(date)||!monto) continue;
     // RUT: desde columna dedicada O embebido en descripción (Santander: "0166080908 Transf a …",
     // también con DV literal pegado: "015763593K Transf a …")
@@ -1096,7 +1117,8 @@ function plData(m){
   const r=rate();
   const fc=filterBy(cobros,m), fv=filterBy(ventas,m), ft=m?txns.filter(t=>txnMk(t)===m):txns;
   const cobUSD  = fc.reduce((s,x)=>s+x.monto,0);
-  const cobCLP  = cobUSD*r;
+  // Cada cobro se convierte con el TC de su propio mes
+  const cobCLP  = fc.reduce((s,x)=>s+x.monto*tcFor(x.date),0);
   const ventaUSD= fv.reduce((s,x)=>s+x.venta,0);
   const cobVUSD = fv.reduce((s,x)=>s+x.cobrado,0);
   const arUSD   = fv.reduce((s,x)=>s+x.pendiente,0);
@@ -1128,7 +1150,15 @@ function plData(m){
 // ═══════════════════════════════════════════════
 // RENDER ALL
 // ═══════════════════════════════════════════════
-function renderAll(){ renderTabs(); renderExec(); renderKPIs(); renderCharts(); renderPL(); renderCompModel(); renderBudget(); renderCloserTbl(); renderForecast(); renderAR(); renderWasabilSection(); renderTxns(); renderUnclassified(); }
+function renderTcStatus(){
+  const el=document.getElementById('tc-status'); if(!el) return;
+  const p=tcPendientes();
+  el.innerHTML = p.length
+    ? `<span style="color:var(--yellow)">${p.length} ${p.length===1?'mes usa':'meses usan'} este valor</span><br>Carga el promedio SII en TC_MENSUAL`
+    : `<span style="color:var(--green)">✓ Todos los meses con promedio SII</span>`;
+}
+
+function renderAll(){ renderTcStatus(); renderTabs(); renderExec(); renderKPIs(); renderCharts(); renderPL(); renderCompModel(); renderBudget(); renderCloserTbl(); renderForecast(); renderAR(); renderWasabilSection(); renderTxns(); renderUnclassified(); }
 
 // ─── Navegación entre vistas ────────────────────
 const VIEW_TITLES={exec:'Ejecutivo',comercial:'Comercial',financiero:'Financiero',plan:'Planificación',mov:'Movimientos',fuentes:'Fuentes & Config'};
@@ -1562,7 +1592,8 @@ function loadTxns(){
         // Migración: entradas antiguas sin montoOrig quedan como CLP fijo
         const usd=!!t.usd&&t.montoOrig!=null;
         const montoOrig=t.montoOrig!=null?t.montoOrig:t.monto;
-        return {...t,date:new Date(t.date),usd,montoOrig,monto:usd?Math.round(montoOrig*r0):t.monto};
+        const dt=new Date(t.date);
+        return {...t,date:dt,usd,montoOrig,monto:usd?Math.round(montoOrig*tcFor(dt)):t.monto};
       });
   }catch(e){txns=[];}
 }
@@ -2170,7 +2201,7 @@ async function loadHistorico(){
     const raw = await res.json();
     const historico = raw.map(r => {
       const usd   = !!r.usd;
-      const monto = usd ? Math.round(r.monto * rate()) : r.monto;
+      const monto = usd ? Math.round(r.monto * tcFor(r.date)) : r.monto;
       const rut   = extractRut(r.desc, r.rut);
       const cat   = categorize(r.desc, rut, monto);
       // cat_hint from G66 overrides when no RUT match

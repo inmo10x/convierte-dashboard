@@ -6344,7 +6344,7 @@
  },
  {
   "date": "2026-07-06",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: pago Meta Ads",
   "monto": -605366.0,
   "usd": false,
   "rut": "",
@@ -6360,7 +6360,7 @@
  },
  {
   "date": "2026-07-06",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: pago Meta Ads",
   "monto": -501161.0,
   "usd": false,
   "rut": "",
@@ -6800,7 +6800,7 @@
  },
  {
   "date": "2026-07-12",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: pago Meta Ads",
   "monto": -501086.0,
   "usd": false,
   "rut": "",
@@ -7216,7 +7216,7 @@
  },
  {
   "date": "2026-07-18",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: sueldo Karim",
   "monto": -1000000.0,
   "usd": false,
   "rut": "",
@@ -7584,7 +7584,7 @@
  },
  {
   "date": "2026-07-22",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: sueldos socios (Karim + Guillermo)",
   "monto": -1200000.0,
   "usd": false,
   "rut": "",

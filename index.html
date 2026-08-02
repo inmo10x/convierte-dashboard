@@ -611,6 +611,11 @@ const KW_MAP = [
   {kw:['MP: PAGO RECIBIDO'],                                                  cat:'ingreso',  sub:'mercadopago'          },
   {kw:['MP: SUELDO'],                                                         cat:'team',     sub:'nomina'               },
   {kw:['MP: PAGO META ADS'],                                                  cat:'pauta',    sub:'digital'              },
+  {kw:['ALEXANDRA ALBORNOZ'],                                                 cat:'team',     sub:'nomina'               },
+  {kw:['IGNACIO RIVERA','RIVERA ZAMORA'],                                     cat:'team',     sub:'comision'             },
+  {kw:['PARQUE EMPRESARIAL'],                                                 cat:'overhead', sub:'arriendo'             },
+  {kw:['MAKE.COM','ATLASSIAN','CAPTIONS','ADOBE','MP: FLOW','FINTOC'],        cat:'overhead', sub:'herramienta'          },
+  {kw:['TELEFONICA DEL SUR'],                                                 cat:'overhead', sub:'telecom'              },
   // ── Relay (cuenta USD de la LLC) ────────────────────────────────────────
   {kw:['SUELDO GUILLERMO','SUELDO KARIM'],                                    cat:'team',     sub:'nomina'               },
   {kw:['LISDEY CASTRO'],                                                      cat:'other',    sub:'devolucion'           },
@@ -667,8 +672,8 @@ const rate = () => parseFloat(document.getElementById('usd-rate').value)||950;
 // Los meses en null caen al valor manual de Fuentes & Config.
 // Fuente oficial: sii.cl → Valores y Fechas → Dólar observado (promedio mensual)
 const TC_MENSUAL = {
-  '2026-01': null, '2026-02': null, '2026-03': null, '2026-04': null,
-  '2026-05': null, '2026-06': null, '2026-07': null, '2026-08': null,
+  '2026-01': 884, '2026-02': 862, '2026-03': 910, '2026-04': 898,
+  '2026-05': 898, '2026-06': 903, '2026-07': 931, '2026-08': null,
 };
 function tcFor(d){
   const k = d instanceof Date ? mk(d) : String(d||'').slice(0,7);

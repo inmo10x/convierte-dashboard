@@ -7264,7 +7264,7 @@
  },
  {
   "date": "2026-07-05",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Crédito en Cuotas Fijas (6/6)",
   "monto": -96200.0,
   "usd": false,
   "rut": "",
@@ -7328,7 +7328,7 @@
  },
  {
   "date": "2026-07-06",
-  "desc": "MP: pago Meta Ads",
+  "desc": "MP: Crédito en Cuotas Fijas (6/6)",
   "monto": -605366.0,
   "usd": false,
   "rut": "",
@@ -7336,7 +7336,7 @@
  },
  {
   "date": "2026-07-06",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 724000.0,
   "usd": false,
   "rut": "",
@@ -7344,7 +7344,7 @@
  },
  {
   "date": "2026-07-06",
-  "desc": "MP: pago Meta Ads",
+  "desc": "MP: Facebook",
   "monto": -501161.0,
   "usd": false,
   "rut": "",
@@ -7352,7 +7352,7 @@
  },
  {
   "date": "2026-07-06",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Agencia Convierte Spa",
   "monto": -590000.0,
   "usd": false,
   "rut": "",
@@ -7472,7 +7472,7 @@
  },
  {
   "date": "2026-07-07",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Www.make.com",
   "monto": -9956.0,
   "usd": false,
   "rut": "",
@@ -7560,7 +7560,7 @@
  },
  {
   "date": "2026-07-08",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Openai Chatgpt",
   "monto": -18895.0,
   "usd": false,
   "rut": "",
@@ -7576,7 +7576,7 @@
  },
  {
   "date": "2026-07-08",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Highlevel Inc.",
   "monto": -283432.0,
   "usd": false,
   "rut": "",
@@ -7672,7 +7672,7 @@
  },
  {
   "date": "2026-07-09",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Captions.ai",
   "monto": -23637.0,
   "usd": false,
   "rut": "",
@@ -7728,7 +7728,7 @@
  },
  {
   "date": "2026-07-11",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Highlevel Inc.",
   "monto": -76742.0,
   "usd": false,
   "rut": "",
@@ -7768,7 +7768,7 @@
  },
  {
   "date": "2026-07-12",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Guillermo Gimenez Burgos (recibida)",
   "monto": 238980.0,
   "usd": false,
   "rut": "",
@@ -7776,7 +7776,7 @@
  },
  {
   "date": "2026-07-12",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 20793.0,
   "usd": false,
   "rut": "",
@@ -7784,7 +7784,7 @@
  },
  {
   "date": "2026-07-12",
-  "desc": "MP: pago Meta Ads",
+  "desc": "MP: Facebook",
   "monto": -501086.0,
   "usd": false,
   "rut": "",
@@ -7832,7 +7832,7 @@
  },
  {
   "date": "2026-07-13",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 900000.0,
   "usd": false,
   "rut": "",
@@ -7840,7 +7840,7 @@
  },
  {
   "date": "2026-07-13",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Claude Ai",
   "monto": -22453.0,
   "usd": false,
   "rut": "",
@@ -7856,7 +7856,7 @@
  },
  {
   "date": "2026-07-13",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Atlassian",
   "monto": -26944.0,
   "usd": false,
   "rut": "",
@@ -7904,7 +7904,7 @@
  },
  {
   "date": "2026-07-14",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Adobe",
   "monto": -12138.0,
   "usd": false,
   "rut": "",
@@ -7912,7 +7912,7 @@
  },
  {
   "date": "2026-07-14",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Highlevel Inc.",
   "monto": -473708.0,
   "usd": false,
   "rut": "",
@@ -7928,7 +7928,7 @@
  },
  {
   "date": "2026-07-14",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Agencia Convierte Spa",
   "monto": -373000.0,
   "usd": false,
   "rut": "",
@@ -8160,7 +8160,7 @@
  },
  {
   "date": "2026-07-17",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 2353835.0,
   "usd": false,
   "rut": "",
@@ -8168,7 +8168,7 @@
  },
  {
   "date": "2026-07-17",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Agencia Convierte Spa",
   "monto": -1350000.0,
   "usd": false,
   "rut": "",
@@ -8176,7 +8176,7 @@
  },
  {
   "date": "2026-07-17",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Agencia Convierte Spa",
   "monto": -485490.0,
   "usd": false,
   "rut": "",
@@ -8200,7 +8200,7 @@
  },
  {
   "date": "2026-07-18",
-  "desc": "MP: sueldo Karim",
+  "desc": "MP: sueldo Karim Abuhadba",
   "monto": -1000000.0,
   "usd": false,
   "rut": "",
@@ -8352,7 +8352,7 @@
  },
  {
   "date": "2026-07-20",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 1000000.0,
   "usd": false,
   "rut": "",
@@ -8456,7 +8456,7 @@
  },
  {
   "date": "2026-07-21",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Facebook",
   "monto": -224319.0,
   "usd": false,
   "rut": "",
@@ -8464,7 +8464,7 @@
  },
  {
   "date": "2026-07-21",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 2000000.0,
   "usd": false,
   "rut": "",
@@ -8472,7 +8472,7 @@
  },
  {
   "date": "2026-07-21",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Fintoc",
   "monto": -429000.0,
   "usd": false,
   "rut": "",
@@ -8480,7 +8480,7 @@
  },
  {
   "date": "2026-07-21",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: sueldo Nury Abuhadba",
   "monto": -954009.0,
   "usd": false,
   "rut": "",
@@ -8488,7 +8488,7 @@
  },
  {
   "date": "2026-07-21",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Alexandra Albornoz",
   "monto": -877142.0,
   "usd": false,
   "rut": "",
@@ -8568,7 +8568,7 @@
  },
  {
   "date": "2026-07-22",
-  "desc": "MP: sueldos socios (Karim + Guillermo)",
+  "desc": "MP: sueldo Guillermo Gimenez Burgos",
   "monto": -1200000.0,
   "usd": false,
   "rut": "",
@@ -8576,7 +8576,7 @@
  },
  {
   "date": "2026-07-22",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: sueldo Karim Abuhadba",
   "monto": -1200000.0,
   "usd": false,
   "rut": "",
@@ -8664,7 +8664,7 @@
  },
  {
   "date": "2026-07-23",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 1997554.0,
   "usd": false,
   "rut": "",
@@ -8672,7 +8672,7 @@
  },
  {
   "date": "2026-07-23",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: sueldo Guillermo Gimenez",
   "monto": -300000.0,
   "usd": false,
   "rut": "",
@@ -8680,7 +8680,7 @@
  },
  {
   "date": "2026-07-23",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: sueldo Karim Abuhadba",
   "monto": -300000.0,
   "usd": false,
   "rut": "",
@@ -8816,7 +8816,7 @@
  },
  {
   "date": "2026-07-24",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Agencia Convierte Spa",
   "monto": -1150000.0,
   "usd": false,
   "rut": "",
@@ -8824,7 +8824,7 @@
  },
  {
   "date": "2026-07-24",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Telefonica Del Sur",
   "monto": -21879.0,
   "usd": false,
   "rut": "",
@@ -8832,7 +8832,7 @@
  },
  {
   "date": "2026-07-24",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Parque Empresarial Don Octavio",
   "monto": -220797.0,
   "usd": false,
   "rut": "",
@@ -8872,7 +8872,7 @@
  },
  {
   "date": "2026-07-25",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 633911.0,
   "usd": false,
   "rut": "",
@@ -8880,7 +8880,7 @@
  },
  {
   "date": "2026-07-25",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: sueldo Karim Abuhadba",
   "monto": -500000.0,
   "usd": false,
   "rut": "",
@@ -9040,7 +9040,7 @@
  },
  {
   "date": "2026-07-27",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 670521.0,
   "usd": false,
   "rut": "",
@@ -9048,7 +9048,7 @@
  },
  {
   "date": "2026-07-27",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: sueldo Guillermo Gimenez",
   "monto": -500000.0,
   "usd": false,
   "rut": "",
@@ -9056,7 +9056,7 @@
  },
  {
   "date": "2026-07-27",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Agencia Convierte Spa",
   "monto": -300000.0,
   "usd": false,
   "rut": "",
@@ -9064,7 +9064,7 @@
  },
  {
   "date": "2026-07-27",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Agencia Convierte Spa",
   "monto": -41000.0,
   "usd": false,
   "rut": "",
@@ -9160,7 +9160,7 @@
  },
  {
   "date": "2026-07-29",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Captions.ai",
   "monto": -23861.0,
   "usd": false,
   "rut": "",
@@ -9176,7 +9176,7 @@
  },
  {
   "date": "2026-07-29",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Highlevel Inc.",
   "monto": -477441.0,
   "usd": false,
   "rut": "",
@@ -9208,7 +9208,7 @@
  },
  {
   "date": "2026-07-30",
-  "desc": "MP: retiro a cuenta bancaria propia",
+  "desc": "MP: Ignacio Rivera Zamora",
   "monto": -1500000.0,
   "usd": false,
   "rut": "",
@@ -9216,7 +9216,7 @@
  },
  {
   "date": "2026-07-30",
-  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "desc": "MP: Ingreso de dinero",
   "monto": 1400000.0,
   "usd": false,
   "rut": "",
@@ -9224,7 +9224,7 @@
  },
  {
   "date": "2026-07-30",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Www.make.com",
   "monto": -10111.0,
   "usd": false,
   "rut": "",
@@ -9272,7 +9272,7 @@
  },
  {
   "date": "2026-07-31",
-  "desc": "MP: pago recibido de cliente (account_money)",
+  "desc": "MP: Victoria Henseleit Palma (recibida)",
   "monto": 3150000.0,
   "usd": false,
   "rut": "",
@@ -9280,7 +9280,7 @@
  },
  {
   "date": "2026-07-31",
-  "desc": "MP: reserva pendiente de liberación",
+  "desc": "MP: Flow",
   "monto": -14268.0,
   "usd": false,
   "rut": "",

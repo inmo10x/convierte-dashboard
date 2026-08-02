@@ -899,14 +899,6 @@
   "cat_hint": "Colaborador Intl (Minerva)"
  },
  {
-  "date": "2026-02-04",
-  "desc": "MP: Mercado Libre",
-  "monto": -32000.0,
-  "usd": false,
-  "rut": "",
-  "src": "mp"
- },
- {
   "date": "2026-02-05",
   "desc": "Depósito Documento Mismo Banco",
   "monto": 1500000.0,
@@ -4237,14 +4229,6 @@
   "usd": false,
   "rut": "",
   "src": "santander"
- },
- {
-  "date": "2026-05-04",
-  "desc": "MP: Mercado Libre",
-  "monto": -76939.0,
-  "usd": false,
-  "rut": "",
-  "src": "mp"
  },
  {
   "date": "2026-05-05",

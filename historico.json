@@ -86,6 +86,14 @@
   "cat_hint": "Sueldo Karim"
  },
  {
+  "date": "2026-01-03",
+  "desc": "MP: Clickup",
+  "monto": -120284.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-01-05",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9279.0,
@@ -126,6 +134,14 @@
   "monto": -275571.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-01-05",
+  "desc": "MP: Venta por suscripción — Programa Acelerador",
+  "monto": 300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-01-06",
@@ -191,6 +207,14 @@
   "monto": 300000.0,
   "rut": "01247227",
   "src": "santander"
+ },
+ {
+  "date": "2026-01-08",
+  "desc": "MP: Openai Chatgpt",
+  "monto": -18294.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-01-09",
@@ -276,11 +300,51 @@
   "src": "santander"
  },
  {
+  "date": "2026-01-13",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1700000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-01-13",
+  "desc": "MP: Loom Subscription",
+  "monto": -21921.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-01-13",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -900000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-01-14",
   "desc": "0774504524 Transf. AGENCIA CONVIER",
   "monto": 900000.0,
   "rut": "07745045",
   "src": "santander"
+ },
+ {
+  "date": "2026-01-14",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 2700000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-01-14",
+  "desc": "MP: Adobe",
+  "monto": -12138.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-01-15",
@@ -320,6 +384,14 @@
   "monto": -595000.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-01-16",
+  "desc": "MP: Clickup",
+  "monto": -5519.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-01-19",
@@ -384,6 +456,14 @@
   "cat_hint": "USD→CLP → Banco Chile"
  },
  {
+  "date": "2026-01-20",
+  "desc": "MP: Crédito en Cuotas Fijas (1/6)",
+  "monto": -950234.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-01-21",
   "desc": "0774504524 Transf. Agencia Convier",
   "monto": 1640000.0,
@@ -435,6 +515,14 @@
   "src": "g66",
   "usd": true,
   "cat_hint": "Comisiones/Cargos Global66"
+ },
+ {
+  "date": "2026-01-21",
+  "desc": "MP: Clickup",
+  "monto": -4096.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-01-23",
@@ -541,6 +629,14 @@
   "cat_hint": "Comisiones/Cargos Global66"
  },
  {
+  "date": "2026-01-26",
+  "desc": "MP: Venta por suscripción — InmoCRM mensual",
+  "monto": 60000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-01-27",
   "desc": "Depósito en Efectivo",
   "monto": 900000.0,
@@ -548,6 +644,14 @@
   "src": "santander"
  },
  {
+  "date": "2026-01-27",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-01-28",
   "desc": "COM.MANTENCION PLAN",
   "monto": -39327.0,
@@ -560,6 +664,14 @@
   "monto": -39327.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-01-29",
+  "desc": "MP: Mirage (Captions)",
+  "monto": -21868.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-01-30",
@@ -581,6 +693,14 @@
   "monto": 1000000.0,
   "rut": "07645854",
   "src": "santander"
+ },
+ {
+  "date": "2026-01-30",
+  "desc": "MP: Www.make.com",
+  "monto": -9266.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-01-31",
@@ -639,6 +759,14 @@
   "monto": 4015133.0,
   "rut": "07745045",
   "src": "santander"
+ },
+ {
+  "date": "2026-02-02",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -4015133.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-02-03",
@@ -771,6 +899,14 @@
   "cat_hint": "Colaborador Intl (Minerva)"
  },
  {
+  "date": "2026-02-04",
+  "desc": "MP: Mercado Libre",
+  "monto": -32000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-02-05",
   "desc": "Depósito Documento Mismo Banco",
   "monto": 1500000.0,
@@ -824,6 +960,14 @@
   "src": "g66",
   "usd": true,
   "cat_hint": "USD→CLP → Banco Chile"
+ },
+ {
+  "date": "2026-02-05",
+  "desc": "MP: Venta por suscripción — Programa Acelerador",
+  "monto": 300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-02-06",
@@ -886,6 +1030,14 @@
   "src": "g66",
   "usd": true,
   "cat_hint": "Comisión Closer (Sebastián)"
+ },
+ {
+  "date": "2026-02-08",
+  "desc": "MP: Openai Chatgpt",
+  "monto": -17659.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-02-09",
@@ -992,6 +1144,14 @@
   "cat_hint": "USD→CLP → Banco Chile"
  },
  {
+  "date": "2026-02-10",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -1100000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-02-11",
   "desc": "0774504524 Transf. AGENCIA CONVIER",
   "monto": 1100000.0,
@@ -1091,6 +1251,38 @@
   "src": "santander"
  },
  {
+  "date": "2026-02-12",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-12",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 3000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-13",
+  "desc": "MP: Atlassian",
+  "monto": -24889.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-14",
+  "desc": "MP: Adobe",
+  "monto": -12138.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-02-16",
   "desc": "Compra FACEBK *2578PER2Q",
   "monto": -595000.0,
@@ -1154,6 +1346,30 @@
   "src": "santander"
  },
  {
+  "date": "2026-02-18",
+  "desc": "MP: Ingreso de dinero",
+  "monto": 506000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-18",
+  "desc": "MP: Ingreso de dinero",
+  "monto": 91604.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-18",
+  "desc": "MP: Facebook",
+  "monto": -601184.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-02-19",
   "desc": "Pago Cuota Crédito N° 420051021575",
   "monto": -1227739.0,
@@ -1214,6 +1430,30 @@
   "src": "santander"
  },
  {
+  "date": "2026-02-20",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 2000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-20",
+  "desc": "MP: Crédito en Cuotas Fijas (2/6)",
+  "monto": -950234.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-21",
+  "desc": "MP: Facebook",
+  "monto": -595000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-02-23",
   "desc": "017704041K Transf de JOSE TOMAS BA",
   "monto": 900000.0,
@@ -1254,6 +1494,14 @@
   "monto": -8900.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-02-24",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -3000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-02-25",
@@ -1305,6 +1553,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-02-26",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-26",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-02-27",
   "desc": "0163991837 Transf. Danitza Andrea",
   "monto": 1000000.0,
@@ -1333,6 +1597,30 @@
   "src": "g66",
   "usd": true,
   "cat_hint": "Colab internacional"
+ },
+ {
+  "date": "2026-02-28",
+  "desc": "MP: Www.make.com",
+  "monto": -9302.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-02-28",
+  "desc": "MP: Mirage (Captions)",
+  "monto": -21951.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-01",
+  "desc": "MP: Venta por suscripción — InmoCRM mensual",
+  "monto": 60000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-02",
@@ -1368,6 +1656,14 @@
   "monto": -9000.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-03-02",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -3300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-03",
@@ -1488,6 +1784,14 @@
   "cat_hint": "Intereses"
  },
  {
+  "date": "2026-03-05",
+  "desc": "MP: Venta por suscripción — Programa Acelerador",
+  "monto": 300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-03-06",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9275.0,
@@ -1521,6 +1825,14 @@
   "monto": -279223.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-03-08",
+  "desc": "MP: Openai Chatgpt",
+  "monto": -18516.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-09",
@@ -1584,6 +1896,22 @@
   "monto": -9355.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-03-09",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 2500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-09",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -2500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-10",
@@ -1660,6 +1988,14 @@
   "src": "g66",
   "usd": true,
   "cat_hint": "Ingresos clientes/Whop"
+ },
+ {
+  "date": "2026-03-10",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -217751.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-11",
@@ -1752,6 +2088,14 @@
   "cat_hint": "Comisiones/Cargos Global66"
  },
  {
+  "date": "2026-03-11",
+  "desc": "MP: Venta por suscripción — InmoCRM IA",
+  "monto": 75000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-03-12",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9197.0,
@@ -1808,6 +2152,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-03-12",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 3500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-12",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -3300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-03-13",
   "desc": "0774466851 Transf. LYL Propiedades",
   "monto": 2000000.0,
@@ -1820,6 +2180,22 @@
   "monto": -9391.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-03-13",
+  "desc": "MP: Atlassian",
+  "monto": -26506.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-14",
+  "desc": "MP: Adobe",
+  "monto": -12138.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-16",
@@ -1962,6 +2338,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-03-20",
+  "desc": "MP: Ingreso de dinero",
+  "monto": 900000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-20",
+  "desc": "MP: Crédito en Cuotas Fijas (3/6)",
+  "monto": -950234.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-03-23",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9409.0,
@@ -2009,6 +2401,14 @@
   "monto": 2000000.0,
   "rut": "01829332",
   "src": "santander"
+ },
+ {
+  "date": "2026-03-23",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 2000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-24",
@@ -2071,6 +2471,14 @@
   "src": "g66",
   "usd": true,
   "cat_hint": "USD→CLP → Banco Chile"
+ },
+ {
+  "date": "2026-03-24",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 2000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-25",
@@ -2157,6 +2565,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-03-26",
+  "desc": "MP: Venta por suscripción — InmoCRM mensual",
+  "monto": 60000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-26",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-03-27",
   "desc": "COM.MANTENCION PLAN",
   "monto": -39387.0,
@@ -2197,6 +2621,14 @@
   "monto": -9490.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-03-29",
+  "desc": "MP: Captions.ai",
+  "monto": -23533.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-03-30",
@@ -2285,6 +2717,22 @@
   "cat_hint": "Ingresos clientes/Whop"
  },
  {
+  "date": "2026-03-30",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -5000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-03-30",
+  "desc": "MP: Www.make.com",
+  "monto": -9972.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-03-31",
   "desc": "Compra FACEBK *M4LDFGMH5",
   "monto": -2213.0,
@@ -2343,6 +2791,14 @@
   "src": "g66",
   "usd": true,
   "cat_hint": "Colab internacional"
+ },
+ {
+  "date": "2026-03-31",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-04-01",
@@ -2422,6 +2878,14 @@
   "monto": -9351.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-04-02",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-04-06",
@@ -2672,6 +3136,14 @@
   "src": "santander"
  },
  {
+  "date": "2026-04-07",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 4760000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-04-08",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9432.0,
@@ -2721,6 +3193,14 @@
   "src": "santander"
  },
  {
+  "date": "2026-04-08",
+  "desc": "MP: Openai Chatgpt",
+  "monto": -18654.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-04-09",
   "desc": "0154461019 Transf.",
   "monto": 1000.0,
@@ -2733,6 +3213,14 @@
   "monto": -17682.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-04-09",
+  "desc": "MP: Venta por suscripción — Programa Acelerador",
+  "monto": 300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-04-10",
@@ -2754,6 +3242,14 @@
   "monto": 100000.0,
   "rut": "07802955",
   "src": "santander"
+ },
+ {
+  "date": "2026-04-10",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -6000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-04-13",
@@ -2882,6 +3378,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-04-13",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1350000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-04-13",
+  "desc": "MP: Atlassian",
+  "monto": -25935.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-04-14",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9170.0,
@@ -2915,6 +3427,14 @@
   "monto": -22007.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-04-14",
+  "desc": "MP: Adobe",
+  "monto": -12138.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-04-15",
@@ -2971,6 +3491,14 @@
   "monto": -21847.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-04-16",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1700000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-04-17",
@@ -3076,6 +3604,14 @@
   "monto": -47585.0,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-04-20",
+  "desc": "MP: Crédito en Cuotas Fijas (4/6)",
+  "monto": -950234.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-04-21",
@@ -3237,6 +3773,14 @@
   "monto": -30000.0,
   "rut": "01935916",
   "src": "santander"
+ },
+ {
+  "date": "2026-04-24",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -2500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-04-26",
@@ -3467,6 +4011,14 @@
   "src": "santander"
  },
  {
+  "date": "2026-04-29",
+  "desc": "MP: Captions.ai",
+  "monto": -22838.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-04-30",
   "desc": "0767956118 Transf. GAETE ARQUITECT",
   "monto": 1000000.0,
@@ -3509,6 +4061,14 @@
   "src": "g66",
   "usd": true,
   "cat_hint": "Colab internacional"
+ },
+ {
+  "date": "2026-04-30",
+  "desc": "MP: Www.make.com",
+  "monto": -9677.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-05-01",
@@ -3677,6 +4237,14 @@
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-05-04",
+  "desc": "MP: Mercado Libre",
+  "monto": -76939.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-05-05",
@@ -3975,6 +4543,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-05-07",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 1200000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-05-07",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -1150000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-05-08",
   "desc": "Cargo por servicio",
   "monto": -10.0,
@@ -4087,12 +4671,28 @@
   "src": "santander"
  },
  {
+  "date": "2026-05-08",
+  "desc": "MP: Openai Chatgpt",
+  "monto": -18213.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-05-09",
   "desc": "Conversión de divisas",
   "monto": -1157.18,
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-05-09",
+  "desc": "MP: Venta por suscripción — Programa Acelerador",
+  "monto": 300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-05-11",
@@ -4327,6 +4927,14 @@
   "src": "santander"
  },
  {
+  "date": "2026-05-13",
+  "desc": "MP: Atlassian",
+  "monto": -26215.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-05-14",
   "desc": "Compra CLAUDE.AI SUBSCRI",
   "monto": -21775.0,
@@ -4375,6 +4983,14 @@
   "src": "santander"
  },
  {
+  "date": "2026-05-14",
+  "desc": "MP: Adobe",
+  "monto": -12138.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-05-15",
   "desc": "Conversión de divisas",
   "monto": -98.0,
@@ -4405,6 +5021,14 @@
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-05-15",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -276590.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-05-17",
@@ -4959,6 +5583,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-05-22",
+  "desc": "MP: Venta por suscripción — InmoCRM IA",
+  "monto": 99000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "MP: Crédito en Cuotas Fijas (5/6)",
+  "monto": -95238.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-05-25",
   "desc": "0782881124 Transf. MG BIENES RAICE",
   "monto": 950000.0,
@@ -5287,6 +5927,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-05-27",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 2700000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "MP: Crédito en Cuotas Fijas (5/6)",
+  "monto": -860299.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-05-28",
   "desc": "77.345.248-2 Transf. SOC DE GE",
   "monto": 1000000.0,
@@ -5437,6 +6093,22 @@
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "MP: Captions.ai",
+  "monto": -22759.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-05-30",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -1525612.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-06-01",
@@ -5695,6 +6367,22 @@
   "src": "g66"
  },
  {
+  "date": "2026-06-02",
+  "desc": "MP: Venta con Link de pago",
+  "monto": 6000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-06-02",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -5000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-06-03",
   "desc": "Compra CLICKUP",
   "monto": -91730.0,
@@ -5943,6 +6631,14 @@
   "src": "santander"
  },
  {
+  "date": "2026-06-04",
+  "desc": "MP: Www.make.com",
+  "monto": -9659.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-06-05",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9192.0,
@@ -6159,6 +6855,22 @@
   "src": "g66"
  },
  {
+  "date": "2026-06-08",
+  "desc": "MP: Openai Chatgpt",
+  "monto": -18256.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-06-08",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -324685.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-06-09",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9463.0,
@@ -6253,6 +6965,14 @@
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-06-09",
+  "desc": "MP: Venta por suscripción — Programa Acelerador",
+  "monto": 300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-06-10",
@@ -6429,6 +7149,22 @@
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-06-13",
+  "desc": "MP: Atlassian",
+  "monto": -26480.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-06-14",
+  "desc": "MP: Adobe",
+  "monto": -12138.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-06-15",
@@ -6637,6 +7373,22 @@
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-06-17",
+  "desc": "MP: Facebook",
+  "monto": -78419.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-06-17",
+  "desc": "MP: Agencia Convierte Spa",
+  "monto": -171563.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-06-18",
@@ -6861,6 +7613,22 @@
   "usd": false,
   "rut": "77881174",
   "src": "santander"
+ },
+ {
+  "date": "2026-06-23",
+  "desc": "MP: Venta — Pago inicial InmoCRM",
+  "monto": 267300.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-06-23",
+  "desc": "MP: Crédito en Cuotas Fijas (6/6)",
+  "monto": -257143.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-06-24",

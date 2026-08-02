@@ -6336,8 +6336,80 @@
  },
  {
   "date": "2026-07-07",
+  "desc": "Abono",
+  "monto": 0.58,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Cargo por servicio",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
   "desc": "Conversión de divisas",
-  "monto": -856272.0,
+  "monto": -936.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Recibido de Whop inc",
+  "monto": 658.2,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Intereses abonados",
+  "monto": 0.81,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Abono",
+  "monto": 1213.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Cargo por servicio",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -1.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Compra en Highlevel agency sub",
+  "monto": -497.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Conversión de divisas",
+  "monto": 856272.0,
   "usd": false,
   "rut": "",
   "src": "g66"
@@ -6377,7 +6449,31 @@
  {
   "date": "2026-07-08",
   "desc": "Conversión de divisas",
-  "monto": -1177431.0,
+  "monto": -1300.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "Abono",
+  "monto": 586.8,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "Cargo por servicio",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "Conversión de divisas",
+  "monto": 1177431.0,
   "usd": false,
   "rut": "",
   "src": "g66"
@@ -6408,6 +6504,54 @@
  },
  {
   "date": "2026-07-09",
+  "desc": "Abono",
+  "monto": 740.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "Cargo por servicio",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "Envío a Patricia acosta",
+  "monto": -400.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "Envío a Elber francisco salazar peña",
+  "monto": -400.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "Envío a cuenta bancaria Acelerador inmobiliario llc",
+  "monto": -48.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "Comisión envío",
+  "monto": -2.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-09",
   "desc": "Recibido de Agencia convierte spa",
   "monto": 617000.0,
   "usd": false,
@@ -6419,6 +6563,22 @@
   "desc": "Envío a Ignacio rivera",
   "monto": -596207.0,
   "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-10",
+  "desc": "Reversa compra con tarjeta",
+  "monto": 1.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-10",
+  "desc": "Envío a Alexander stephan rolf goecke llewelling",
+  "monto": -300.0,
+  "usd": true,
   "rut": "",
   "src": "g66"
  },
@@ -6455,9 +6615,41 @@
   "src": "santander"
  },
  {
+  "date": "2026-07-13",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -1.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-13",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -91.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
   "date": "2026-07-14",
   "desc": "Conversión de divisas",
-  "monto": -17091.0,
+  "monto": -20.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "Conversión de divisas",
+  "monto": 17091.0,
   "usd": false,
   "rut": "",
   "src": "g66"
@@ -6495,6 +6687,22 @@
   "src": "santander"
  },
  {
+  "date": "2026-07-15",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "Reversa compra con tarjeta",
+  "monto": 1.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
   "date": "2026-07-17",
   "desc": "0608050000 PAGO PROVEEDOR TESORER",
   "monto": 2346506.0,
@@ -6509,6 +6717,46 @@
   "usd": false,
   "rut": "77450452",
   "src": "santander"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Conversión de divisas",
+  "monto": 1428.67,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Conversión de divisas",
+  "monto": 512.77,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Envío a Alexander stephan rolf goecke llewelling",
+  "monto": -1250.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Envío a Juan sebastian ospina rios",
+  "monto": -750.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
  },
  {
   "date": "2026-07-17",
@@ -6539,6 +6787,22 @@
   "desc": "Conversión de divisas",
   "monto": -485490.0,
   "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-19",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -10.0,
+  "usd": true,
   "rut": "",
   "src": "g66"
  },
@@ -6696,6 +6960,54 @@
  },
  {
   "date": "2026-07-24",
+  "desc": "Conversión de divisas",
+  "monto": 1185.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Conversión de divisas",
+  "monto": 20.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Envío a Patricia acosta",
+  "monto": -217.5,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Envío a Elber francisco salazar peña",
+  "monto": -267.5,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Envío a cuenta bancaria Josna malave",
+  "monto": -700.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Comisión envío",
+  "monto": -20.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
   "desc": "Recibido de Agencia convierte spa",
   "monto": 1150000.0,
   "usd": false,
@@ -6808,6 +7120,22 @@
  },
  {
   "date": "2026-07-27",
+  "desc": "Conversión de divisas",
+  "monto": 1000.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Envío a Daniel álvarez",
+  "monto": -1000.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-27",
   "desc": "Compra en Highlevel inc.",
   "monto": -9688.0,
   "usd": false,
@@ -6855,6 +7183,30 @@
   "src": "santander"
  },
  {
+  "date": "2026-07-28",
+  "desc": "Abono",
+  "monto": 922.25,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-28",
+  "desc": "Cargo por servicio",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-28",
+  "desc": "Envío a Daniel álvarez",
+  "monto": -900.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
   "date": "2026-07-29",
   "desc": "Compra FACEBK *3W2TDVMJ5",
   "monto": -84066.0,
@@ -6877,6 +7229,14 @@
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-07-29",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
  },
  {
   "date": "2026-07-30",

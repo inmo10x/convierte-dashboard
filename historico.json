@@ -6735,6 +6735,14 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-10",
+  "desc": "Agencia Conviert — pago servicio junio",
+  "monto": 48.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-11",
   "desc": "MP: pago emitido sin detalle de comercio",
   "monto": -76742.0,
@@ -6749,6 +6757,22 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-07-11",
+  "desc": "GitHub — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -4.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-11",
+  "desc": "HighLevel — Corporate Card - 9135 (InmoCRM AC)",
+  "monto": -20.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  },
  {
   "date": "2026-07-12",
@@ -6927,6 +6951,38 @@
   "src": "mp"
  },
  {
+  "date": "2026-07-14",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -4.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -2.18,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -2.09,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -2.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-15",
   "desc": "0774504524 Transf. AGENCIA CONVIER",
   "monto": 373000.0,
@@ -6981,6 +7037,54 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -4.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -5.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -4.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-16",
+  "desc": "Sueldo Guillermo — Abono sueldos prueba movimientos internos",
+  "monto": -100.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-16",
+  "desc": "Sueldo Karim — Abono sueldos prueba movimientos internos",
+  "monto": -100.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-16",
+  "desc": "EXP PUERTO RICO — EXP PR FACTURA 305",
+  "monto": 1680.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  },
  {
   "date": "2026-07-17",
@@ -7095,6 +7199,14 @@
   "src": "mp"
  },
  {
+  "date": "2026-07-17",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -6.52,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-18",
   "desc": "Compra en Highlevel inc.",
   "monto": -10.0,
@@ -7111,12 +7223,124 @@
   "src": "mp"
  },
  {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -20.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -21.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -11.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -9.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -5.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -8.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-19",
   "desc": "Compra en Highlevel inc.",
   "monto": -10.0,
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-19",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -24.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-19",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -22.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-19",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -21.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-19",
+  "desc": "Sueldo Guillermo",
+  "monto": -1081.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-19",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -22.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  },
  {
   "date": "2026-07-20",
@@ -7157,6 +7381,30 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-07-20",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -28.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-20",
+  "desc": "HighLevel — Corporate Card - 9135 (InmoCRM AC)",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-20",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -24.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  },
  {
   "date": "2026-07-21",
@@ -7295,6 +7543,38 @@
   "src": "mp"
  },
  {
+  "date": "2026-07-21",
+  "desc": "Lovable — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -25.11,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -33.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -36.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "HighLevel — Corporate Card - 9135 (InmoCRM AC)",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-22",
   "desc": "Compra en Highlevel inc.",
   "monto": -9584.0,
@@ -7317,6 +7597,46 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-07-22",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -12.85,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-22",
+  "desc": "Sueldo Guillermo",
+  "monto": 100.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-22",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -4.63,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-22",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -12.16,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-22",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -8.11,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  },
  {
   "date": "2026-07-23",
@@ -7381,6 +7701,38 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -27.16,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "Sueldo Guillermo — saldo meta",
+  "monto": 100.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -37.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "Higgsfield — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -49.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  },
  {
   "date": "2026-07-24",
@@ -7503,6 +7855,30 @@
   "src": "mp"
  },
  {
+  "date": "2026-07-24",
+  "desc": "ACELERADOR INMOB — ACELERADOR",
+  "monto": 792.55,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -31.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -3.88,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-25",
   "desc": "Compra en Highlevel inc.",
   "monto": -9688.0,
@@ -7525,6 +7901,30 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-07-25",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -61.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-25",
+  "desc": "Sueldo Guillermo",
+  "monto": -200.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-26",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -61.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  },
  {
   "date": "2026-07-27",
@@ -7687,6 +8087,22 @@
   "src": "mp"
  },
  {
+  "date": "2026-07-27",
+  "desc": "Lisdey Castro — Devolución 1800 Lisdey 6 cuotas - Sent By Karim Emilio Abuhadba ",
+  "monto": -300.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -61.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-28",
   "desc": "0783897598 Transf. AGENCIA DE MARK",
   "monto": 185560.0,
@@ -7717,6 +8133,14 @@
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-28",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -61.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  },
  {
   "date": "2026-07-29",
@@ -7783,6 +8207,14 @@
   "src": "mp"
  },
  {
+  "date": "2026-07-29",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -61.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-30",
   "desc": "Compra FACEBK *HLFY3WVH5",
   "monto": -3430.0,
@@ -7823,6 +8255,22 @@
   "src": "mp"
  },
  {
+  "date": "2026-07-30",
+  "desc": "HighLevel — Corporate Card - 9135 (InmoCRM AC)",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-30",
+  "desc": "NAME-CHEAP.COM* MTXHYO — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -14.98,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
   "date": "2026-07-31",
   "desc": "0780089555 Transf. SBO SERVICIOS A",
   "monto": 1400000.0,
@@ -7853,5 +8301,45 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -20.06,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -13.38,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -20.06,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "Facebook — Karim Emilio Abuhadba Pérez - 0670 (Overhead AC)",
+  "monto": -7.64,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "Sueldo Guillermo",
+  "monto": 200.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  }
 ]

@@ -451,6 +451,7 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
         <option value="">Todas las fuentes</option>
         <option value="santander">Santander</option><option value="g66">Global66</option>
         <option value="whop">Whop</option><option value="mp">Mercado Pago</option>
+        <option value="relay">Relay (LLC)</option>
       </select>
       <input type="text" id="f-search" class="finput" placeholder="Buscar descripción, sub, monto…" oninput="renderTxns()" style="flex:1;min-width:150px;max-width:280px">
       <span id="txn-n" style="margin-left:auto;font-size:10px;color:var(--muted2)"></span>
@@ -603,9 +604,14 @@ const RUT_MAP = {
 };
 const KW_MAP = [
   // ── Transferencias internas G66↔Santander (excluir de gastos) ──────────
-  {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA','MP: RETIRO'],cat:'other', sub:'transferencia_interna'},
+  {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA','MP: RETIRO','ACELERADOR INMOBILIAR'],cat:'other', sub:'transferencia_interna'},
   {kw:['MP: COMISIÓN','MP: COMISION'],                                        cat:'overhead', sub:'financiero'           },
   {kw:['MP: PAGO RECIBIDO'],                                                  cat:'ingreso',  sub:'mercadopago'          },
+  // ── Relay (cuenta USD de la LLC) ────────────────────────────────────────
+  {kw:['SUELDO GUILLERMO','SUELDO KARIM'],                                    cat:'team',     sub:'nomina'               },
+  {kw:['LISDEY CASTRO'],                                                      cat:'other',    sub:'devolucion'           },
+  {kw:['EXP PUERTO RICO'],                                                    cat:'ingreso',  sub:'transferencia'        },
+  {kw:['HIGGSFIELD'],                                                         cat:'overhead', sub:'herramienta'          },
   // ── Comisiones y cargos G66 (overhead bancario) ─────────────────────────
   {kw:['CARGO POR SERVICIO','COMISIÓN ENVÍO','COMISION ENVIO'],               cat:'overhead', sub:'bancario'             },
   // ── Intereses (ingreso financiero menor) ─────────────────────────────────

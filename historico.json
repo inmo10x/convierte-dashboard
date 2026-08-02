@@ -6263,6 +6263,30 @@
   "src": "santander"
  },
  {
+  "date": "2026-07-05",
+  "desc": "MP: pago recibido de cliente (account_money) — Link",
+  "monto": 96200.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-05",
+  "desc": "MP: comisión plataforma",
+  "monto": -3800.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-05",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -96200.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-06",
   "desc": "Venta Moneda Extranjera",
   "monto": 720935.0,
@@ -6301,6 +6325,54 @@
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "MP: pago recibido de cliente (account_money) — Link",
+  "monto": 1346800.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "MP: comisión plataforma",
+  "monto": -53200.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -605366.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 724000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -501161.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -590000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-07",
@@ -6415,6 +6487,22 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-07",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9956.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "MP: comisión plataforma",
+  "monto": -195.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-08",
   "desc": "0774504524 Transf. Agencia Convier",
   "monto": 2033703.0,
@@ -6485,6 +6573,38 @@
   "usd": false,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -18895.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "MP: comisión plataforma",
+  "monto": -370.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -283432.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "MP: comisión plataforma",
+  "monto": -5557.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-09",
@@ -6567,6 +6687,38 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-09",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -23637.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "MP: comisión plataforma",
+  "monto": -463.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "MP: pago recibido de cliente (debit_card) — Checkouts — MACHBANK",
+  "monto": 288600.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "MP: comisión plataforma",
+  "monto": -11400.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-10",
   "desc": "Reversa compra con tarjeta",
   "monto": 1.0,
@@ -6583,12 +6735,52 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-11",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -76742.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-11",
+  "desc": "MP: comisión plataforma",
+  "monto": -1504.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-12",
   "desc": "Envío a Agencia convierte",
   "monto": -20793.0,
   "usd": false,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-12",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 238980.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-12",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 20793.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-12",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -501086.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-13",
@@ -6631,6 +6823,46 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-13",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 900000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-13",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -22453.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-13",
+  "desc": "MP: comisión plataforma",
+  "monto": -440.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-13",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -26944.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-13",
+  "desc": "MP: comisión plataforma",
+  "monto": -528.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-14",
   "desc": "Compra en Highlevel inc.",
   "monto": -10.0,
@@ -6661,6 +6893,38 @@
   "usd": false,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -12138.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -473708.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "MP: comisión plataforma",
+  "monto": -9288.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -373000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-15",
@@ -6701,6 +6965,22 @@
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "MP: pago recibido de cliente (debit_card) — Link — Banco Estado",
+  "monto": 481000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "MP: comisión plataforma",
+  "monto": -19000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-17",
@@ -6791,12 +7071,44 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-17",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 2353835.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -1350000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -485490.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-18",
   "desc": "Compra en Highlevel inc.",
   "monto": -10.0,
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-18",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-19",
@@ -6829,6 +7141,22 @@
   "usd": false,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-20",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-20",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-21",
@@ -6895,12 +7223,100 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-21",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -224319.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 2000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -429000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -954009.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -877142.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "MP: pago recibido de cliente (credit_card) — Link — Banco Falabella",
+  "monto": 1298700.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "MP: comisión plataforma",
+  "monto": -51300.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "MP: pago recibido de cliente (credit_card) — Link — Banco Itaú",
+  "monto": 1635400.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "MP: comisión plataforma",
+  "monto": -64600.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-22",
   "desc": "Compra en Highlevel inc.",
   "monto": -9584.0,
   "usd": false,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-22",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -1200000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-22",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -1200000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-23",
@@ -6941,6 +7357,30 @@
   "usd": false,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 1997554.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-24",
@@ -7039,12 +7479,52 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-24",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -1150000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -21879.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -220797.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-25",
   "desc": "Compra en Highlevel inc.",
   "monto": -9688.0,
   "usd": false,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-07-25",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 633911.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-25",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-27",
@@ -7175,6 +7655,38 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-27",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 670521.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -41000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-28",
   "desc": "0783897598 Transf. AGENCIA DE MARK",
   "monto": 185560.0,
@@ -7239,12 +7751,76 @@
   "src": "g66"
  },
  {
+  "date": "2026-07-29",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -23861.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-29",
+  "desc": "MP: comisión plataforma",
+  "monto": -467.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-29",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -477441.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-29",
+  "desc": "MP: comisión plataforma",
+  "monto": -9361.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
   "date": "2026-07-30",
   "desc": "Compra FACEBK *HLFY3WVH5",
   "monto": -3430.0,
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-07-30",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-30",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 1400000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-30",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -10111.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-30",
+  "desc": "MP: comisión plataforma",
+  "monto": -198.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  },
  {
   "date": "2026-07-31",
@@ -7261,5 +7837,21 @@
   "usd": false,
   "rut": "77450452",
   "src": "santander"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "MP: pago recibido de cliente (account_money)",
+  "monto": 3150000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "MP: reserva pendiente de liberación",
+  "monto": -14268.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
  }
 ]

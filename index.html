@@ -603,7 +603,9 @@ const RUT_MAP = {
 };
 const KW_MAP = [
   // ── Transferencias internas G66↔Santander (excluir de gastos) ──────────
-  {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA'],    cat:'other',    sub:'transferencia_interna'},
+  {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA','MP: RETIRO'],cat:'other', sub:'transferencia_interna'},
+  {kw:['MP: COMISIÓN','MP: COMISION'],                                        cat:'overhead', sub:'financiero'           },
+  {kw:['MP: PAGO RECIBIDO'],                                                  cat:'ingreso',  sub:'mercadopago'          },
   // ── Comisiones y cargos G66 (overhead bancario) ─────────────────────────
   {kw:['CARGO POR SERVICIO','COMISIÓN ENVÍO','COMISION ENVIO'],               cat:'overhead', sub:'bancario'             },
   // ── Intereses (ingreso financiero menor) ─────────────────────────────────

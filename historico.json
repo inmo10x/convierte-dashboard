@@ -6213,5 +6213,693 @@
   "usd": false,
   "rut": "",
   "src": "santander"
+ },
+ {
+  "date": "2026-07-01",
+  "desc": "Traspaso Internet a T. Crédito",
+  "monto": -300607.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-01",
+  "desc": "Compra FACEBK *F4BDMTZ7D",
+  "monto": -103173.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-01",
+  "desc": "Compra FLOW *PROPITEQ",
+  "monto": -48576.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-01",
+  "desc": "Transf.Internet a 77.008.658-2",
+  "monto": -15000.0,
+  "usd": false,
+  "rut": "77008658",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-01",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9514.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-03",
+  "desc": "Compra CLICKUP",
+  "monto": -75960.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "Venta Moneda Extranjera",
+  "monto": 720935.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "0287129203 Transf a Maria Peralta",
+  "monto": -900000.0,
+  "usd": false,
+  "rut": "28712920",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "PAC Movistar 00000141306591",
+  "monto": -53729.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "Compra FACEBK *EFL4AU5J5",
+  "monto": -9785.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-06",
+  "desc": "Compra GAMMA.APP",
+  "monto": -9543.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 590000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Transf.Internet a 77.450.452-4",
+  "monto": -724000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -361369.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -226520.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-07",
+  "desc": "Conversión de divisas",
+  "monto": -856272.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "0774504524 Transf. Agencia Convier",
+  "monto": 2033703.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "Transf.Internet a 28.712.920-3",
+  "monto": -1209509.0,
+  "usd": false,
+  "rut": "28712920",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "Transf.Internet a 15.763.593-K",
+  "monto": -800000.0,
+  "usd": false,
+  "rut": "15763593",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9569.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "Conversión de divisas",
+  "monto": -1177431.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-08",
+  "desc": "Envío a Agencia convierte spa",
+  "monto": -2033703.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "0166105536 Transf. Loreto Isabel A",
+  "monto": 600000.0,
+  "usd": false,
+  "rut": "16610553",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "0774504524 Transf a Global Agencia",
+  "monto": -617000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "Recibido de Agencia convierte spa",
+  "monto": 617000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-09",
+  "desc": "Envío a Ignacio rivera",
+  "monto": -596207.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-12",
+  "desc": "Envío a Agencia convierte",
+  "monto": -20793.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-13",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 952672.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-13",
+  "desc": "Transf.Internet a 77.450.452-4",
+  "monto": -900000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-13",
+  "desc": "Compra WASABIL",
+  "monto": -35688.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "Conversión de divisas",
+  "monto": -17091.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-14",
+  "desc": "Envío a Agencia convierte spa",
+  "monto": -17091.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 373000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "0774504524 Transf. Agencia Convier",
+  "monto": 17091.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-15",
+  "desc": "Transf.Internet a 16.523.408-1",
+  "monto": -400000.0,
+  "usd": false,
+  "rut": "16523408",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "0608050000 PAGO PROVEEDOR TESORER",
+  "monto": 2346506.0,
+  "usd": false,
+  "rut": "60805000",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Transf.Internet a 77.450.452-4",
+  "monto": -2353835.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Recibido de Agencia convierte spa",
+  "monto": 1350000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Conversión de divisas",
+  "monto": -1350000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Recibido de Agencia convierte spa",
+  "monto": 485490.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-17",
+  "desc": "Conversión de divisas",
+  "monto": -485490.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-20",
+  "desc": "0167484352 Transf. VICTORIA PAZ GO",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "16748435",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-20",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -1000000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-20",
+  "desc": "Recibido de Agencia convierte spa",
+  "monto": 707853.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "0779994929 Transf. ASESORIA INMOBI",
+  "monto": 2000000.0,
+  "usd": false,
+  "rut": "77999492",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "0764585496 Transf. HERRERA RODRIGU",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "76458549",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 707853.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -2000000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -1000000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "0774504524 Transf a Global Agencia",
+  "monto": -707853.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -9550.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-21",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -9551.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-22",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -9584.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "0154461019 Transf.",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "15446101",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 747554.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "0099554681 Transf de JOSE ENRIQUE",
+  "monto": 250000.0,
+  "usd": false,
+  "rut": "09955468",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -1997554.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-23",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -9584.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 1150000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "0774504524 Transf a Global Agencia",
+  "monto": -1150000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Recibido de Agencia convierte spa",
+  "monto": 1150000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Conversión de divisas",
+  "monto": -1132345.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Conversión de divisas",
+  "monto": -20118.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-24",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -9688.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-25",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -9688.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "0099554681 Transf de JOSE ENRIQUE",
+  "monto": 750000.0,
+  "usd": false,
+  "rut": "09955468",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "0771452124 Transf. CYM Group SpA",
+  "monto": 650000.0,
+  "usd": false,
+  "rut": "77145212",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "0780089555 Transf. SBO SERVICIOS A",
+  "monto": 100000.0,
+  "usd": false,
+  "rut": "78008955",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -670521.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Transf.Internet a 77.450.452-4",
+  "monto": -633911.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Compra FACEBK *GJW8GVMH5",
+  "monto": -68549.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Compra P.SKOOL.COM/DPJLH",
+  "monto": -47559.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Compra APPLEVEL MO/SUB",
+  "monto": -47540.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Compra PK *ARTISAN R",
+  "monto": -31920.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -9688.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Recibido de Agencia convierte spa",
+  "monto": 300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Compra en Highlevel inc.",
+  "monto": -9652.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Recibido de Agencia convierte spa",
+  "monto": 41000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-27",
+  "desc": "Conversión de divisas",
+  "monto": -969175.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-07-28",
+  "desc": "0783897598 Transf. AGENCIA DE MARK",
+  "monto": 185560.0,
+  "usd": false,
+  "rut": "78389759",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-29",
+  "desc": "Compra FACEBK *3W2TDVMJ5",
+  "monto": -84066.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-29",
+  "desc": "Compra APPLEVEL MO/SUB",
+  "monto": -46822.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-29",
+  "desc": "COM.MANTENCION PLAN",
+  "monto": -40412.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-30",
+  "desc": "Compra FACEBK *HLFY3WVH5",
+  "monto": -3430.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "0780089555 Transf. SBO SERVICIOS A",
+  "monto": 1400000.0,
+  "usd": false,
+  "rut": "78008955",
+  "src": "santander"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -1400000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
  }
 ]

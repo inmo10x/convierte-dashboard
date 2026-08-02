@@ -603,7 +603,7 @@ const RUT_MAP = {
 };
 const KW_MAP = [
   // ── Transferencias internas G66↔Santander (excluir de gastos) ──────────
-  {kw:['CONVERSI'],                                                           cat:'other',    sub:'transferencia_interna'},
+  {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA'],    cat:'other',    sub:'transferencia_interna'},
   // ── Comisiones y cargos G66 (overhead bancario) ─────────────────────────
   {kw:['CARGO POR SERVICIO','COMISIÓN ENVÍO','COMISION ENVIO'],               cat:'overhead', sub:'bancario'             },
   // ── Intereses (ingreso financiero menor) ─────────────────────────────────
@@ -611,6 +611,8 @@ const KW_MAP = [
   // ──────────────────────────────────────────────────────────────────────────
   {kw:['PREVIRED','AFP ','ISAPRE','FONASA','CCAF','COMPIN'],               cat:'team',     sub:'previred'   },
   {kw:['SEBASTIAN CADENA','CADENA CHIQUITO'],                                              cat:'team',sub:'comision'  },
+  {kw:['IGNACIO RIVERA'],                                                                  cat:'team',sub:'comision'  },
+  {kw:['MARIA PERALTA','MARÍA PERALTA'],                                                   cat:'team',sub:'nomina'    },
   {kw:['DANIEL ÁLVAREZ','DANIEL ALVAREZ','DANIEL ÁLVA','DANIEL ALVA'],                     cat:'team',sub:'socio_exp' },
   {kw:['GLOBAL66','JOSNA','PATRICIA PAUL','PATRICIA ACOSTA','JUAN S','MINERVA','CADENA','ELBER','ALEXANDER G','(ALEXANDER','CLARITY PROFITS'],cat:'team',sub:'colab_usd'},
   {kw:['WHOP*'],                                                              cat:'overhead', sub:'herramienta'},  // compra en Whop (suscripción/curso)
@@ -2164,7 +2166,9 @@ async function loadHistorico(){
       const rut   = extractRut(r.desc, r.rut);
       const cat   = categorize(r.desc, rut, monto);
       // cat_hint from G66 overrides when no RUT match
-      return { ...cat, ...r, rut, date: new Date(r.date), monto, montoOrig: r.monto, usd, historico: true };
+      // pd() interpreta 'YYYY-MM-DD' como fecha LOCAL; new Date() lo leería como UTC
+      // y en Chile (UTC-4) correría cada movimiento un día hacia atrás.
+      return { ...cat, ...r, rut, date: pd(r.date), monto, montoOrig: r.monto, usd, historico: true };
     });
     // Re-categorize any txns already in localStorage too (con RUT re-extraído)
     txns = txns.map(t => { const rut=extractRut(t.desc, t.rut); return { ...t, rut, ...categorize(t.desc, rut, t.monto) }; });

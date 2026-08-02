@@ -3679,6 +3679,38 @@
   "src": "g66"
  },
  {
+  "date": "2026-05-04",
+  "desc": "0773099324 Transf. MONTT Y CAYUQUE",
+  "monto": 1500000.0,
+  "usd": false,
+  "rut": "77309932",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-04",
+  "desc": "0105797125 Transf. FABIAN MAURICIO",
+  "monto": 1300000.0,
+  "usd": false,
+  "rut": "10579712",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-04",
+  "desc": "0166080908 Transf a ABUHADBA PEREZ",
+  "monto": -2000000.0,
+  "usd": false,
+  "rut": "16608090",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-04",
+  "desc": "0164956768 Transf a GIMENEZ BURGOS",
+  "monto": -2000000.0,
+  "usd": false,
+  "rut": "16495676",
+  "src": "santander"
+ },
+ {
   "date": "2026-05-05",
   "desc": "Compra HIGHLEVEL INC.",
   "monto": -9295.0,
@@ -3781,6 +3813,14 @@
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-05-05",
+  "desc": "0774504524 Transf. Agencia Convier",
+  "monto": 4500000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
  },
  {
   "date": "2026-05-06",
@@ -3951,6 +3991,30 @@
   "src": "g66"
  },
  {
+  "date": "2026-05-06",
+  "desc": "0779193756 Transf. HOUSEHOLD PROPE",
+  "monto": 400000.0,
+  "usd": false,
+  "rut": "77919375",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-06",
+  "desc": "0773099324 Transf. MONTT Y CAYUQUE",
+  "monto": 380000.0,
+  "usd": false,
+  "rut": "77309932",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-06",
+  "desc": "0165234081 Transf a Yerko Luppi Po",
+  "monto": -400000.0,
+  "usd": false,
+  "rut": "16523408",
+  "src": "santander"
+ },
+ {
   "date": "2026-05-07",
   "desc": "0105559046 Transf. Fernando Javier Loyola Trivino",
   "monto": 250000.0,
@@ -3972,6 +4036,22 @@
   "monto": -21847.0,
   "usd": false,
   "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-07",
+  "desc": "0090707302 Transf. Gonzalo Rodrigo",
+  "monto": 350000.0,
+  "usd": false,
+  "rut": "09070730",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-07",
+  "desc": "0105559046 Transf. Fernando Javier",
+  "monto": 250000.0,
+  "usd": false,
+  "rut": "10555904",
   "src": "santander"
  },
  {
@@ -4085,6 +4165,22 @@
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-05-08",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 1150000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-08",
+  "desc": "0779193756 Transf. HOUSEHOLD PROPE",
+  "monto": 600000.0,
+  "usd": false,
+  "rut": "77919375",
+  "src": "santander"
  },
  {
   "date": "2026-05-09",
@@ -4221,6 +4317,30 @@
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-05-11",
+  "desc": "0774504524 Transf. Agencia Convier",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-11",
+  "desc": "0773713278 PAGO PROVEEDOR eXp CHI",
+  "monto": 627907.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-11",
+  "desc": "0166080908 Transf a ABUHADBA PEREZ",
+  "monto": -1000000.0,
+  "usd": false,
+  "rut": "16608090",
+  "src": "santander"
  },
  {
   "date": "2026-05-12",
@@ -4519,6 +4639,22 @@
   "src": "g66"
  },
  {
+  "date": "2026-05-18",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 276590.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-18",
+  "desc": "0774504524 Transf. Agencia Convier",
+  "monto": 85188.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
   "date": "2026-05-19",
   "desc": "Recibido de Whop inc — Whop inc",
   "monto": 1441.63,
@@ -4543,6 +4679,102 @@
   "src": "g66"
  },
  {
+  "date": "2026-05-19",
+  "desc": "0774504524 Transf. Agencia Convier",
+  "monto": 1830949.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "0774504524 Transf. Agencia Convier",
+  "monto": 190214.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra APPLEVEL MO/SUB",
+  "monto": -45283.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra APPLEVEL MO/SUB",
+  "monto": -45165.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra LOVABLE",
+  "monto": -23423.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra FACEBK *NMDPSMZH5",
+  "monto": -20773.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra FACEBK *2DXKWMVH5",
+  "monto": -12646.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra FACEBK *ZR2PBMMJ5",
+  "monto": -10386.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9242.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9217.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra FACEBK *7ZDPSMZH5",
+  "monto": -5194.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-19",
+  "desc": "Compra FACEBK *CYHTHNRH5",
+  "monto": -5193.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
   "date": "2026-05-20",
   "desc": "Recibido de Monica fantoni — Monica fantoni",
   "monto": 340.0,
@@ -4557,6 +4789,94 @@
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "0774504524 Transf. Agencia Convier",
+  "monto": 1350000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Pago Cuota Crédito N° 420051021575",
+  "monto": -1227761.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Compra FACEBK *YU4CNRD2Q",
+  "monto": -872643.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Compra SKOOL.COM",
+  "monto": -91991.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Compra FACEBK *8WDLGPD8D",
+  "monto": -60348.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Compra FLOW *PROPITEQ",
+  "monto": -48106.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -19061.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "0770086582 Transf a Torpedo Mensaj",
+  "monto": -15000.0,
+  "usd": false,
+  "rut": "77008658",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Compra ZAPSIGN",
+  "monto": -11500.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-20",
+  "desc": "Traspaso Fondo a Tarjeta Crédito",
+  "monto": -5000.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
  },
  {
   "date": "2026-05-21",
@@ -4581,6 +4901,670 @@
   "usd": true,
   "rut": "",
   "src": "g66"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "0773713278 PAGO PROVEEDOR eXp CHI",
+  "monto": 1514671.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "017704041K Transf de JOSE TOMAS BA",
+  "monto": 650000.0,
+  "usd": false,
+  "rut": "17704041",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra FACEBK *BFLKGQV2Q",
+  "monto": -357511.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra FACEBK *PQT2FP58D",
+  "monto": -31051.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra GRUPO DHL EXPRESS",
+  "monto": -17598.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9268.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-22",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9225.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "0782881124 Transf. MG BIENES RAICE",
+  "monto": 950000.0,
+  "usd": false,
+  "rut": "78288112",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -704501.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Transf.Internet a 16.994.268-4",
+  "monto": -500000.0,
+  "usd": false,
+  "rut": "16994268",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra FACEBK *MMK7TR52Q",
+  "monto": -420398.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra LATAM.COM XP OTRA",
+  "monto": -85806.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra FACEBK *8KPZBNVH5",
+  "monto": -70134.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra APPLEVEL MO/SUB",
+  "monto": -45239.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra APPLEVEL MO/SUB",
+  "monto": -45026.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9189.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9189.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9189.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9189.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9189.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-25",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9189.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-26",
+  "desc": "Compra PK *ARTISAN R",
+  "monto": -31920.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-26",
+  "desc": "Compra KFC MACHALI",
+  "monto": -16400.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-26",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9183.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-26",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9183.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra FACEBK *66QTDPRH5",
+  "monto": -70133.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "COM.MANTENCION PLAN",
+  "monto": -39719.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9183.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9174.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9174.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9164.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9160.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9160.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9160.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9160.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9160.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-27",
+  "desc": "COM.MANTENCION PLAN",
+  "monto": -39.719,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-28",
+  "desc": "77.345.248-2 Transf. SOC DE GE",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "77345248",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-28",
+  "desc": "Reverso Compra WebPay",
+  "monto": 17598.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-28",
+  "desc": "Compra APPLEVEL MO/SUB",
+  "monto": -44967.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-28",
+  "desc": "Compra APPLEVEL MO/SUB",
+  "monto": -44967.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-28",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9177.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "0142829290 Transf. BANDERAS MACAYA",
+  "monto": 1800000.0,
+  "usd": false,
+  "rut": "14282929",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "0124727596 Transf. Carolina Cecili",
+  "monto": 250000.0,
+  "usd": false,
+  "rut": "12472759",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Reverso Compra WebPay",
+  "monto": 85806.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Reverso Compra WebPay",
+  "monto": 45239.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Reverso Compra WebPay",
+  "monto": 45026.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Reverso Compra WebPay",
+  "monto": 9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Reverso Compra WebPay",
+  "monto": 9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Reverso Compra WebPay",
+  "monto": 9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Reverso Compra WebPay",
+  "monto": 9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Reverso Compra WebPay",
+  "monto": 9233.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9176.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9176.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9176.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-05-29",
+  "desc": "Compra HIGHLEVEL INC.",
+  "monto": -9139.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
  },
  {
   "date": "2026-06-01",

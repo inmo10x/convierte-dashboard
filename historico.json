@@ -6424,10 +6424,10 @@
  },
  {
   "date": "2026-06-03",
-  "desc": "0287129203 Transf a Maria Peralta Vergaray",
+  "desc": "0287129203 Transf a Maria Peralta Vergaray — finiquito",
   "monto": -1423371.0,
   "usd": false,
-  "rut": "28712920",
+  "rut": "",
   "src": "santander"
  },
  {
@@ -6456,10 +6456,10 @@
  },
  {
   "date": "2026-06-03",
-  "desc": "0287129203 Transf a Maria Peralta Vergaray",
+  "desc": "0287129203 Transf a Maria Peralta Vergaray — finiquito",
   "monto": -781855.0,
   "usd": false,
-  "rut": "28712920",
+  "rut": "",
   "src": "santander"
  },
  {
@@ -7936,10 +7936,10 @@
  },
  {
   "date": "2026-07-06",
-  "desc": "0287129203 Transf a Maria Peralta",
+  "desc": "0287129203 Transf a Maria Peralta — finiquito",
   "monto": -900000.0,
   "usd": false,
-  "rut": "28712920",
+  "rut": "",
   "src": "santander"
  },
  {
@@ -8152,10 +8152,10 @@
  },
  {
   "date": "2026-07-08",
-  "desc": "Transf.Internet a 28.712.920-3",
+  "desc": "Transf.Internet a 28.712.920-3 — finiquito",
   "monto": -1209509.0,
   "usd": false,
-  "rut": "28712920",
+  "rut": "",
   "src": "santander"
  },
  {
@@ -9864,7 +9864,7 @@
  },
  {
   "date": "2026-07-30",
-  "desc": "MP: Ignacio Rivera Zamora",
+  "desc": "MP: Ignacio Rivera Zamora — finiquito",
   "monto": -1500000.0,
   "usd": false,
   "rut": "",

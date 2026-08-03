@@ -1101,6 +1101,9 @@ function extractRut(desc,rutCol){
 
 function categorize(desc,rut,monto){
   const d=desc.toUpperCase();
+  // Costo único de salida: manda sobre el mapa de RUT, porque es la misma
+  // persona pero el pago no es sueldo recurrente.
+  if(/FINIQUITO|INDEMNIZAC/.test(d)) return {name:desc.slice(0,50),cat:'team',sub:'finiquito'};
   if(RUT_MAP[rut]) return {...RUT_MAP[rut]};
   for(const rule of KW_MAP) if(rule.kw.some(k=>d.includes(k))) return {name:desc.slice(0,50),cat:rule.cat,sub:rule.sub};
   return {name:desc.slice(0,50),cat:monto>0?'ingreso':'other',sub:monto>0?'transferencia':'sin_clasificar'};
@@ -1144,8 +1147,10 @@ function plData(m){
   const bc=(cat,sub)=>ft.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&t.monto<0).reduce((s,t)=>s+Math.abs(t.monto),0);
   const pauta=bc('pauta');
   const nomina=bc('team','nomina'), previred=bc('team','previred'), colabUSD=bc('team','colab_usd'), comision=bc('team','comision');
-  const teamOth=ft.filter(t=>t.cat==='team'&&t.monto<0&&!['nomina','previred','colab_usd','comision'].includes(t.sub)).reduce((s,t)=>s+Math.abs(t.monto),0);
-  const totalTeam=nomina+previred+colabUSD+comision+teamOth;
+  const finiquito=bc('team','finiquito');
+  const teamOth=ft.filter(t=>t.cat==='team'&&t.monto<0&&!['nomina','previred','colab_usd','comision','finiquito'].includes(t.sub)).reduce((s,t)=>s+Math.abs(t.monto),0);
+  const totalTeam=nomina+previred+colabUSD+comision+finiquito+teamOth;
+  const teamRec=totalTeam-finiquito;   // costo recurrente, sin costos únicos de salida
   const herr=bc('overhead','herramienta'), arr=bc('overhead','arriendo'), adv=bc('overhead','advisory');
   const banc=bc('overhead','bancario'), tel=bc('overhead','telecom'), reu=bc('overhead','reuniones');
   const mue=bc('overhead','muebles'), of=bc('overhead','oficina'), fin=bc('overhead','financiero'), free=bc('overhead','freelance');
@@ -1171,7 +1176,7 @@ function plData(m){
   const vencidoUSD=cuotas.filter(c=>!c.pagado&&c.porPagar>0&&c.venc<now).reduce((s,c)=>s+c.porPagar,0);
   return {cobUSD,cobCLP,cobVUSD,ventaUSD,arUSD,whopUSD,trUSD,mpUSD,
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
-          pauta,nomina,previred,colabUSD,comision,teamOth,totalTeam,
+          pauta,nomina,previred,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
           herr,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,
           sii,cred,totalTax,mb,res,vencidoUSD,
           tRate:ventaUSD?cobVUSD/ventaUSD*100:0};
@@ -1462,6 +1467,7 @@ function renderPL(){
   ${row('PREVIRED',pls.map(p=>p.previred),'rs',true)}
   ${row('Colabs internacionales USD',pls.map(p=>p.colabUSD),'rs',true)}
   ${row('Comisiones (Claudia/Sebastián)',pls.map(p=>p.comision),'rs',true)}
+  ${row('Finiquitos e indemnizaciones',pls.map(p=>p.finiquito),'rs',true)}
   ${row('= TOTAL TEAM',pls.map(p=>p.totalTeam),'rt',true)}
   ${rowp('% del ingreso',pls.map(p=>p.totalTeam),pls.map(p=>p.ingTot))}
   ${sec('(-) OVERHEAD')}

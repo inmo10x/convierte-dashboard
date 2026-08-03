@@ -7928,7 +7928,7 @@
  },
  {
   "date": "2026-07-06",
-  "desc": "Venta Moneda Extranjera",
+  "desc": "Venta Moneda Extranjera — eXp MX servicios mayo",
   "monto": 720935.0,
   "usd": false,
   "rut": "",
@@ -8424,7 +8424,7 @@
  },
  {
   "date": "2026-07-12",
-  "desc": "MP: Guillermo Gimenez Burgos (recibida)",
+  "desc": "MP: Regalías Simvoly",
   "monto": 238980.0,
   "usd": false,
   "rut": "",
@@ -9248,7 +9248,7 @@
  },
  {
   "date": "2026-07-22",
-  "desc": "Sueldo Guillermo",
+  "desc": "Relay: préstamo interno (a devolver)",
   "monto": 100.0,
   "usd": true,
   "rut": "",
@@ -9352,7 +9352,7 @@
  },
  {
   "date": "2026-07-23",
-  "desc": "Sueldo Guillermo — saldo meta",
+  "desc": "Relay: préstamo interno (a devolver)",
   "monto": 100.0,
   "usd": true,
   "rut": "",
@@ -9976,7 +9976,7 @@
  },
  {
   "date": "2026-07-31",
-  "desc": "Sueldo Guillermo",
+  "desc": "Relay: préstamo interno (a devolver)",
   "monto": 200.0,
   "usd": true,
   "rut": "",

@@ -627,7 +627,12 @@ const KW_MAP = [
   // ── Comisiones y cargos G66 (overhead bancario) ─────────────────────────
   {kw:['CARGO POR SERVICIO','COMISIÓN ENVÍO','COMISION ENVIO'],               cat:'overhead', sub:'bancario'             },
   // ── Intereses (ingreso financiero menor) ─────────────────────────────────
-  {kw:['INTERESES ABONADOS','INTERESES PAGADOS'],                             cat:'ingreso',  sub:'intereses'            },
+  // ── Ingresos NO operacionales (no son venta: van bajo la línea) ─────────
+  {kw:['INTERESES ABONADOS','INTERESES PAGADOS','TESORER','REGAL'],           cat:'ingreso',  sub:'no_operacional'       },
+  // ── Reversos de compras: ni ingreso ni gasto ────────────────────────────
+  {kw:['REVERSO','REVERSA'],                                                  cat:'other',    sub:'reverso'              },
+  // ── Préstamo interno entre cuentas propias (a devolver) ─────────────────
+  {kw:['PRÉSTAMO INTERNO','PRESTAMO INTERNO'],                                cat:'other',    sub:'prestamo'             },
   // ──────────────────────────────────────────────────────────────────────────
   {kw:['PREVIRED','AFP ','ISAPRE','FONASA','CCAF','COMPIN'],               cat:'team',     sub:'previred'   },
   {kw:['SEBASTIAN CADENA','CADENA CHIQUITO'],                                              cat:'team',sub:'comision'  },
@@ -1145,11 +1150,25 @@ function plData(m){
   const totalOH=herr+arr+adv+banc+tel+reu+mue+of+fin+free+bc('overhead','aseo');
   const sii=bc('impuestos','sii'), cred=bc('impuestos','credito');
   const totalTax=sii+cred;
-  const mb=cobCLP-pauta, res=mb-totalTeam-totalOH-totalTax;
+  // ── INGRESOS: desde los movimientos bancarios (base caja, igual que los gastos) ──
+  // Operacionales = ventas. No operacionales = intereses, beneficios tributarios,
+  // regalías. Las transferencias internas y préstamos quedan fuera (cat 'other').
+  const ins=ft.filter(t=>t.cat==='ingreso'&&t.monto>0);
+  const ingOp   = ins.filter(t=>t.sub!=='no_operacional').reduce((s,t)=>s+t.monto,0);
+  const ingNoOp = ins.filter(t=>t.sub==='no_operacional').reduce((s,t)=>s+t.monto,0);
+  const ingTot  = ingOp+ingNoOp;
+  // Cada movimiento se convierte con el TC de su mes (vale también para el agregado)
+  const ingOpUSD= ins.filter(t=>t.sub!=='no_operacional').reduce((s,t)=>s+t.monto/tcFor(t.date),0);
+  // Desglose de ingresos operacionales por origen
+  const ingWhop = ins.filter(t=>t.sub==='whop').reduce((s,t)=>s+t.monto,0);
+  const ingMP   = ins.filter(t=>t.sub==='mercadopago').reduce((s,t)=>s+t.monto,0);
+  const ingTrf  = ingOp-ingWhop-ingMP;
+  const mb=ingOp-pauta, res=mb+ingNoOp-totalTeam-totalOH-totalTax;
   // AR vencido (cuotas no pagadas con vencimiento pasado)
   const now=new Date();
   const vencidoUSD=cuotas.filter(c=>!c.pagado&&c.porPagar>0&&c.venc<now).reduce((s,c)=>s+c.porPagar,0);
   return {cobUSD,cobCLP,cobVUSD,ventaUSD,arUSD,whopUSD,trUSD,mpUSD,
+          ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
           pauta,nomina,previred,colabUSD,comision,teamOth,totalTeam,
           herr,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,
           sii,cred,totalTax,mb,res,vencidoUSD,
@@ -1207,39 +1226,39 @@ function renderExec(){
   // KPIs
   set('x-fact', fmu(d.ventaUSD,0));
   set('x-fact-d', deltaHTML(curM.ventaUSD, prevM?.ventaUSD, dlbl));
-  set('x-cash', fmu(d.cobUSD,0));
-  set('x-cash-d', deltaHTML(curM.cobUSD, prevM?.cobUSD, dlbl));
+  set('x-cash', fmu(d.ingOpUSD,0));
+  set('x-cash-d', deltaHTML(curM.ingOpUSD, prevM?.ingOpUSD, dlbl));
   const ganUSD=d.res/r;
   const gEl=document.getElementById('x-gan');
   if(gEl){gEl.innerHTML=(ganUSD<0?'-':'')+fmu(ganUSD,0);gEl.className='xv '+(ganUSD>=0?'pos':'neg');}
   set('x-gan-d', deltaHTML(curM.res, prevM?.res, dlbl));
-  const mar=d.cobCLP?d.res/d.cobCLP*100:0;
+  const mar=d.ingTot?d.res/d.ingTot*100:0;
   const mEl=document.getElementById('x-mar');
   if(mEl){mEl.textContent=mar.toFixed(1)+'%';mEl.className='xv '+(mar>=CONFIG.metaMargen?'pos':mar>=0?'warn':'neg');}
-  const marCur=curM.cobCLP?curM.res/curM.cobCLP*100:null;
-  const marPrev=prevM&&prevM.cobCLP?prevM.res/prevM.cobCLP*100:null;
+  const marCur=curM.ingTot?curM.res/curM.ingTot*100:null;
+  const marPrev=prevM&&prevM.ingTot?prevM.res/prevM.ingTot*100:null;
   set('x-mar-d', marPrev!=null&&marCur!=null
     ?`<span class="${marCur>=marPrev?'pos':'neg'}">${marCur>=marPrev?'▲':'▼'} ${Math.abs(marCur-marPrev).toFixed(1)} p.p.</span> <span style="color:var(--muted);font-weight:400">${dlbl}</span>`
     :`<span style="color:var(--muted)">—</span>`);
 
   // Sparklines — serie mensual completa
   sparkSVG('sp-fact', pls.map(p=>p.ventaUSD), CONFIG.accent);
-  sparkSVG('sp-cash', pls.map(p=>p.cobUSD), CONFIG.accent);
+  sparkSVG('sp-cash', pls.map(p=>p.ingOpUSD), CONFIG.accent);
   sparkSVG('sp-gan',  pls.map(p=>p.res),    CONFIG.accent);
-  sparkSVG('sp-mar',  pls.map(p=>p.cobCLP?p.res/p.cobCLP*100:0), CONFIG.accent);
+  sparkSVG('sp-mar',  pls.map(p=>p.ingTot?p.res/p.ingTot*100:0), CONFIG.accent);
 
   // Meta mensual — cobros del mes en curso (o seleccionado) vs meta
   const meta=+(document.getElementById('meta-usd')?.value)||CONFIG.metaMensualUSD;
-  const prog=meta?curM.cobUSD/meta*100:0;
+  const prog=meta?curM.ingOpUSD/meta*100:0;
   const xm=document.getElementById('x-meta');
   if(xm){xm.textContent=`${Math.min(999,prog).toFixed(0)}%`;xm.className='xv '+(prog>=100?'pos':prog>=70?'warn':'neg');}
   const bar=document.getElementById('x-meta-bar');
   if(bar){bar.style.width=Math.min(prog,100)+'%';bar.style.background=prog>=100?'var(--green)':prog>=70?'var(--accent)':'var(--red)';}
-  set('x-meta-d', deltaHTML(curM.cobUSD, prevM?.cobUSD, dlbl));
-  set('x-meta-s', `${fmu(curM.cobUSD,0)} / ${fmu(meta,0)} · ${ml(ms[li])}`);
+  set('x-meta-d', deltaHTML(curM.ingOpUSD, prevM?.ingOpUSD, dlbl));
+  set('x-meta-s', `${fmu(curM.ingOpUSD,0)} / ${fmu(meta,0)} · ${ml(ms[li])}`);
 
   // Evolución Cobros vs Gastos — real (sólido) + proyección del escenario activo (punteado)
-  set('x-evo-hero', fmu(d.cobUSD,0));
+  set('x-evo-hero', fmu(d.ingOpUSD,0));
   if(_charts.evo)_charts.evo.destroy();
   const evoC=document.getElementById('c-evo');
   if(evoC){
@@ -1249,8 +1268,8 @@ function renderExec(){
     const nA=ms.length, nP=proj.length;
     const pad=n=>Array(n).fill(null);
     // La serie proyectada arranca en el último punto real para conectar las líneas
-    const cobA=[...pls.map(p=>p.cobUSD), ...pad(nP)];
-    const cobP=[...pad(nA-1), pls[nA-1].cobUSD, ...proj.map(b=>b.cob)];
+    const cobA=[...pls.map(p=>p.ingOpUSD), ...pad(nP)];
+    const cobP=[...pad(nA-1), pls[nA-1].ingOpUSD, ...proj.map(b=>b.cob)];
     const gasA=[...pls.map(gUSD), ...pad(nP)];
     const gasP=[...pad(nA-1), gUSD(pls[nA-1]), ...proj.map(b=>b.gastoCLP/r)];
     _charts.evo=new Chart(evoC.getContext('2d'),{
@@ -1274,8 +1293,8 @@ function renderExec(){
   }
 
   // Cobros por canal — dona con paleta categórica validada
-  const otros=Math.max(0,d.cobUSD-d.whopUSD-d.trUSD-d.mpUSD);
-  const canal=[['Whop',d.whopUSD],['Transferencia',d.trUSD],['Mercado Pago',d.mpUSD],['Otros',otros]].filter(x=>x[1]>0.5);
+  const tcP=TC_MENSUAL[activeMonth]||r;
+  const canal=[['Transferencias',d.ingTrf/tcP],['Mercado Pago',d.ingMP/tcP],['Whop',d.ingWhop/tcP]].filter(x=>x[1]>0.5);
   if(_charts.canal)_charts.canal.destroy();
   const ccv=document.getElementById('c-canal');
   if(ccv&&canal.length){
@@ -1285,7 +1304,7 @@ function renderExec(){
         backgroundColor:['#3987e5','#199e70','#c98500','#9085e9'],borderWidth:2,borderColor:'#15151a'}]},
       options:{responsive:true,cutout:'66%',
         plugins:{legend:{position:'bottom',labels:{color:'#a0a0ab',font:{size:10},padding:8,boxWidth:10}},
-        tooltip:{callbacks:{label:c=>` ${c.label}: ${fmu(c.raw,0)} (${d.cobUSD?(c.raw/d.cobUSD*100).toFixed(0):0}%)`}}}}
+        tooltip:{callbacks:{label:c=>` ${c.label}: ${fmu(c.raw,0)} (${d.ingOpUSD?(c.raw/d.ingOpUSD*100).toFixed(0):0}%)`}}}}
     });
   } else if(ccv&&_charts.canal){_charts.canal.destroy();_charts.canal=null;}
 
@@ -1303,8 +1322,8 @@ function renderExec(){
 
   // Insights de acción (reglas sobre los datos del periodo)
   const ins=[];
-  if(prog>=100) ins.push({ic:'🏆',bg:'#0d2a18',t:'Meta mensual alcanzada',b:`Cash collected de ${ml(ms[li])} llegó a ${fmu(curM.cobUSD,0)} — ${prog.toFixed(0)}% de la meta de ${fmu(meta,0)}.`});
-  else ins.push({ic:'🎯',bg:'#2a2000',t:`Faltan ${fmu(Math.max(0,meta-curM.cobUSD),0)} para la meta`,b:`Avance ${prog.toFixed(0)}% de ${fmu(meta,0)} en ${ml(ms[li])}. Revisa el forecast de cuotas en Comercial.`});
+  if(prog>=100) ins.push({ic:'🏆',bg:'#0d2a18',t:'Meta mensual alcanzada',b:`Cash collected de ${ml(ms[li])} llegó a ${fmu(curM.ingOpUSD,0)} — ${prog.toFixed(0)}% de la meta de ${fmu(meta,0)}.`});
+  else ins.push({ic:'🎯',bg:'#2a2000',t:`Faltan ${fmu(Math.max(0,meta-curM.ingOpUSD),0)} para la meta`,b:`Avance ${prog.toFixed(0)}% de ${fmu(meta,0)} en ${ml(ms[li])}. Revisa el forecast de cuotas en Comercial.`});
   if(d.vencidoUSD>0) ins.push({ic:'⚠️',bg:'#2a0808',t:`${fmu(d.vencidoUSD,0)} vencido sin pagar`,b:'Hay cuotas vencidas que requieren gestión de cobranza — detalle en Comercial → AR.'});
   else if(d.arUSD>0) ins.push({ic:'💵',bg:'#0f1e38',t:`AR pendiente ${fmu(d.arUSD,0)}`,b:`Tasa de cobro ${d.tRate.toFixed(0)}% y sin cuotas vencidas. Mantener el ritmo de confirmación de pagos.`});
   if(mar>=CONFIG.metaMargen) ins.push({ic:'📈',bg:'#0d2a18',t:`Margen neto ${mar.toFixed(1)}% — sobre objetivo`,b:`Por encima del ${CONFIG.metaMargen}% objetivo. La estructura de costos actual es sostenible.`});
@@ -1341,14 +1360,14 @@ function renderKPIs(){
   document.getElementById('k-venc-s').textContent=d.vencidoUSD>0?'⚠ Requiere gestión':'✓ Sin vencidos';
   // P&L — valores en USD usando rate() manual; CLP en subtítulo
   const r=rate();
-  setK('k-ing',   fmt(d.cobCLP), `${fmu(d.cobUSD)} × $${r}`);
-  const pctSub=(v)=>d.cobCLP?`${fmt(v)} · ${(v/d.cobCLP*100).toFixed(1)}% ing`:'—';
+  setK('k-ing',   fmt(d.ingOp), `${fmu(d.ingOpUSD,0)} · ventas cobradas`);
+  const pctSub=(v)=>d.ingTot?`${fmt(v)} · ${(v/d.ingTot*100).toFixed(1)}% ing`:'—';
   setK('k-pauta', fmu(d.pauta/r,0),     pctSub(d.pauta));
   setK('k-team',  fmu(d.totalTeam/r,0), pctSub(d.totalTeam));
   setK('k-oh',    fmu(d.totalOH/r,0),   pctSub(d.totalOH));
   const rEl=document.getElementById('k-res');
   rEl.innerHTML=fmu(d.res/r,0); rEl.className='val '+(d.res>=0?'pos':'neg');
-  document.getElementById('k-res-p').innerHTML=pct(d.cobCLP?d.res/d.cobCLP*100:0)+' margen · '+fmt(d.res);
+  document.getElementById('k-res-p').innerHTML=pct(d.ingTot?d.res/d.ingTot*100:0)+' margen · '+fmt(d.res);
 }
 function setK(id,val,sub){ document.getElementById(id).innerHTML=val; document.getElementById(id+'-s').textContent=sub; }
 
@@ -1427,22 +1446,22 @@ function renderPL(){
 
   document.getElementById('pl-container').innerHTML=`<div class="twrap"><table>
   <thead>${th}</thead><tbody>
-  ${sec('INGRESOS (Cobros Diarios → CLP)')}
-  ${row('Cobros totales',pls.map(p=>p.cobCLP))}
-  ${row('↳ Whop',pls.map(p=>p.whopUSD*rate()),'rs')}
-  ${row('↳ Transferencia',pls.map(p=>p.trUSD*rate()),'rs')}
-  ${row('↳ Mercado Pago',pls.map(p=>p.mpUSD*rate()),'rs')}
+  ${sec('INGRESOS OPERACIONALES (movimientos bancarios)')}
+  ${row('Ventas cobradas',pls.map(p=>p.ingOp))}
+  ${row('↳ Transferencias y otros',pls.map(p=>p.ingTrf),'rs')}
+  ${row('↳ Mercado Pago',pls.map(p=>p.ingMP),'rs')}
+  ${row('↳ Whop',pls.map(p=>p.ingWhop),'rs')}
   ${sec('(-) PAUTA DIGITAL')}
   ${row('Meta / Google Ads',pls.map(p=>p.pauta),'',true)}
   ${row('= MARGEN BRUTO',pls.map(p=>p.mb),'rt')}
-  ${rowp('% margen bruto',pls.map(p=>p.mb),pls.map(p=>p.cobCLP))}
+  ${rowp('% margen bruto',pls.map(p=>p.mb),pls.map(p=>p.ingOp))}
   ${sec('(-) TEAM SPEND')}
   ${row('Nómina (7 empleados)',pls.map(p=>p.nomina),'rs',true)}
   ${row('PREVIRED',pls.map(p=>p.previred),'rs',true)}
   ${row('Colabs internacionales USD',pls.map(p=>p.colabUSD),'rs',true)}
   ${row('Comisiones (Claudia/Sebastián)',pls.map(p=>p.comision),'rs',true)}
   ${row('= TOTAL TEAM',pls.map(p=>p.totalTeam),'rt',true)}
-  ${rowp('% del ingreso',pls.map(p=>p.totalTeam),pls.map(p=>p.cobCLP))}
+  ${rowp('% del ingreso',pls.map(p=>p.totalTeam),pls.map(p=>p.ingTot))}
   ${sec('(-) OVERHEAD')}
   ${row('Herramientas (GHL/AppLevel/Skool)',pls.map(p=>p.herr),'rs',true)}
   ${row('Advisory / Asesoría',pls.map(p=>p.adv),'rs',true)}
@@ -1451,15 +1470,19 @@ function renderPL(){
   ${row('Telecom',pls.map(p=>p.tel),'rs',true)}
   ${row('Otros (reuniones/aseo/insumos)',pls.map(p=>p.reu+p.mue+p.of+p.fin+p.free),'rs',true)}
   ${row('= TOTAL OVERHEAD',pls.map(p=>p.totalOH),'rt',true)}
-  ${rowp('% del ingreso',pls.map(p=>p.totalOH),pls.map(p=>p.cobCLP))}
+  ${rowp('% del ingreso',pls.map(p=>p.totalOH),pls.map(p=>p.ingTot))}
   ${sec('(-) FINANCIERO E IMPUESTOS')}
   ${row('Crédito bancario',pls.map(p=>p.cred),'rs',true)}
   ${row('PPM / SII',pls.map(p=>p.sii),'rs',true)}
+  ${sec('(+) INGRESOS NO OPERACIONALES')}
+  ${row('Intereses, beneficios tributarios, regalías',pls.map(p=>p.ingNoOp),'rs')}
   ${sec('')}
   ${row('RESULTADO NETO',pls.map(p=>p.res),'rr')}
-  ${rowp('% margen neto',pls.map(p=>p.res),pls.map(p=>p.cobCLP))}
+  ${rowp('% margen neto',pls.map(p=>p.res),pls.map(p=>p.ingTot))}
   </tbody></table></div>
-  <div style="padding:7px 14px;font-size:10px;color:var(--muted)">* PREVIRED se imputa al mes de la remuneración (devengo): el pago bancario ocurre el mes siguiente. En Movimientos aparece con su fecha real de pago.</div>`;
+  <div style="padding:7px 14px;font-size:10px;color:var(--muted)">
+    * Ingresos y gastos salen de los movimientos bancarios (base caja). Quedan fuera: transferencias entre cuentas propias, préstamos internos y reversos de compras.<br>
+    * PREVIRED se imputa al mes de la remuneración (devengo): el pago bancario ocurre el mes siguiente. En Movimientos aparece con su fecha real de pago.</div>`;
 }
 
 // ─── Closer Table ───────────────────────────────

@@ -1123,6 +1123,9 @@ function lineaDe(t){
   const d=(t.desc||'').toUpperCase();
   if(t.sub==='socio_exp') return 'exp';
   if(/AGENCY SUB|INMOCRM/.test(d)) return 'exp';
+  // Dos suscripciones GHL cada mes desde enero: la de ~US$297 es Agencia
+  // Convierte y la de ~US$495 es InmoCRM eXp. Solo se distinguen por monto.
+  if(/HIGHLEVEL AGENCY/.test(d)) return Math.abs(t.monto)/tcFor(t.date)>400?'exp':'acelerador';
   if(t.src==='mp' && /HIGHLEVEL/.test(d)) return 'exp';
   if(/EXP CHILE|EXP PUERTO RICO|EXP MX|EXP BRASIL|EXP COLOMBIA|EXP PERU|EXP ECUADOR/.test(d)) return 'exp';
   if(t.src==='g66' && /^ABONO/.test(d) && !/CLIENTE/.test(d)) return 'exp';

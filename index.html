@@ -1112,12 +1112,23 @@ function categorize(desc,rut,monto){
 // ═══════════════════════════════════════════════
 // COMPUTE
 // ═══════════════════════════════════════════════
+// Consumo GHL refacturado a eXp por mes (USD). Es un pass-through: lo que se
+// le cobra a los países ES su consumo, así que sirve para separar la parte
+// variable de GHL que le corresponde. El resto de los cargos variables
+// (mensajería y WhatsApp de la cuenta Agencia Convierte) queda en Acelerador.
+// Fuente: panel GHL → wallet por sub-cuenta. Meses en null: todo a Acelerador.
+const GHL_EXP_MENSUAL = {
+  '2026-01': null, '2026-02': null, '2026-03': null, '2026-04': null,
+  '2026-05': null, '2026-06': 1149.08, '2026-07': 1186.88, '2026-08': null,
+};
+
 // ══════════════════════════════
 // LÍNEA DE NEGOCIO
 // ══════════════════════════════
 // 'exp' = InmoCRM eXp: negocio externo que administra Daniel (50% del líquido).
 //   Ingresos: fees de los 8 países. Costos directos: cuenta GHL de US$495 con sus
-//   variables (consumo de las cuentas matriz, cargado vía MP y Relay) + Daniel.
+//   variables. La parte variable se separa por el monto refacturado, no por
+//   la cuenta desde la que se pagó (ver GHL_EXP_MENSUAL).
 // 'acelerador' = el resto del negocio, con toda la nómina, pauta y overhead.
 function lineaDe(t){
   const d=(t.desc||'').toUpperCase();
@@ -1126,7 +1137,6 @@ function lineaDe(t){
   // Dos suscripciones GHL cada mes desde enero: la de ~US$297 es Agencia
   // Convierte y la de ~US$495 es InmoCRM eXp. Solo se distinguen por monto.
   if(/HIGHLEVEL AGENCY/.test(d)) return Math.abs(t.monto)/tcFor(t.date)>400?'exp':'acelerador';
-  if(t.src==='mp' && /HIGHLEVEL/.test(d)) return 'exp';
   if(/EXP CHILE|EXP PUERTO RICO|EXP MX|EXP BRASIL|EXP COLOMBIA|EXP PERU|EXP ECUADOR/.test(d)) return 'exp';
   if(t.src==='g66' && /^ABONO/.test(d) && !/CLIENTE/.test(d)) return 'exp';
   return 'acelerador';
@@ -1176,7 +1186,7 @@ function plData(m){
   const herr=bc('overhead','herramienta'), arr=bc('overhead','arriendo'), adv=bc('overhead','advisory');
   const banc=bc('overhead','bancario'), tel=bc('overhead','telecom'), reu=bc('overhead','reuniones');
   const mue=bc('overhead','muebles'), of=bc('overhead','oficina'), fin=bc('overhead','financiero'), free=bc('overhead','freelance');
-  const totalOH=herr+arr+adv+banc+tel+reu+mue+of+fin+free+bc('overhead','aseo');
+  const totalOH0=herr+arr+adv+banc+tel+reu+mue+of+fin+free+bc('overhead','aseo');
   const sii=bc('impuestos','sii'), cred=bc('impuestos','credito');
   const totalTax=sii+cred;
   // ── INGRESOS: desde los movimientos bancarios (base caja, igual que los gastos) ──
@@ -1195,15 +1205,22 @@ function plData(m){
   const ingMP   = ins.filter(t=>t.sub==='mercadopago').reduce((s,t)=>s+t.monto,0);
   const ingTrf  = ingOp-ingWhop-ingMP;
   const mb=ingOp-pauta;
-  // ── Resultado operacional (Acelerador) ──
-  const gastoAcel=pauta+totalTeam+totalOH+totalTax;
-  const resAcel  =ingOp-gastoAcel;
   // ── eXp / InmoCRM: negocio externo, con sus propios ingresos y costos ──
   const ingExp   =ftE.filter(t=>t.monto>0).reduce((s,t)=>s+t.monto,0);
   const expDaniel=ftE.filter(t=>t.monto<0&&t.sub==='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0);
-  const expGHL   =ftE.filter(t=>t.monto<0&&t.sub!=='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0);
+  // Consumo variable refacturado: se mueve desde overhead de Acelerador a eXp.
+  // Nunca más de lo que efectivamente se pagó de GHL variable ese mes.
+  const meses   = m?[m]:[...new Set(ft.map(txnMk))];
+  const ghlVar  = ftA.filter(t=>t.monto<0&&/highlevel/i.test(t.desc)&&!/AGENCY/i.test(t.desc))
+                     .reduce((s,t)=>s+Math.abs(t.monto),0);
+  const ghlRef  = Math.min(ghlVar, meses.reduce((s,k)=>s+(GHL_EXP_MENSUAL[k]||0)*(TC_MENSUAL[k]||r),0));
+  const expGHL  =ftE.filter(t=>t.monto<0&&t.sub!=='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0)+ghlRef;
   const gastoExp =expDaniel+expGHL;
   const resExp   =ingExp-gastoExp;
+  // ── Resultado operacional (Acelerador), ya neto del consumo refacturado ──
+  const totalOH  =totalOH0-ghlRef, herrNeta=herr-ghlRef;
+  const gastoAcel=pauta+totalTeam+totalOH+totalTax;
+  const resAcel  =ingOp-gastoAcel;
   // ── Resultado neto = operacional + eXp + otros no operacionales ──
   const ingTot=ingOp+ingExp+ingNoOp;          // todo lo cobrado
   const res=resAcel+resExp+ingNoOp;
@@ -1214,7 +1231,7 @@ function plData(m){
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
           gastoAcel,resAcel,ingExp,expDaniel,expGHL,gastoExp,resExp,
           pauta,nomina,previred,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
-          herr,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,
+          herr:herrNeta,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,ghlRef,
           sii,cred,totalTax,mb,res,vencidoUSD,
           tRate:ventaUSD?cobVUSD/ventaUSD*100:0};
 }
@@ -1524,7 +1541,7 @@ function renderPL(){
   ${sec('eXp / INMOCRM — NEGOCIO EXTERNO')}
   ${row('Fees cobrados (8 países)',pls.map(p=>p.ingExp),'rs')}
   ${row('Daniel — 50% del líquido',pls.map(p=>p.expDaniel),'rs',true)}
-  ${row('GHL InmoCRM (US$495 + consumo matriz)',pls.map(p=>p.expGHL),'rs',true)}
+  ${row('GHL InmoCRM (US$495 + consumo refacturado)',pls.map(p=>p.expGHL),'rs',true)}
   ${row('= RESULTADO eXp',pls.map(p=>p.resExp),'rt')}
   ${sec('(+) OTROS NO OPERACIONALES')}
   ${row('Intereses, beneficios tributarios, regalías',pls.map(p=>p.ingNoOp),'rs')}
@@ -1534,7 +1551,7 @@ function renderPL(){
   </tbody></table></div>
   <div style="padding:7px 14px;font-size:10px;color:var(--muted)">
     * Ingresos y gastos salen de los movimientos bancarios (base caja). Quedan fuera: transferencias entre cuentas propias, préstamos internos y reversos de compras.<br>
-    * eXp/InmoCRM se presenta aparte: es un negocio externo que administra Daniel. Sus costos directos son la cuenta GHL de US$495 con el consumo de las matrices y el 50% del líquido de Daniel. Las ~4 h/mes de Karim en facturación y cobranza quedan dentro de Acelerador.<br>
+    * eXp/InmoCRM se presenta aparte: es un negocio externo que administra Daniel. Sus costos directos son la cuenta GHL de US$495, el consumo variable que se le refactura (pass-through: lo que se le cobra a los países es su consumo) y el 50% del líquido de Daniel. Falta cargar el consumo refacturado de enero a mayo — mientras tanto queda en overhead de Acelerador. Las ~4 h/mes de Karim en facturación y cobranza quedan dentro de Acelerador.<br>
     * PREVIRED se imputa al mes de la remuneración (devengo): el pago bancario ocurre el mes siguiente. En Movimientos aparece con su fecha real de pago.</div>`;
 }
 

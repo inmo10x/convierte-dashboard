@@ -1112,6 +1112,23 @@ function categorize(desc,rut,monto){
 // ═══════════════════════════════════════════════
 // COMPUTE
 // ═══════════════════════════════════════════════
+// ══════════════════════════════
+// LÍNEA DE NEGOCIO
+// ══════════════════════════════
+// 'exp' = InmoCRM eXp: negocio externo que administra Daniel (50% del líquido).
+//   Ingresos: fees de los 8 países. Costos directos: cuenta GHL de US$495 con sus
+//   variables (consumo de las cuentas matriz, cargado vía MP y Relay) + Daniel.
+// 'acelerador' = el resto del negocio, con toda la nómina, pauta y overhead.
+function lineaDe(t){
+  const d=(t.desc||'').toUpperCase();
+  if(t.sub==='socio_exp') return 'exp';
+  if(/AGENCY SUB|INMOCRM/.test(d)) return 'exp';
+  if(t.src==='mp' && /HIGHLEVEL/.test(d)) return 'exp';
+  if(/EXP CHILE|EXP PUERTO RICO|EXP MX|EXP BRASIL|EXP COLOMBIA|EXP PERU|EXP ECUADOR/.test(d)) return 'exp';
+  if(t.src==='g66' && /^ABONO/.test(d) && !/CLIENTE/.test(d)) return 'exp';
+  return 'acelerador';
+}
+
 // Mes contable de un movimiento. PREVIRED se paga el mes siguiente al de las
 // remuneraciones → se imputa (devenga) al mes anterior al del pago.
 function txnMk(t){
@@ -1144,11 +1161,13 @@ function plData(m){
   const whopUSD = fc.filter(x=>x.metodo==='Whop').reduce((s,x)=>s+x.monto,0);
   const trUSD   = fc.filter(x=>x.metodo==='Transferencia').reduce((s,x)=>s+x.monto,0);
   const mpUSD   = fc.filter(x=>x.metodo==='Mercado Pago').reduce((s,x)=>s+x.monto,0);
-  const bc=(cat,sub)=>ft.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&t.monto<0).reduce((s,t)=>s+Math.abs(t.monto),0);
+  // Los subtotales operacionales miran solo Acelerador; eXp va aparte
+  const ftA=ft.filter(t=>lineaDe(t)!=='exp'), ftE=ft.filter(t=>lineaDe(t)==='exp');
+  const bc=(cat,sub)=>ftA.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&t.monto<0).reduce((s,t)=>s+Math.abs(t.monto),0);
   const pauta=bc('pauta');
   const nomina=bc('team','nomina'), previred=bc('team','previred'), colabUSD=bc('team','colab_usd'), comision=bc('team','comision');
   const finiquito=bc('team','finiquito');
-  const teamOth=ft.filter(t=>t.cat==='team'&&t.monto<0&&!['nomina','previred','colab_usd','comision','finiquito'].includes(t.sub)).reduce((s,t)=>s+Math.abs(t.monto),0);
+  const teamOth=ftA.filter(t=>t.cat==='team'&&t.monto<0&&!['nomina','previred','colab_usd','comision','finiquito'].includes(t.sub)).reduce((s,t)=>s+Math.abs(t.monto),0);
   const totalTeam=nomina+previred+colabUSD+comision+finiquito+teamOth;
   const teamRec=totalTeam-finiquito;   // costo recurrente, sin costos únicos de salida
   const herr=bc('overhead','herramienta'), arr=bc('overhead','arriendo'), adv=bc('overhead','advisory');
@@ -1160,22 +1179,37 @@ function plData(m){
   // ── INGRESOS: desde los movimientos bancarios (base caja, igual que los gastos) ──
   // Operacionales = ventas. No operacionales = intereses, beneficios tributarios,
   // regalías. Las transferencias internas y préstamos quedan fuera (cat 'other').
-  const ins=ft.filter(t=>t.cat==='ingreso'&&t.monto>0);
+  const ins=ftA.filter(t=>t.cat==='ingreso'&&t.monto>0);
   const ingOp   = ins.filter(t=>t.sub!=='no_operacional').reduce((s,t)=>s+t.monto,0);
   const ingNoOp = ins.filter(t=>t.sub==='no_operacional').reduce((s,t)=>s+t.monto,0);
-  const ingTot  = ingOp+ingNoOp;
   // Cada movimiento se convierte con el TC de su mes (vale también para el agregado)
-  const ingOpUSD= ins.filter(t=>t.sub!=='no_operacional').reduce((s,t)=>s+t.monto/tcFor(t.date),0);
+  // Cash Collected del panel = ventas cobradas de ambas líneas, cada movimiento
+  // convertido con el TC de su mes (vale también para el agregado del período)
+  const ingOpUSD= ins.filter(t=>t.sub!=='no_operacional').reduce((s,t)=>s+t.monto/tcFor(t.date),0)
+                + ftE.filter(t=>t.monto>0).reduce((s,t)=>s+t.monto/tcFor(t.date),0);
   // Desglose de ingresos operacionales por origen
   const ingWhop = ins.filter(t=>t.sub==='whop').reduce((s,t)=>s+t.monto,0);
   const ingMP   = ins.filter(t=>t.sub==='mercadopago').reduce((s,t)=>s+t.monto,0);
   const ingTrf  = ingOp-ingWhop-ingMP;
-  const mb=ingOp-pauta, res=mb+ingNoOp-totalTeam-totalOH-totalTax;
+  const mb=ingOp-pauta;
+  // ── Resultado operacional (Acelerador) ──
+  const gastoAcel=pauta+totalTeam+totalOH+totalTax;
+  const resAcel  =ingOp-gastoAcel;
+  // ── eXp / InmoCRM: negocio externo, con sus propios ingresos y costos ──
+  const ingExp   =ftE.filter(t=>t.monto>0).reduce((s,t)=>s+t.monto,0);
+  const expDaniel=ftE.filter(t=>t.monto<0&&t.sub==='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0);
+  const expGHL   =ftE.filter(t=>t.monto<0&&t.sub!=='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0);
+  const gastoExp =expDaniel+expGHL;
+  const resExp   =ingExp-gastoExp;
+  // ── Resultado neto = operacional + eXp + otros no operacionales ──
+  const ingTot=ingOp+ingExp+ingNoOp;          // todo lo cobrado
+  const res=resAcel+resExp+ingNoOp;
   // AR vencido (cuotas no pagadas con vencimiento pasado)
   const now=new Date();
   const vencidoUSD=cuotas.filter(c=>!c.pagado&&c.porPagar>0&&c.venc<now).reduce((s,c)=>s+c.porPagar,0);
   return {cobUSD,cobCLP,cobVUSD,ventaUSD,arUSD,whopUSD,trUSD,mpUSD,
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
+          gastoAcel,resAcel,ingExp,expDaniel,expGHL,gastoExp,resExp,
           pauta,nomina,previred,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
           herr,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,
           sii,cred,totalTax,mb,res,vencidoUSD,
@@ -1453,7 +1487,7 @@ function renderPL(){
 
   document.getElementById('pl-container').innerHTML=`<div class="twrap"><table>
   <thead>${th}</thead><tbody>
-  ${sec('INGRESOS OPERACIONALES (movimientos bancarios)')}
+  ${sec('ACELERADOR — INGRESOS OPERACIONALES')}
   ${row('Ventas cobradas',pls.map(p=>p.ingOp))}
   ${row('↳ Transferencias y otros',pls.map(p=>p.ingTrf),'rs')}
   ${row('↳ Mercado Pago',pls.map(p=>p.ingMP),'rs')}
@@ -1482,7 +1516,14 @@ function renderPL(){
   ${sec('(-) FINANCIERO E IMPUESTOS')}
   ${row('Crédito bancario',pls.map(p=>p.cred),'rs',true)}
   ${row('PPM / SII',pls.map(p=>p.sii),'rs',true)}
-  ${sec('(+) INGRESOS NO OPERACIONALES')}
+  ${row('= RESULTADO OPERACIONAL (Acelerador)',pls.map(p=>p.resAcel),'rt')}
+  ${rowp('% margen operacional',pls.map(p=>p.resAcel),pls.map(p=>p.ingOp))}
+  ${sec('eXp / INMOCRM — NEGOCIO EXTERNO')}
+  ${row('Fees cobrados (8 países)',pls.map(p=>p.ingExp),'rs')}
+  ${row('Daniel — 50% del líquido',pls.map(p=>p.expDaniel),'rs',true)}
+  ${row('GHL InmoCRM (US$495 + consumo matriz)',pls.map(p=>p.expGHL),'rs',true)}
+  ${row('= RESULTADO eXp',pls.map(p=>p.resExp),'rt')}
+  ${sec('(+) OTROS NO OPERACIONALES')}
   ${row('Intereses, beneficios tributarios, regalías',pls.map(p=>p.ingNoOp),'rs')}
   ${sec('')}
   ${row('RESULTADO NETO',pls.map(p=>p.res),'rr')}
@@ -1490,6 +1531,7 @@ function renderPL(){
   </tbody></table></div>
   <div style="padding:7px 14px;font-size:10px;color:var(--muted)">
     * Ingresos y gastos salen de los movimientos bancarios (base caja). Quedan fuera: transferencias entre cuentas propias, préstamos internos y reversos de compras.<br>
+    * eXp/InmoCRM se presenta aparte: es un negocio externo que administra Daniel. Sus costos directos son la cuenta GHL de US$495 con el consumo de las matrices y el 50% del líquido de Daniel. Las ~4 h/mes de Karim en facturación y cobranza quedan dentro de Acelerador.<br>
     * PREVIRED se imputa al mes de la remuneración (devengo): el pago bancario ocurre el mes siguiente. En Movimientos aparece con su fecha real de pago.</div>`;
 }
 

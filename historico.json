@@ -7985,7 +7985,7 @@
  {
   "date": "2026-07-05",
   "desc": "MP: pago recibido de cliente (account_money) — Link",
-  "monto": 96200.0,
+  "monto": 100000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8049,7 +8049,7 @@
  {
   "date": "2026-07-06",
   "desc": "MP: pago recibido de cliente (account_money) — Link",
-  "monto": 1346800.0,
+  "monto": 1400000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8129,7 +8129,7 @@
  {
   "date": "2026-07-07",
   "desc": "Abono",
-  "monto": 0.58,
+  "monto": 945.65,
   "usd": true,
   "rut": "",
   "src": "g66"
@@ -8209,7 +8209,7 @@
  {
   "date": "2026-07-07",
   "desc": "MP: Www.make.com",
-  "monto": -9956.0,
+  "monto": -9761.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8297,7 +8297,7 @@
  {
   "date": "2026-07-08",
   "desc": "MP: Openai Chatgpt",
-  "monto": -18895.0,
+  "monto": -18525.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8313,7 +8313,7 @@
  {
   "date": "2026-07-08",
   "desc": "MP: Highlevel Inc.",
-  "monto": -283432.0,
+  "monto": -277875.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8409,7 +8409,7 @@
  {
   "date": "2026-07-09",
   "desc": "MP: Captions.ai",
-  "monto": -23637.0,
+  "monto": -23174.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8425,7 +8425,7 @@
  {
   "date": "2026-07-09",
   "desc": "MP: pago recibido de cliente (debit_card) — Checkouts — MACHBANK",
-  "monto": 288600.0,
+  "monto": 300000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8465,7 +8465,7 @@
  {
   "date": "2026-07-11",
   "desc": "MP: Highlevel Inc.",
-  "monto": -76742.0,
+  "monto": -75238.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8577,7 +8577,7 @@
  {
   "date": "2026-07-13",
   "desc": "MP: Claude Ai",
-  "monto": -22453.0,
+  "monto": -22013.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8593,7 +8593,7 @@
  {
   "date": "2026-07-13",
   "desc": "MP: Atlassian",
-  "monto": -26944.0,
+  "monto": -26416.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8649,7 +8649,7 @@
  {
   "date": "2026-07-14",
   "desc": "MP: Highlevel Inc.",
-  "monto": -473708.0,
+  "monto": -464420.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -8745,7 +8745,7 @@
  {
   "date": "2026-07-15",
   "desc": "MP: pago recibido de cliente (debit_card) — Link — Banco Estado",
-  "monto": 481000.0,
+  "monto": 500000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -9233,7 +9233,7 @@
  {
   "date": "2026-07-21",
   "desc": "MP: pago recibido de cliente (credit_card) — Link — Banco Falabella",
-  "monto": 1298700.0,
+  "monto": 1350000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -9249,7 +9249,7 @@
  {
   "date": "2026-07-21",
   "desc": "MP: pago recibido de cliente (credit_card) — Link — Banco Itaú",
-  "monto": 1635400.0,
+  "monto": 1700000.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -9897,7 +9897,7 @@
  {
   "date": "2026-07-29",
   "desc": "MP: Captions.ai",
-  "monto": -23861.0,
+  "monto": -23394.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -9913,7 +9913,7 @@
  {
   "date": "2026-07-29",
   "desc": "MP: Highlevel Inc.",
-  "monto": -477441.0,
+  "monto": -468080.0,
   "usd": false,
   "rut": "",
   "src": "mp"
@@ -9961,7 +9961,7 @@
  {
   "date": "2026-07-30",
   "desc": "MP: Www.make.com",
-  "monto": -10111.0,
+  "monto": -9913.0,
   "usd": false,
   "rut": "",
   "src": "mp"

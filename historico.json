@@ -652,6 +652,22 @@
   "src": "mp"
  },
  {
+  "date": "2026-01-27",
+  "desc": "COMISION MANTENCION PLAN",
+  "monto": -13349.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-01-27",
+  "desc": "IVA POR COMISION/CARGOS",
+  "monto": -2536.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
   "date": "2026-01-28",
   "desc": "COM.MANTENCION PLAN",
   "monto": -39327.0,
@@ -1142,6 +1158,22 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-02-10",
+  "desc": "COMISION MANTENCION PLAN",
+  "monto": -13339.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-02-10",
+  "desc": "IVA POR COMISION/CARGOS",
+  "monto": -2534.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
  },
  {
   "date": "2026-02-11",
@@ -1725,6 +1757,22 @@
   "cat_hint": "Colaborador Intl (Minerva)"
  },
  {
+  "date": "2026-03-03",
+  "desc": "COMISION MANTENCION PLAN",
+  "monto": -5497.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-03-03",
+  "desc": "IVA POR COMISION/CARGOS",
+  "monto": -1045.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
   "date": "2026-03-04",
   "desc": "Compra FACEBK *J846DHM2Q",
   "monto": -595000.0,
@@ -1906,6 +1954,22 @@
   "src": "mp"
  },
  {
+  "date": "2026-03-09",
+  "desc": "TEF 15708431-3 ESPINOZA LEON J",
+  "monto": 500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-03-09",
+  "desc": "TEF 77450452-4 Agencia Convier",
+  "monto": -500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
   "date": "2026-03-10",
   "desc": "0166080908 Transf a Karim Abuhadba",
   "monto": -1000000.0,
@@ -1988,6 +2052,22 @@
   "usd": false,
   "rut": "",
   "src": "mp"
+ },
+ {
+  "date": "2026-03-10",
+  "desc": "TEF 16380971-0 CAROLINA FUENTE",
+  "monto": 250000.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-03-10",
+  "desc": "TEF 77450452-4 Agencia Convier",
+  "monto": -250000.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
  },
  {
   "date": "2026-03-11",
@@ -9981,5 +10061,61 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "TEF 76136939-3 REDSOLUCION A",
+  "monto": 500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "COMISION MANTENCION PLAN",
+  "monto": -13542.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "IVA POR COMISION/CARGOS",
+  "monto": -2573.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "COMISION MANTENCION PLAN",
+  "monto": -13655.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "IVA POR COMISION/CARGOS",
+  "monto": -2594.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "COMISION MANTENCION PLAN",
+  "monto": -13721.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-07-31",
+  "desc": "IVA POR COMISION/CARGOS",
+  "monto": -2607.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
  }
 ]

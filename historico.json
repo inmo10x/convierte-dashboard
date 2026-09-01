@@ -10117,5 +10117,1709 @@
   "usd": false,
   "rut": "",
   "src": "scotiabank"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "Conversión de divisas",
+  "monto": -857116.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "Recibido de Agencia convierte spa — Agencia convierte spa",
+  "monto": 860000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "Envío a Daniel álvarez — Daniel álvarez",
+  "monto": -900.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "Conversión de divisas",
+  "monto": 900.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -650156.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -40500.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -697390.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -565457.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -860000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -1098339.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -340000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 451308.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "Facebook — Business Checking",
+  "monto": -7.65,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "Facebook — Business Checking",
+  "monto": -20.08,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "Facebook — Business Checking",
+  "monto": -13.39,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-01",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-02",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-02",
+  "desc": "Facebook — Business Checking",
+  "monto": -18.08,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-02",
+  "desc": "Facebook — Business Checking",
+  "monto": -2.58,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "TEF 77450452-4 Agencia Convier",
+  "monto": -451308.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -177495.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -254798.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -38501.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -29113.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "Facebook — Business Checking",
+  "monto": -61.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-04",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 500805.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-04",
+  "desc": "Facebook — Business Checking",
+  "monto": -63.72,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-04",
+  "desc": "HighLevel — Business Checking",
+  "monto": -25.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -333333.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -48605.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9144.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9144.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "HighLevel — Business Checking",
+  "monto": -297.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "Facebook — Business Checking",
+  "monto": -61.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9144.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9144.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9543.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9144.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-06",
+  "desc": "Facebook — Business Checking",
+  "monto": -107.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "TEF 76136939-3 REDSOLUCION A",
+  "monto": 450000.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "TEF 77450452-4 Agencia Convier",
+  "monto": -450000.0,
+  "usd": false,
+  "rut": "",
+  "src": "scotiabank"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9115.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9115.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9115.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -453055.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: comisión plataforma",
+  "monto": -9061.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9115.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9115.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: comisión plataforma",
+  "monto": -182.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -295000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 450000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "HighLevel — Business Checking",
+  "monto": -100.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "ClickUp — Business Checking",
+  "monto": -80.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-07",
+  "desc": "Google — Business Checking",
+  "monto": -204.29,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-08",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -18277.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-08",
+  "desc": "MP: comisión plataforma",
+  "monto": -365.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-08",
+  "desc": "Facebook — Business Checking",
+  "monto": -107.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-09",
+  "desc": "MP: pago recibido de cliente (debit_card) — Checkouts — MACHBANK",
+  "monto": 300000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-09",
+  "desc": "MP: comisión plataforma",
+  "monto": -11400.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-09",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 734590.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "SOCIEDAD GASTRONOMICA I — Sueldo Karim",
+  "monto": -20.07,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "HighLevel — Business Checking",
+  "monto": -166.23,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "SOCIEDAD COM RODRIGUEZ — Sueldo Karim",
+  "monto": -34.32,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "ASOMEDUC RANCAGUA — Sueldo Karim",
+  "monto": -14.2,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "HIP LIDER RANCAGUA — Sueldo Karim",
+  "monto": -17.75,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "Facebook — Business Checking",
+  "monto": -107.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "Cargo por servicio",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "Abono",
+  "monto": 690.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -910830.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "HIGHLEVEL LLC — Business Checking",
+  "monto": -119.87,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "HIGHLEVEL LLC — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "GitHub — Business Checking",
+  "monto": -4.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "HIGHLEVEL LLC — Business Checking",
+  "monto": -80.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "MINI RESTAURANT — Sueldo Karim",
+  "monto": -90.73,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-11",
+  "desc": "MENTAL — Sueldo Karim",
+  "monto": -20.2,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "Abono",
+  "monto": 768.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "Cargo por servicio",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9163.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "MP: comisión plataforma",
+  "monto": -183.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9163.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "MP: comisión plataforma",
+  "monto": -183.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9163.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "MP: comisión plataforma",
+  "monto": -183.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -9163.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "MP: comisión plataforma",
+  "monto": -183.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "HIGHLEVEL LLC — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "HIGHLEVEL LLC — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "Facebook — Business Checking",
+  "monto": -107.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-13",
+  "desc": "Envío a Patricia acosta — Patricia acosta",
+  "monto": -500.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-13",
+  "desc": "Envío a Elber francisco salazar peña — Elber francisco salazar peña",
+  "monto": -500.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-13",
+  "desc": "CAFE KUPA — Sueldo Karim",
+  "monto": -23.84,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-13",
+  "desc": "ANTHROPIC* CLAUDE SUB — Sueldo Karim",
+  "monto": -20.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-13",
+  "desc": "Facebook — Business Checking",
+  "monto": -107.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-14",
+  "desc": "HighLevel — Business Checking",
+  "monto": -300.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-14",
+  "desc": "VARSOVIENNE PORTAL RANC — Sueldo Karim",
+  "monto": -8.02,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-14",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-14",
+  "desc": "Skool — Business Checking",
+  "monto": -9.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-15",
+  "desc": "DECATHLON OPEN KENNEDY — Sueldo Karim",
+  "monto": -44.29,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-15",
+  "desc": "COPEC 60044 — Sueldo Karim",
+  "monto": -33.22,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-15",
+  "desc": "Facebook — Business Checking",
+  "monto": -107.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-15",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-15",
+  "desc": "Facebook — Business Checking",
+  "monto": -107.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "GRDS — Sueldo Karim",
+  "monto": -21.01,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "COPEC ZERVO — Sueldo Karim",
+  "monto": -33.22,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "TUU*emporioApoquindo — Sueldo Karim",
+  "monto": -2.26,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "TUU*mrcellTechnology — Sueldo Karim",
+  "monto": -11.07,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "7024 JV MO MALL EGANA — Sueldo Karim",
+  "monto": -4.87,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "SABA ARAUCO PAO — Sueldo Karim",
+  "monto": -3.66,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "IKEA — Sueldo Karim",
+  "monto": -22.07,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "IKEA — Sueldo Karim",
+  "monto": -9.56,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "TOTTUS KENNEDY II — Sueldo Karim",
+  "monto": -10.61,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-16",
+  "desc": "TOTTUS PLAZA EGANA — Sueldo Karim",
+  "monto": -6.41,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "Abono",
+  "monto": 14.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "Cargo por servicio",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "POWER PRO SERVICE CLEVE — Sueldo Karim",
+  "monto": -2.32,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "EC RED SALUD RANCAGUA — Sueldo Karim",
+  "monto": -1.22,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "PANADERIA EL DANES LIM — Sueldo Karim",
+  "monto": -7.3,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "Facebook — Business Checking",
+  "monto": -262.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "CLINICA REDSALUD RANCAG — Sueldo Karim",
+  "monto": -4.23,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "CUGAT BAQUEDANO — Sueldo Karim",
+  "monto": -32.74,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "Lovable — Business Checking",
+  "monto": -25.65,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "HighLevel — Business Checking",
+  "monto": -250.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "HighLevel — Business Checking",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-19",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 780000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-19",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -734009.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-19",
+  "desc": "Facebook — Business Checking",
+  "monto": -262.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-19",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-19",
+  "desc": "HighLevel — InmoCRM eXp",
+  "monto": -250.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-20",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-21",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -12138.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-21",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -26282.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-21",
+  "desc": "MP: comisión plataforma",
+  "monto": -525.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-21",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 708000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-21",
+  "desc": "POWER PRO — Sueldo Karim",
+  "monto": -2.3,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-21",
+  "desc": "Uber — Sueldo Karim",
+  "monto": -6.14,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-21",
+  "desc": "Uber — Sueldo Karim",
+  "monto": -1.1,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-21",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-22",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-22",
+  "desc": "MP: pago recibido de cliente (credit_card) — Link — Santander",
+  "monto": 333333.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-22",
+  "desc": "MP: comisión plataforma",
+  "monto": -12667.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-22",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-22",
+  "desc": "RANCAGUA-783 — Sueldo Karim",
+  "monto": -16.3,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-22",
+  "desc": "Facebook — Business Checking",
+  "monto": -262.08,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-22",
+  "desc": "SPARTA RANCAGUA PLAZA A — Sueldo Karim",
+  "monto": -18.87,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-23",
+  "desc": "DULCECITA — Sueldo Karim",
+  "monto": -4.4,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-23",
+  "desc": "Higgsfield — Business Checking",
+  "monto": -49.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-23",
+  "desc": "MERCADOPAGO*RUSSELLSAND — Sueldo Karim",
+  "monto": -30.14,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-24",
+  "desc": "MP: pago recibido de cliente (credit_card) — Link — Santander",
+  "monto": 2000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-24",
+  "desc": "MP: comisión plataforma",
+  "monto": -76000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-24",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -1350000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-24",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -188000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-24",
+  "desc": "COPEC 60266 — Sueldo Karim",
+  "monto": -34.12,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-24",
+  "desc": "HighLevel — InmoCRM eXp",
+  "monto": -261.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-24",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-25",
+  "desc": "MP: pago recibido de cliente (bank_transfer)",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-25",
+  "desc": "RANCAGUA — Sueldo Karim",
+  "monto": -12.54,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-25",
+  "desc": "Anthropic — Business Checking",
+  "monto": -5.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-25",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-26",
+  "desc": "Facebook — Business Checking",
+  "monto": -87.05,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-26",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-26",
+  "desc": "Facebook — Business Checking",
+  "monto": -32.77,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-26",
+  "desc": "Facebook — Business Checking",
+  "monto": -57.34,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-26",
+  "desc": "Facebook — Business Checking",
+  "monto": -86.02,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-27",
+  "desc": "MP: pago recibido de cliente (credit_card) — Link — Santander",
+  "monto": 666667.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-27",
+  "desc": "MP: comisión plataforma",
+  "monto": -25333.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-27",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-28",
+  "desc": "Uber — Sueldo Karim",
+  "monto": -5.78,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-28",
+  "desc": "PETS RANCAGUA — Sueldo Karim",
+  "monto": -8.62,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-28",
+  "desc": "UNIMARC MACHALI — Sueldo Karim",
+  "monto": -52.04,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "Conversión de divisas",
+  "monto": -1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "Recibido de Agencia convierte spa — Agencia convierte spa",
+  "monto": 1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "Comisión envío",
+  "monto": -20.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "Envío a cuenta bancaria Josna malave — Josna Malave",
+  "monto": -560.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "Envío a Daniel álvarez — Daniel álvarez",
+  "monto": -1100.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "Envío a Alexander stephan rolf goecke llewelling — Alexander stephan rolf goecke llewelling",
+  "monto": -340.0,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "Conversión de divisas",
+  "monto": 1578.13,
+  "usd": true,
+  "rut": "",
+  "src": "g66"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "MP: retiro a cuenta bancaria propia",
+  "monto": -1500000.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -23121.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "MP: comisión plataforma",
+  "monto": -462.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "CHEVICRISPY — Sueldo Karim",
+  "monto": -3.81,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "POWER PRO — Sueldo Karim",
+  "monto": -0.66,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-29",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-30",
+  "desc": "DULCES ZUVIC — Sueldo Karim",
+  "monto": -1.09,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-30",
+  "desc": "TUU*laBenjamina — Sueldo Karim",
+  "monto": -14.71,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-30",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-30",
+  "desc": "Facebook — Business Checking",
+  "monto": -32.76,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-30",
+  "desc": "HighLevel — InmoCRM eXp",
+  "monto": -250.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-30",
+  "desc": "SABA ARAUCO SAN ANTONIO — Sueldo Karim",
+  "monto": -2.02,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-30",
+  "desc": "MP: reserva pendiente de liberación",
+  "monto": -9993.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-31",
+  "desc": "MP: pago emitido sin detalle de comercio",
+  "monto": -118028.0,
+  "usd": false,
+  "rut": "",
+  "src": "mp"
+ },
+ {
+  "date": "2026-08-31",
+  "desc": "ZAPSIGN — Business Checking",
+  "monto": -12.12,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-31",
+  "desc": "HighLevel — InmoCRM AC",
+  "monto": -10.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
+ },
+ {
+  "date": "2026-08-31",
+  "desc": "Facebook — Business Checking",
+  "monto": -230.18,
+  "usd": true,
+  "rut": "",
+  "src": "relay"
  }
 ]

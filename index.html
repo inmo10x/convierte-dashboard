@@ -684,7 +684,7 @@ const rate = () => parseFloat(document.getElementById('usd-rate').value)||950;
 // Fuente oficial: sii.cl → Valores y Fechas → Dólar observado (promedio mensual)
 const TC_MENSUAL = {
   '2026-01': 884, '2026-02': 862, '2026-03': 910, '2026-04': 898,
-  '2026-05': 898, '2026-06': 903, '2026-07': 931, '2026-08': null,
+  '2026-05': 898, '2026-06': 903, '2026-07': 931, '2026-08': 917.66,
 };
 function tcFor(d){
   const k = d instanceof Date ? mk(d) : String(d||'').slice(0,7);
@@ -1120,7 +1120,7 @@ function categorize(desc,rut,monto){
 // Fuente: panel GHL → wallet por sub-cuenta. Meses en null: todo a Acelerador.
 const GHL_EXP_MENSUAL = {
   '2026-01': null, '2026-02': null, '2026-03': null, '2026-04': null,
-  '2026-05': null, '2026-06': 1149.08, '2026-07': 1186.88, '2026-08': null,
+  '2026-05': null, '2026-06': 1149.08, '2026-07': 1186.88, '2026-08': 1966.64,
 };
 
 // ══════════════════════════════
@@ -1134,7 +1134,7 @@ const GHL_EXP_MENSUAL = {
 function lineaDe(t){
   const d=(t.desc||'').toUpperCase();
   if(t.sub==='socio_exp') return 'exp';
-  if(/AGENCY SUB|INMOCRM/.test(d)) return 'exp';
+  if(/AGENCY SUB|INMOCRM EXP/.test(d)) return 'exp';
   // Dos suscripciones GHL cada mes desde enero: la de ~US$297 es Agencia
   // Convierte y la de ~US$495 es InmoCRM eXp. Solo se distinguen por monto.
   if(/HIGHLEVEL AGENCY/.test(d)) return Math.abs(t.monto)/tcFor(t.date)>400?'exp':'acelerador';

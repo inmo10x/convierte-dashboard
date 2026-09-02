@@ -618,12 +618,12 @@ const KW_MAP = [
   {kw:['PARQUE EMPRESARIAL'],                                                 cat:'overhead', sub:'arriendo'             },
   {kw:['MAKE.COM','ATLASSIAN','CAPTIONS','MIRAGE','ADOBE','MP: FLOW','FINTOC','LOOM'],cat:'overhead', sub:'herramienta' },
   {kw:['MERCADO LIBRE'],                                                      cat:'overhead', sub:'oficina'              },
-  {kw:['MP: DEVOLUCI'],                                                       cat:'other',    sub:'devolucion'           },
+  {kw:['MP: DEVOLUCI'],                                                       cat:'ingreso',  sub:'devolucion'           },
   {kw:['VENTA CON LINK','VENTA POR SUSCRIPCI','MP: VENTA'],                   cat:'ingreso',  sub:'mercadopago'          },
   {kw:['TELEFONICA DEL SUR'],                                                 cat:'overhead', sub:'telecom'              },
   // ── Relay (cuenta USD de la LLC) ────────────────────────────────────────
   {kw:['SUELDO GUILLERMO','SUELDO KARIM'],                                    cat:'team',     sub:'nomina'               },
-  {kw:['LISDEY CASTRO'],                                                      cat:'other',    sub:'devolucion'           },
+  {kw:['LISDEY CASTRO'],                                                      cat:'ingreso',  sub:'devolucion'           },
   {kw:['EXP PUERTO RICO','INMOCRM EXP — ACH'],                                cat:'ingreso',  sub:'transferencia'        },
   {kw:['STRIPE — ACH','ACELERADOR INMOB — ACH'],                              cat:'ingreso',  sub:'transferencia'        },
   {kw:['HIGGSFIELD'],                                                         cat:'overhead', sub:'herramienta'          },
@@ -1195,7 +1195,8 @@ function plData(m){
   // ── INGRESOS: desde los movimientos bancarios (base caja, igual que los gastos) ──
   // Operacionales = ventas. No operacionales = intereses, beneficios tributarios,
   // regalías. Las transferencias internas y préstamos quedan fuera (cat 'other').
-  const ins=ftA.filter(t=>t.cat==='ingreso'&&t.monto>0);
+  // Suma ambos signos: las devoluciones a clientes restan del ingreso
+  const ins=ftA.filter(t=>t.cat==='ingreso');
   const ingOp   = ins.filter(t=>t.sub!=='no_operacional').reduce((s,t)=>s+t.monto,0);
   const ingNoOp = ins.filter(t=>t.sub==='no_operacional').reduce((s,t)=>s+t.monto,0);
   // Cada movimiento se convierte con el TC de su mes (vale también para el agregado)

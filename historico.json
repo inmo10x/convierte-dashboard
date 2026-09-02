@@ -10176,7 +10176,7 @@
  },
  {
   "date": "2026-08-01",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: pago Isapre (PREVIRED)",
   "monto": -565457.0,
   "usd": false,
   "rut": "",
@@ -10712,7 +10712,7 @@
  },
  {
   "date": "2026-08-07",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Highlevel Inc.",
   "monto": -453055.0,
   "usd": false,
   "rut": "",
@@ -11680,7 +11680,7 @@
  },
  {
   "date": "2026-08-22",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: sueldo Karim",
   "monto": -1500000.0,
   "usd": false,
   "rut": "",
@@ -11744,7 +11744,7 @@
  },
  {
   "date": "2026-08-24",
-  "desc": "MP: pago emitido sin detalle de comercio",
+  "desc": "MP: Devolución 50% clienta The Loft",
   "monto": -1350000.0,
   "usd": false,
   "rut": "",

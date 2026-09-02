@@ -10327,6 +10327,94 @@
   "src": "relay"
  },
  {
+  "date": "2026-08-03",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 697390.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 650156.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "77.345.248-2 Transf. SOC DE GE",
+  "monto": 500000.0,
+  "usd": false,
+  "rut": "77345248",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 254798.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 177495.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 40500.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -700231.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -697390.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -500000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -254798.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-03",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -177945.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
   "date": "2026-08-04",
   "desc": "MP: pago recibido de cliente (bank_transfer)",
   "monto": 500805.0,
@@ -10349,6 +10437,38 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-08-04",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 38501.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-04",
+  "desc": "0774504524 Transf. AGENCIA CONVIER",
+  "monto": 29113.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-04",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -38501.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-04",
+  "desc": "PAGO EN LINEA PREVIRED",
+  "monto": -29113.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
  },
  {
   "date": "2026-08-05",
@@ -10413,6 +10533,22 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "0773099324 Transf. MONTT Y CAYUQUE",
+  "monto": 500000.0,
+  "usd": false,
+  "rut": "77309932",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-05",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -500805.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
  },
  {
   "date": "2026-08-06",
@@ -10759,6 +10895,38 @@
   "src": "relay"
  },
  {
+  "date": "2026-08-10",
+  "desc": "0167484352 Transf. VICTORIA PAZ GO",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "16748435",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -734590.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "Traspaso Internet a T. Crédito",
+  "monto": -244716.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-10",
+  "desc": "Pago Autom Tarj. Crédito Nº 552561",
+  "monto": -20694.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
   "date": "2026-08-11",
   "desc": "Cargo por servicio",
   "monto": -10.0,
@@ -10967,6 +11135,46 @@
   "src": "relay"
  },
  {
+  "date": "2026-08-12",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 638098.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 638098.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 638098.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -1500000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-12",
+  "desc": "Compra RAILWAY",
+  "monto": -4683.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
   "date": "2026-08-13",
   "desc": "Envío a Patricia acosta — Patricia acosta",
   "monto": -500.0,
@@ -11007,6 +11215,22 @@
   "src": "relay"
  },
  {
+  "date": "2026-08-13",
+  "desc": "Compra P.SKOOL.COM/DPJLH",
+  "monto": -45952.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-13",
+  "desc": "Compra WASABIL",
+  "monto": -35688.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
   "date": "2026-08-14",
   "desc": "HighLevel — Business Checking",
   "monto": -300.0,
@@ -11037,6 +11261,22 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-08-14",
+  "desc": "Compra FACEBK *2EZABZ9J5",
+  "monto": -58203.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-14",
+  "desc": "Compra FLOW *E-CERTCHI",
+  "monto": -9990.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
  },
  {
   "date": "2026-08-15",
@@ -11239,6 +11479,22 @@
   "src": "relay"
  },
  {
+  "date": "2026-08-17",
+  "desc": "Compra TELEFONICA PROVID",
+  "monto": -54334.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-17",
+  "desc": "Compra OPENAI *CHATGPT S",
+  "monto": -16798.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
   "date": "2026-08-18",
   "desc": "Lovable — Business Checking",
   "monto": -25.65,
@@ -11261,6 +11517,54 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 637812.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 114210.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 83082.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -1000000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "Compra FACEBK *AQCX7YMH5",
+  "monto": -14468.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-18",
+  "desc": "Compra FACEBK *PT2WQZ9J5",
+  "monto": -7234.0,
+  "usd": false,
+  "rut": "",
+  "src": "santander"
  },
  {
   "date": "2026-08-19",
@@ -11309,6 +11613,30 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-08-20",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 762305.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-20",
+  "desc": "0773713278 Transf. EXp CHILE SpA",
+  "monto": 23693.0,
+  "usd": false,
+  "rut": "77371327",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-20",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -780000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
  },
  {
   "date": "2026-08-21",
@@ -11511,6 +11839,22 @@
   "src": "relay"
  },
  {
+  "date": "2026-08-24",
+  "desc": "0779994929 Transf. ASESORIA INMOBI",
+  "monto": 700000.0,
+  "usd": false,
+  "rut": "77999492",
+  "src": "santander"
+ },
+ {
+  "date": "2026-08-24",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -708000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
+ },
+ {
   "date": "2026-08-25",
   "desc": "MP: pago recibido de cliente (bank_transfer)",
   "monto": 1000000.0,
@@ -11541,6 +11885,14 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-08-25",
+  "desc": "0099554681 Transf de JOSE ENRIQUE",
+  "monto": 1000000.0,
+  "usd": false,
+  "rut": "09955468",
+  "src": "santander"
  },
  {
   "date": "2026-08-26",
@@ -11581,6 +11933,14 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-08-26",
+  "desc": "0774504524 Transf a Agencia Convie",
+  "monto": -1000000.0,
+  "usd": false,
+  "rut": "77450452",
+  "src": "santander"
  },
  {
   "date": "2026-08-27",

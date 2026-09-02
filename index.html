@@ -607,12 +607,13 @@ const RUT_MAP = {
 };
 const KW_MAP = [
   // ── Transferencias internas G66↔Santander (excluir de gastos) ──────────
-  {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA','MP: RETIRO','MP: INGRESO DE DINERO','ACELERADOR INMOBILIAR','77450452-4'],cat:'other', sub:'transferencia_interna'},
+  {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA','MP: RETIRO','MP: INGRESO DE DINERO','77450452-4','RELAY: TRASPASO INTERNO'],cat:'other', sub:'transferencia_interna'},
   {kw:['MP: COMISIÓN','MP: COMISION'],                                        cat:'overhead', sub:'financiero'           },
   {kw:['MP: PAGO RECIBIDO'],                                                  cat:'ingreso',  sub:'mercadopago'          },
   {kw:['MP: SUELDO'],                                                         cat:'team',     sub:'nomina'               },
   {kw:['MP: PAGO META ADS'],                                                  cat:'pauta',    sub:'digital'              },
   {kw:['ALEXANDRA ALBORNOZ'],                                                 cat:'team',     sub:'nomina'               },
+  {kw:['ACH (KA)'],                                                           cat:'team',     sub:'colab_usd'            },
   {kw:['IGNACIO RIVERA','RIVERA ZAMORA'],                                     cat:'team',     sub:'comision'             },
   {kw:['PARQUE EMPRESARIAL'],                                                 cat:'overhead', sub:'arriendo'             },
   {kw:['MAKE.COM','ATLASSIAN','CAPTIONS','MIRAGE','ADOBE','MP: FLOW','FINTOC','LOOM'],cat:'overhead', sub:'herramienta' },
@@ -623,7 +624,8 @@ const KW_MAP = [
   // ── Relay (cuenta USD de la LLC) ────────────────────────────────────────
   {kw:['SUELDO GUILLERMO','SUELDO KARIM'],                                    cat:'team',     sub:'nomina'               },
   {kw:['LISDEY CASTRO'],                                                      cat:'other',    sub:'devolucion'           },
-  {kw:['EXP PUERTO RICO'],                                                    cat:'ingreso',  sub:'transferencia'        },
+  {kw:['EXP PUERTO RICO','INMOCRM EXP — ACH'],                                cat:'ingreso',  sub:'transferencia'        },
+  {kw:['STRIPE — ACH','ACELERADOR INMOB — ACH'],                              cat:'ingreso',  sub:'transferencia'        },
   {kw:['HIGGSFIELD'],                                                         cat:'overhead', sub:'herramienta'          },
   // ── Comisiones y cargos G66 (overhead bancario) ─────────────────────────
   {kw:['CARGO POR SERVICIO','COMISIÓN ENVÍO','COMISION ENVIO'],               cat:'overhead', sub:'bancario'             },
@@ -648,7 +650,7 @@ const KW_MAP = [
   {kw:['HIGHLEVEL','HIGH LEVEL','APPLEVEL','APP LEVEL'],                    cat:'overhead', sub:'herramienta'},
   {kw:['SKOOL','WASABIL','KUTT','CLICKUP','CLAUDE AI','CLAUDE.AI','ANTHROPIC','OPENAI','CHATGPT','LOVABLE','GAMMA','NOTION','CANVA','NAME-CHEAP','NAMECHEAP','FIRMAVIRTUAL','ZAPSIGN','COMPRA MP','TASKLET','HOSTINGER','RAILWAY','GITHUB','CONTENTCREATOR'],    cat:'overhead', sub:'herramienta'},
   {kw:['LATAM.COM','GRUPO DHL','HOTEL ','OK PARKING','CONCESA','MAIPO PONIENTE','NOTARIA'],cat:'overhead', sub:'viajes_admin'},
-  {kw:['SBX ','STA ISABEL','MARINA VINA','INMOBILIARIA SACO','EDUARDO GAMBOA','UNIRED','ESSBIO','PAGOS CGE','TELEFONICA'],cat:'overhead', sub:'oficina'},
+  {kw:['SBX ','STA ISABEL','MARINA VINA','INMOBILIARIA SACO','EDUARDO GAMBOA','UNIRED','ESSBIO','PAGOS CGE','TELEFONICA','GASTOS COMUNES','E-CERTCHI'],cat:'overhead', sub:'oficina'},
   {kw:['KFC ','MCDONALD','SUBWAY','DOMINO','PEDIDOSYA','UBER EATS','RAPPI'],  cat:'overhead', sub:'bienestar'   },
   {kw:['FLOW PROP','PROPITEQ','BLUEHACK'],                                  cat:'overhead', sub:'advisory'   },
   {kw:['MERCADO PAGO','MP ','MERCADOPAGO'],                                 cat:'overhead', sub:'financiero' },

@@ -12181,5 +12181,14 @@
   "usd": true,
   "rut": "",
   "src": "relay"
+ },
+ {
+  "date": "2026-08-31",
+  "desc": "Provisión sueldo agosto Guillermo (se paga 03-09-2026)",
+  "monto": -1134.0,
+  "usd": true,
+  "rut": "",
+  "src": "relay",
+  "provision": true
  }
 ]

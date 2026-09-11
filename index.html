@@ -444,7 +444,7 @@ select:focus,.finput:focus{outline:none;border-color:var(--accent);}
       <select id="f-cat" onchange="renderTxns()">
         <option value="">Todas las categorías</option>
         <option value="ingreso">Ingreso</option><option value="team">Team</option>
-        <option value="overhead">Overhead</option><option value="pauta">Pauta</option>
+        <option value="overhead">Overhead</option><option value="costo_servicio">Costo servicio</option><option value="pauta">Pauta</option>
         <option value="impuestos">Impuestos</option><option value="other">Otro</option>
       </select>
       <select id="f-src" onchange="renderTxns()">
@@ -648,9 +648,9 @@ const KW_MAP = [
   {kw:['WHOP*'],                                                              cat:'overhead', sub:'herramienta'},  // compra en Whop (suscripción/curso)
   {kw:['FACEBK','FACEBOOK','META ADS','GOOGLE','TIKTOK ADS','INSTAGRAM ADS'], cat:'pauta', sub:'digital'    },
   // GHL: la suscripción de agencia es herramienta; todo lo demás (recargas de
-  // mensajería/WhatsApp, AppLevel) es consumo variable. Validado por Karim 09-2026.
+  // mensajería/WhatsApp, AppLevel) es costo del servicio. Validado por Karim 09-2026.
   {kw:['HIGHLEVEL AGENCY'],                                                   cat:'overhead', sub:'herramienta'},
-  {kw:['HIGHLEVEL','HIGH LEVEL','APPLEVEL','APP LEVEL'],                    cat:'overhead', sub:'ghl_consumo'},
+  {kw:['HIGHLEVEL','HIGH LEVEL','APPLEVEL','APP LEVEL'],                    cat:'costo_servicio', sub:'ghl'},
   {kw:['SKOOL','WASABIL','KUTT','CLICKUP','CLAUDE AI','CLAUDE.AI','ANTHROPIC','OPENAI','CHATGPT','LOVABLE','GAMMA','NOTION','CANVA','NAME-CHEAP','NAMECHEAP','FIRMAVIRTUAL','ZAPSIGN','COMPRA MP','TASKLET','HOSTINGER','RAILWAY','GITHUB','CONTENTCREATOR'],    cat:'overhead', sub:'herramienta'},
   {kw:['LATAM.COM','GRUPO DHL','HOTEL ','OK PARKING','CONCESA','MAIPO PONIENTE','NOTARIA'],cat:'overhead', sub:'viajes_admin'},
   {kw:['SBX ','STA ISABEL','MARINA VINA','INMOBILIARIA SACO','EDUARDO GAMBOA','UNIRED','ESSBIO','PAGOS CGE','TELEFONICA','GASTOS COMUNES','E-CERTCHI'],cat:'overhead', sub:'oficina'},
@@ -1113,7 +1113,7 @@ function categorize(desc,rut,monto){
   if(RUT_MAP[rut]) return {...RUT_MAP[rut]};
   for(const rule of KW_MAP) if(rule.kw.some(k=>d.includes(k))){
     const a=Math.abs(monto);
-    if(rule.sub==='ghl_consumo' && /^HIGHLEVEL — /.test(d) && ((a>=290&&a<=300)||(a>=490&&a<=500)))
+    if(rule.cat==='costo_servicio' && /^HIGHLEVEL — /.test(d) && ((a>=290&&a<=300)||(a>=490&&a<=500)))
       return {name:desc.slice(0,50),cat:'overhead',sub:'herramienta'};
     return {name:desc.slice(0,50),cat:rule.cat,sub:rule.sub};
   }
@@ -1132,6 +1132,10 @@ const GHL_EXP_MENSUAL = {
   '2026-01': null, '2026-02': null, '2026-03': null, '2026-04': null,
   '2026-05': null, '2026-06': 1149.08, '2026-07': 1186.88, '2026-08': 1966.64,
 };
+// Desde agosto 2026 eXp cobra y paga su GHL desde su propia subcuenta Relay
+// (los países prepagan el consumo ahí mismo), así que ese costo ya está en su
+// línea y no se traspasa consumo desde las cuentas de Agencia Convierte.
+const GHL_EXP_PROPIO_DESDE = '2026-08';
 
 // ══════════════════════════════
 // LÍNEA DE NEGOCIO
@@ -1197,8 +1201,8 @@ function plData(m){
   const herr=bc('overhead','herramienta'), arr=bc('overhead','arriendo'), adv=bc('overhead','advisory');
   const banc=bc('overhead','bancario'), tel=bc('overhead','telecom'), reu=bc('overhead','reuniones');
   const mue=bc('overhead','muebles'), of=bc('overhead','oficina'), fin=bc('overhead','financiero'), free=bc('overhead','freelance');
-  const ghlCons=bc('overhead','ghl_consumo');
-  const totalOH0=herr+ghlCons+arr+adv+banc+tel+reu+mue+of+fin+free+bc('overhead','aseo');
+  const costoServ=bc('costo_servicio');
+  const totalOH0=herr+arr+adv+banc+tel+reu+mue+of+fin+free+bc('overhead','aseo');
   const sii=bc('impuestos','sii'), cred=bc('impuestos','credito');
   const totalTax=sii+cred;
   // ── INGRESOS: desde los movimientos bancarios (base caja, igual que los gastos) ──
@@ -1217,24 +1221,25 @@ function plData(m){
   const ingWhop = ins.filter(t=>t.sub==='whop').reduce((s,t)=>s+t.monto,0);
   const ingMP   = ins.filter(t=>t.sub==='mercadopago').reduce((s,t)=>s+t.monto,0);
   const ingTrf  = ingOp-ingWhop-ingMP;
-  const mb=ingOp-pauta;
   // ── eXp / InmoCRM: negocio externo, con sus propios ingresos y costos ──
   // Traspasos entre subcuentas propias (Relay To/From InmoCRM eXp) no son ingreso ni costo
   const ingExp   =ftE.filter(t=>t.monto>0&&t.cat!=='other').reduce((s,t)=>s+t.monto,0);
   const expDaniel=ftE.filter(t=>t.monto<0&&t.sub==='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0);
-  // Consumo variable refacturado: se mueve desde overhead de Acelerador a eXp.
+  // Consumo variable refacturado: se mueve desde el costo del servicio de Acelerador a eXp.
   // Nunca más de lo que efectivamente se pagó de GHL variable ese mes.
   const meses   = m?[m]:[...new Set(ft.map(txnMk))];
   const ghlVar  = ftA.filter(t=>t.monto<0&&/highlevel/i.test(t.desc)&&!/AGENCY/i.test(t.desc))
                      .reduce((s,t)=>s+Math.abs(t.monto),0);
-  const ghlRef  = Math.min(ghlVar, meses.reduce((s,k)=>s+(GHL_EXP_MENSUAL[k]||0)*(TC_MENSUAL[k]||r),0));
+  const ghlRef  = Math.min(ghlVar, meses.filter(k=>k<GHL_EXP_PROPIO_DESDE)
+                     .reduce((s,k)=>s+(GHL_EXP_MENSUAL[k]||0)*(TC_MENSUAL[k]||r),0));
   const expGHL  =ftE.filter(t=>t.monto<0&&t.sub!=='socio_exp'&&t.cat!=='other').reduce((s,t)=>s+Math.abs(t.monto),0)+ghlRef;
   const gastoExp =expDaniel+expGHL;
   const resExp   =ingExp-gastoExp;
   // ── Resultado operacional (Acelerador), ya neto del consumo refacturado ──
-  // Lo refacturado sale del consumo GHL (nunca de las suscripciones)
-  const totalOH  =totalOH0-ghlRef, ghlConsNeto=ghlCons-ghlRef;
-  const gastoAcel=pauta+totalTeam+totalOH+totalTax;
+  // Lo refacturado sale del costo del servicio (nunca de las suscripciones)
+  const totalOH  =totalOH0, costoServNeto=costoServ-ghlRef;
+  const mb=ingOp-pauta-costoServNeto;
+  const gastoAcel=pauta+costoServNeto+totalTeam+totalOH+totalTax;
   const resAcel  =ingOp-gastoAcel;
   // ── Resultado neto = operacional + eXp + otros no operacionales ──
   const ingTot=ingOp+ingExp+ingNoOp;          // todo lo cobrado
@@ -1246,7 +1251,7 @@ function plData(m){
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
           gastoAcel,resAcel,ingExp,expDaniel,expGHL,gastoExp,resExp,
           pauta,nomina,previred,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
-          herr,ghlCons:ghlConsNeto,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,ghlRef,
+          herr,costoServ:costoServNeto,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,ghlRef,
           sii,cred,totalTax,mb,res,vencidoUSD,
           tRate:ventaUSD?cobVUSD/ventaUSD*100:0};
 }
@@ -1490,8 +1495,8 @@ function renderCharts(){
   mkC('comp');
   _charts.comp=new Chart(document.getElementById('c-comp').getContext('2d'),{
     type:'doughnut',
-    data:{labels:['Nómina','PREVIRED','Colabs USD','Comisiones','Herramientas','Consumo GHL','Advisory','Arriendo','Bancario','Telecom','Otros OH','Pauta','Impuestos'],
-          datasets:[{data:[d.nomina,d.previred,d.colabUSD,d.comision,d.herr,d.ghlCons,d.adv,d.arr,d.banc,d.tel,d.reu+d.mue+d.of+d.fin+d.free,d.pauta,d.totalTax],
+    data:{labels:['Nómina','PREVIRED','Colabs USD','Comisiones','Herramientas','Costo servicio GHL','Advisory','Arriendo','Bancario','Telecom','Otros OH','Pauta','Impuestos'],
+          datasets:[{data:[d.nomina,d.previred,d.colabUSD,d.comision,d.herr,d.costoServ,d.adv,d.arr,d.banc,d.tel,d.reu+d.mue+d.of+d.fin+d.free,d.pauta,d.totalTax],
           backgroundColor:['#6c63ff','#5b52f0','#4f46e5','#a5b4fc','#f59e0b','#f97316','#fbbf24','#fcd34d','#d97706','#92400e','#78350f','#3b82f6','#a855f7'],borderWidth:0}]},
     options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:10},padding:6,boxWidth:10}}}}
   });
@@ -1529,6 +1534,8 @@ function renderPL(){
   ${row('↳ Whop',pls.map(p=>p.ingWhop),'rs')}
   ${sec('(-) PAUTA DIGITAL')}
   ${row('Meta / Google Ads',pls.map(p=>p.pauta),'',true)}
+  ${sec('(-) COSTO DEL SERVICIO')}
+  ${row('Consumo GHL / AppLevel',pls.map(p=>p.costoServ),'',true)}
   ${row('= MARGEN BRUTO',pls.map(p=>p.mb),'rt')}
   ${rowp('% margen bruto',pls.map(p=>p.mb),pls.map(p=>p.ingOp))}
   ${sec('(-) TEAM SPEND')}
@@ -1541,7 +1548,6 @@ function renderPL(){
   ${rowp('% del ingreso',pls.map(p=>p.totalTeam),pls.map(p=>p.ingTot))}
   ${sec('(-) OVERHEAD')}
   ${row('Herramientas y suscripciones',pls.map(p=>p.herr),'rs',true)}
-  ${row('Consumo GHL (neto de lo refacturado a eXp)',pls.map(p=>p.ghlCons),'rs',true)}
   ${row('Advisory / Asesoría',pls.map(p=>p.adv),'rs',true)}
   ${row('Arriendo oficina',pls.map(p=>p.arr),'rs',true)}
   ${row('Bancario / comisiones',pls.map(p=>p.banc),'rs',true)}
@@ -1642,7 +1648,7 @@ function renderTxns(){
   if(sq) t=t.filter(x=>(x.desc||'').toLowerCase().includes(sq)||(x.sub||'').toLowerCase().includes(sq)||String(Math.abs(x.monto)).includes(sq)||(x.usd&&x.montoOrig!=null&&String(Math.abs(x.montoOrig)).includes(sq)));
   document.getElementById('txn-n').textContent=`${t.length} movimientos`;
   if(!t.length){document.getElementById('txn-container').innerHTML='<div class="no-data">Sin movimientos para los filtros seleccionados</div>';return;}
-  const cb=c=>{ const m={ingreso:'b-income',team:'b-team',overhead:'b-overhead',pauta:'b-pauta',impuestos:'b-impuestos',other:'b-other'}; const l={ingreso:'Ingreso',team:'Team',overhead:'Overhead',pauta:'Pauta',impuestos:'Impuesto',other:'Otro'}; return `<span class="badge ${m[c]||'b-other'}">${l[c]||c}</span>`; };
+  const cb=c=>{ const m={ingreso:'b-income',team:'b-team',overhead:'b-overhead',costo_servicio:'b-pauta',pauta:'b-pauta',impuestos:'b-impuestos',other:'b-other'}; const l={ingreso:'Ingreso',team:'Team',overhead:'Overhead',costo_servicio:'Costo servicio',pauta:'Pauta',impuestos:'Impuesto',other:'Otro'}; return `<span class="badge ${m[c]||'b-other'}">${l[c]||c}</span>`; };
   const rows=t.slice(-300).reverse().map(x=>{
     const clr=x.monto>0?'pos':'neg';
     return `<tr><td class="rs">${x.date.toLocaleDateString('es-CL')}</td><td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.desc)}</td><td>${cb(x.cat)}</td><td class="rs">${esc(x.sub||'')}</td><td><span class="pill">${esc(x.src)}</span></td><td class="${clr}">${fmt(x.monto,true)}</td></tr>`;

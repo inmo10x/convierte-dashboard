@@ -647,7 +647,10 @@ const KW_MAP = [
   {kw:['GLOBAL66','JOSNA','PATRICIA PAUL','PATRICIA ACOSTA','JUAN S','MINERVA','CADENA','ELBER','ALEXANDER G','ALEXANDER STEPHAN','(ALEXANDER','CLARITY PROFITS','OSPINA RIOS','SALAZAR PEÑA','JOSNA MALAVE'],cat:'team',sub:'colab_usd'},
   {kw:['WHOP*'],                                                              cat:'overhead', sub:'herramienta'},  // compra en Whop (suscripción/curso)
   {kw:['FACEBK','FACEBOOK','META ADS','GOOGLE','TIKTOK ADS','INSTAGRAM ADS'], cat:'pauta', sub:'digital'    },
-  {kw:['HIGHLEVEL','HIGH LEVEL','APPLEVEL','APP LEVEL'],                    cat:'overhead', sub:'herramienta'},
+  // GHL: la suscripción de agencia es herramienta; todo lo demás (recargas de
+  // mensajería/WhatsApp, AppLevel) es consumo variable. Validado por Karim 09-2026.
+  {kw:['HIGHLEVEL AGENCY'],                                                   cat:'overhead', sub:'herramienta'},
+  {kw:['HIGHLEVEL','HIGH LEVEL','APPLEVEL','APP LEVEL'],                    cat:'overhead', sub:'ghl_consumo'},
   {kw:['SKOOL','WASABIL','KUTT','CLICKUP','CLAUDE AI','CLAUDE.AI','ANTHROPIC','OPENAI','CHATGPT','LOVABLE','GAMMA','NOTION','CANVA','NAME-CHEAP','NAMECHEAP','FIRMAVIRTUAL','ZAPSIGN','COMPRA MP','TASKLET','HOSTINGER','RAILWAY','GITHUB','CONTENTCREATOR'],    cat:'overhead', sub:'herramienta'},
   {kw:['LATAM.COM','GRUPO DHL','HOTEL ','OK PARKING','CONCESA','MAIPO PONIENTE','NOTARIA'],cat:'overhead', sub:'viajes_admin'},
   {kw:['SBX ','STA ISABEL','MARINA VINA','INMOBILIARIA SACO','EDUARDO GAMBOA','UNIRED','ESSBIO','PAGOS CGE','TELEFONICA','GASTOS COMUNES','E-CERTCHI'],cat:'overhead', sub:'oficina'},
@@ -1108,7 +1111,12 @@ function categorize(desc,rut,monto){
   // persona pero el pago no es sueldo recurrente.
   if(/FINIQUITO|INDEMNIZAC/.test(d)) return {name:desc.slice(0,50),cat:'team',sub:'finiquito'};
   if(RUT_MAP[rut]) return {...RUT_MAP[rut]};
-  for(const rule of KW_MAP) if(rule.kw.some(k=>d.includes(k))) return {name:desc.slice(0,50),cat:rule.cat,sub:rule.sub};
+  for(const rule of KW_MAP) if(rule.kw.some(k=>d.includes(k))){
+    const a=Math.abs(monto);
+    if(rule.sub==='ghl_consumo' && /^HIGHLEVEL — /.test(d) && ((a>=290&&a<=300)||(a>=490&&a<=500)))
+      return {name:desc.slice(0,50),cat:'overhead',sub:'herramienta'};
+    return {name:desc.slice(0,50),cat:rule.cat,sub:rule.sub};
+  }
   return {name:desc.slice(0,50),cat:monto>0?'ingreso':'other',sub:monto>0?'transferencia':'sin_clasificar'};
 }
 
@@ -1189,7 +1197,8 @@ function plData(m){
   const herr=bc('overhead','herramienta'), arr=bc('overhead','arriendo'), adv=bc('overhead','advisory');
   const banc=bc('overhead','bancario'), tel=bc('overhead','telecom'), reu=bc('overhead','reuniones');
   const mue=bc('overhead','muebles'), of=bc('overhead','oficina'), fin=bc('overhead','financiero'), free=bc('overhead','freelance');
-  const totalOH0=herr+arr+adv+banc+tel+reu+mue+of+fin+free+bc('overhead','aseo');
+  const ghlCons=bc('overhead','ghl_consumo');
+  const totalOH0=herr+ghlCons+arr+adv+banc+tel+reu+mue+of+fin+free+bc('overhead','aseo');
   const sii=bc('impuestos','sii'), cred=bc('impuestos','credito');
   const totalTax=sii+cred;
   // ── INGRESOS: desde los movimientos bancarios (base caja, igual que los gastos) ──
@@ -1203,14 +1212,15 @@ function plData(m){
   // Cash Collected del panel = ventas cobradas de ambas líneas, cada movimiento
   // convertido con el TC de su mes (vale también para el agregado del período)
   const ingOpUSD= ins.filter(t=>t.sub!=='no_operacional').reduce((s,t)=>s+t.monto/tcFor(t.date),0)
-                + ftE.filter(t=>t.monto>0).reduce((s,t)=>s+t.monto/tcFor(t.date),0);
+                + ftE.filter(t=>t.monto>0&&t.cat!=='other').reduce((s,t)=>s+t.monto/tcFor(t.date),0);
   // Desglose de ingresos operacionales por origen
   const ingWhop = ins.filter(t=>t.sub==='whop').reduce((s,t)=>s+t.monto,0);
   const ingMP   = ins.filter(t=>t.sub==='mercadopago').reduce((s,t)=>s+t.monto,0);
   const ingTrf  = ingOp-ingWhop-ingMP;
   const mb=ingOp-pauta;
   // ── eXp / InmoCRM: negocio externo, con sus propios ingresos y costos ──
-  const ingExp   =ftE.filter(t=>t.monto>0).reduce((s,t)=>s+t.monto,0);
+  // Traspasos entre subcuentas propias (Relay To/From InmoCRM eXp) no son ingreso ni costo
+  const ingExp   =ftE.filter(t=>t.monto>0&&t.cat!=='other').reduce((s,t)=>s+t.monto,0);
   const expDaniel=ftE.filter(t=>t.monto<0&&t.sub==='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0);
   // Consumo variable refacturado: se mueve desde overhead de Acelerador a eXp.
   // Nunca más de lo que efectivamente se pagó de GHL variable ese mes.
@@ -1218,11 +1228,12 @@ function plData(m){
   const ghlVar  = ftA.filter(t=>t.monto<0&&/highlevel/i.test(t.desc)&&!/AGENCY/i.test(t.desc))
                      .reduce((s,t)=>s+Math.abs(t.monto),0);
   const ghlRef  = Math.min(ghlVar, meses.reduce((s,k)=>s+(GHL_EXP_MENSUAL[k]||0)*(TC_MENSUAL[k]||r),0));
-  const expGHL  =ftE.filter(t=>t.monto<0&&t.sub!=='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0)+ghlRef;
+  const expGHL  =ftE.filter(t=>t.monto<0&&t.sub!=='socio_exp'&&t.cat!=='other').reduce((s,t)=>s+Math.abs(t.monto),0)+ghlRef;
   const gastoExp =expDaniel+expGHL;
   const resExp   =ingExp-gastoExp;
   // ── Resultado operacional (Acelerador), ya neto del consumo refacturado ──
-  const totalOH  =totalOH0-ghlRef, herrNeta=herr-ghlRef;
+  // Lo refacturado sale del consumo GHL (nunca de las suscripciones)
+  const totalOH  =totalOH0-ghlRef, ghlConsNeto=ghlCons-ghlRef;
   const gastoAcel=pauta+totalTeam+totalOH+totalTax;
   const resAcel  =ingOp-gastoAcel;
   // ── Resultado neto = operacional + eXp + otros no operacionales ──
@@ -1235,7 +1246,7 @@ function plData(m){
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
           gastoAcel,resAcel,ingExp,expDaniel,expGHL,gastoExp,resExp,
           pauta,nomina,previred,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
-          herr:herrNeta,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,ghlRef,
+          herr,ghlCons:ghlConsNeto,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,ghlRef,
           sii,cred,totalTax,mb,res,vencidoUSD,
           tRate:ventaUSD?cobVUSD/ventaUSD*100:0};
 }
@@ -1479,9 +1490,9 @@ function renderCharts(){
   mkC('comp');
   _charts.comp=new Chart(document.getElementById('c-comp').getContext('2d'),{
     type:'doughnut',
-    data:{labels:['Nómina','PREVIRED','Colabs USD','Comisiones','Herramientas','Advisory','Arriendo','Bancario','Telecom','Otros OH','Pauta','Impuestos'],
-          datasets:[{data:[d.nomina,d.previred,d.colabUSD,d.comision,d.herr,d.adv,d.arr,d.banc,d.tel,d.reu+d.mue+d.of+d.fin+d.free,d.pauta,d.totalTax],
-          backgroundColor:['#6c63ff','#5b52f0','#4f46e5','#a5b4fc','#f59e0b','#fbbf24','#fcd34d','#d97706','#92400e','#78350f','#3b82f6','#a855f7'],borderWidth:0}]},
+    data:{labels:['Nómina','PREVIRED','Colabs USD','Comisiones','Herramientas','Consumo GHL','Advisory','Arriendo','Bancario','Telecom','Otros OH','Pauta','Impuestos'],
+          datasets:[{data:[d.nomina,d.previred,d.colabUSD,d.comision,d.herr,d.ghlCons,d.adv,d.arr,d.banc,d.tel,d.reu+d.mue+d.of+d.fin+d.free,d.pauta,d.totalTax],
+          backgroundColor:['#6c63ff','#5b52f0','#4f46e5','#a5b4fc','#f59e0b','#f97316','#fbbf24','#fcd34d','#d97706','#92400e','#78350f','#3b82f6','#a855f7'],borderWidth:0}]},
     options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:10},padding:6,boxWidth:10}}}}
   });
 }
@@ -1529,7 +1540,8 @@ function renderPL(){
   ${row('= TOTAL TEAM',pls.map(p=>p.totalTeam),'rt',true)}
   ${rowp('% del ingreso',pls.map(p=>p.totalTeam),pls.map(p=>p.ingTot))}
   ${sec('(-) OVERHEAD')}
-  ${row('Herramientas (GHL/AppLevel/Skool)',pls.map(p=>p.herr),'rs',true)}
+  ${row('Herramientas y suscripciones',pls.map(p=>p.herr),'rs',true)}
+  ${row('Consumo GHL (neto de lo refacturado a eXp)',pls.map(p=>p.ghlCons),'rs',true)}
   ${row('Advisory / Asesoría',pls.map(p=>p.adv),'rs',true)}
   ${row('Arriendo oficina',pls.map(p=>p.arr),'rs',true)}
   ${row('Bancario / comisiones',pls.map(p=>p.banc),'rs',true)}

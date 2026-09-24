@@ -128,6 +128,50 @@ function categorize(desc,rut,monto){
   return {name:desc.slice(0,50),cat:monto>0?'ingreso':'other',sub:monto>0?'transferencia':'sin_clasificar'};
 }
 
+function pd(s){
+  if(!s) return null;
+  const str=String(s).trim();
+  let m=str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  if(m) return new Date(+m[3],+m[2]-1,+m[1]);
+  m=str.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})/); // handles ISO with or without time
+  if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  const n=parseFloat(str);
+  if(!isNaN(n)&&n>40000) return new Date((n-25569)*86400*1000);
+  const d=new Date(s); return isNaN(d)?null:d;
+}
+
+function normalizeHistorico(raw, rateFn){
+  return raw.map(r => {
+      const usd   = !!r.usd;
+      const monto = usd ? Math.round(r.monto * tcFor(r.date, rateFn)) : r.monto;
+      const rut   = extractRut(r.desc, r.rut);
+      const cat   = categorize(r.desc, rut, monto);
+      // cat_hint from G66 overrides when no RUT match
+      // pd() interpreta 'YYYY-MM-DD' como fecha LOCAL; new Date() lo leería como UTC
+      // y en Chile (UTC-4) correría cada movimiento un día hacia atrás.
+      return { ...cat, ...r, rut, date: pd(r.date), monto, montoOrig: r.monto, usd, historico: true };
+    });
+}
+
+// Clave de dedup: fecha completa + descripción + monto original + fuente.
+// El sufijo #n permite N pagos idénticos el mismo día (cartolas solapadas siguen dedupando).
+function dk(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function txnKeys(arr){
+  const c={};
+  return arr.map(t=>{
+    const amt=t.usd?`U${t.montoOrig}`:`C${t.montoOrig??t.monto}`;
+    const b=`${dk(t.date)}|${t.desc}|${amt}|${t.src}`;
+    c[b]=(c[b]||0)+1;
+    return `${b}#${c[b]}`;
+  });
+}
+function mergeTxnArrays(existing,newt){
+  const ex=new Set(txnKeys(existing));
+  const keys=txnKeys(newt);
+  const added=newt.filter((t,i)=>!ex.has(keys[i]));
+  return [...existing,...added].sort((a,b)=>a.date-b.date);
+}
+
 // ═══════════════════════════════════════════════
 // COMPUTE
 // ═══════════════════════════════════════════════
@@ -259,4 +303,5 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
 if (typeof module !== 'undefined' && module.exports) module.exports = {
   RUT_MAP, KW_MAP, TC_MENSUAL, GHL_EXP_MENSUAL, GHL_EXP_PROPIO_DESDE,
   extractRut, categorize, lineaDe, txnMk, mk, tcFor, filterBy, computePL,
+  pd, normalizeHistorico, mergeTxnArrays, dk,
 };

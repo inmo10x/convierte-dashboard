@@ -23,6 +23,13 @@ const RUT_MAP = {
   '01576359':{ name:'Ignacio (Closer)',           cat:'team',     sub:'comision' }, // "015763593K Transf a Ignacio"
 };
 const KW_MAP = [
+  // Excepciones específicas antes de marcas generales (Facebook / Railway).
+  {kw:['FACEBOOK — OVERHEAD HH'], cat:'overhead', sub:'household'},
+  {kw:['THE RAILWAY TAVERN'], cat:'overhead', sub:'bienestar'},
+  {kw:['SOCIEDAD WEDO CONSULTING'], cat:'overhead', sub:'arriendo'},
+  {kw:['TELEFONICA PROVIDENCIA'], cat:'overhead', sub:'telecom'},
+  {kw:['COSTO DE TIPO DE CAMBIO','RELAY — BANKING FEES','RECUP COM PLAN'], cat:'overhead', sub:'bancario'},
+  {kw:['INTERESES GANADOS','VENTA MUEBLES OFICINA'], cat:'ingreso', sub:'no_operacional'},
   // ── Transferencias internas G66↔Santander (excluir de gastos) ──────────
   {kw:['CONVERSI','AGENCIA CONVIERTE','AGENCIA CONVIER','GLOBAL AGENCIA','MP: RETIRO','MP: INGRESO DE DINERO','77450452-4','RELAY: TRASPASO INTERNO'],cat:'other', sub:'transferencia_interna'},
   {kw:['MP: COMISIÓN','MP: COMISION'],                                        cat:'overhead', sub:'financiero'           },
@@ -68,7 +75,7 @@ const KW_MAP = [
   // mensajería/WhatsApp, AppLevel) es costo del servicio. Validado por Karim 09-2026.
   {kw:['HIGHLEVEL AGENCY'],                                                   cat:'overhead', sub:'herramienta'},
   {kw:['HIGHLEVEL','HIGH LEVEL','APPLEVEL','APP LEVEL'],                    cat:'costo_servicio', sub:'ghl'},
-  {kw:['SKOOL','WASABIL','KUTT','CLICKUP','CLAUDE AI','CLAUDE.AI','ANTHROPIC','OPENAI','CHATGPT','LOVABLE','GAMMA','NOTION','CANVA','NAME-CHEAP','NAMECHEAP','FIRMAVIRTUAL','ZAPSIGN','COMPRA MP','TASKLET','HOSTINGER','RAILWAY','GITHUB','CONTENTCREATOR'],    cat:'overhead', sub:'herramienta'},
+  {kw:['SKOOL','WASABIL','KUTT','CLICKUP','CLAUDE AI','CLAUDE.AI','ANTHROPIC','OPENAI','CHATGPT','LOVABLE','GAMMA','NOTION','CANVA','NAME-CHEAP','NAMECHEAP','FIRMAVIRTUAL','ZAPSIGN','COMPRA MP','TASKLET','HOSTINGER','RAILWAY','GITHUB','CONTENTCREATOR','GROK','CURSOR'],    cat:'overhead', sub:'herramienta'},
   {kw:['LATAM.COM','GRUPO DHL','HOTEL ','OK PARKING','CONCESA','MAIPO PONIENTE','NOTARIA'],cat:'overhead', sub:'viajes_admin'},
   {kw:['SBX ','STA ISABEL','MARINA VINA','INMOBILIARIA SACO','EDUARDO GAMBOA','UNIRED','ESSBIO','PAGOS CGE','TELEFONICA','GASTOS COMUNES','E-CERTCHI'],cat:'overhead', sub:'oficina'},
   {kw:['KFC ','MCDONALD','SUBWAY','DOMINO','PEDIDOSYA','UBER EATS','RAPPI'],  cat:'overhead', sub:'bienestar'   },
@@ -93,7 +100,7 @@ const KW_MAP = [
 // Fuente oficial: sii.cl → Valores y Fechas → Dólar observado (promedio mensual)
 const TC_MENSUAL = {
   '2026-01': 884, '2026-02': 862, '2026-03': 910, '2026-04': 898,
-  '2026-05': 898, '2026-06': 903, '2026-07': 931, '2026-08': 917.66,
+  '2026-05': 898, '2026-06': 903, '2026-07': 931, '2026-08': 917.66, '2026-09': 947.27,
 };
 function tcFor(d, rateFn = () => rate()){
   const k = d instanceof Date ? mk(d) : String(d||'').slice(0,7);
@@ -261,7 +268,7 @@ function lineaDe(t, rateFn = () => rate()){
   // Dos suscripciones GHL cada mes desde enero: la de ~US$297 es Agencia
   // Convierte y la de ~US$495 es InmoCRM eXp. Solo se distinguen por monto.
   if(/HIGHLEVEL AGENCY/.test(d)) return Math.abs(t.monto)/tcFor(t.date, rateFn)>400?'exp':'acelerador';
-  if(/EXP CHILE|EXP PUERTO RICO|EXP MX|EXP BRASIL|EXP COLOMBIA|EXP PERU|EXP ECUADOR/.test(d)) return 'exp';
+  if(/EXP CHILE|EXP PUERTO RICO|EXP MX|EXP BRASIL|EXP COLOMBIA|EXP PERU|EXP ECUADOR|EXPWORLD ECUADOR/.test(d)) return 'exp';
   if(t.src==='g66' && /^ABONO/.test(d) && !/CLIENTE/.test(d)) return 'exp';
   return 'acelerador';
 }
@@ -316,7 +323,9 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   const banc=bc('overhead','bancario'), tel=bc('overhead','telecom'), reu=bc('overhead','reuniones');
   const mue=bc('overhead','muebles'), of=bc('overhead','oficina'), fin=bc('overhead','financiero'), free=bc('overhead','freelance');
   const costoServ=bc('costo_servicio');
-  const totalOH0=herr+arr+adv+banc+tel+reu+mue+of+fin+free+bc('overhead','aseo');
+  // Sumar por categoría incluye también subcategorías nuevas sin fila propia.
+  const totalOH0=bc('overhead');
+  const otrosOH=totalOH0-herr-arr-adv-banc-tel;
   const sii=bc('impuestos','sii'), cred=bc('impuestos','credito');
   const totalTax=sii+cred;
   // ── INGRESOS: desde los movimientos bancarios (base caja, igual que los gastos) ──
@@ -365,7 +374,7 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
           gastoAcel,resAcel,ingExp,expDaniel,expGHL,gastoExp,resExp,saldoPrepagoExp,saldoPrepagoExpUSD,
           pauta,nomina,previred,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
-          herr,costoServ:costoServNeto,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,ghlRef,
+          herr,costoServ:costoServNeto,arr,adv,banc,tel,reu,mue,of,fin,free,otrosOH,totalOH,ghlRef,
           sii,cred,totalTax,mb,res,vencidoUSD,
           tRate:ventaUSD?cobVUSD/ventaUSD*100:0};
 }

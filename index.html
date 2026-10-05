@@ -1219,7 +1219,7 @@ function renderCharts(){
   _charts.comp=new Chart(document.getElementById('c-comp').getContext('2d'),{
     type:'doughnut',
     data:{labels:['Nómina','PREVIRED','Colabs USD','Comisiones','Herramientas','Costo servicio GHL','Advisory','Arriendo','Bancario','Telecom','Otros OH','Pauta','Impuestos'],
-          datasets:[{data:[d.nomina,d.previred,d.colabUSD,d.comision,d.herr,d.costoServ,d.adv,d.arr,d.banc,d.tel,d.reu+d.mue+d.of+d.fin+d.free,d.pauta,d.totalTax],
+          datasets:[{data:[d.nomina,d.previred,d.colabUSD,d.comision,d.herr,d.costoServ,d.adv,d.arr,d.banc,d.tel,d.otrosOH,d.pauta,d.totalTax],
           backgroundColor:['#6c63ff','#5b52f0','#4f46e5','#a5b4fc','#f59e0b','#f97316','#fbbf24','#fcd34d','#d97706','#92400e','#78350f','#3b82f6','#a855f7'],borderWidth:0}]},
     options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:10},padding:6,boxWidth:10}}}}
   });
@@ -1275,7 +1275,7 @@ function renderPL(){
   ${row('Arriendo oficina',pls.map(p=>p.arr),'rs',true)}
   ${row('Bancario / comisiones',pls.map(p=>p.banc),'rs',true)}
   ${row('Telecom',pls.map(p=>p.tel),'rs',true)}
-  ${row('Otros (reuniones/aseo/insumos)',pls.map(p=>p.reu+p.mue+p.of+p.fin+p.free),'rs',true)}
+  ${row('Otros (sin fila propia)',pls.map(p=>p.otrosOH),'rs',true)}
   ${row('= TOTAL OVERHEAD',pls.map(p=>p.totalOH),'rt',true)}
   ${rowp('% del ingreso',pls.map(p=>p.totalOH),pls.map(p=>p.ingTot))}
   ${sec('(-) FINANCIERO E IMPUESTOS')}

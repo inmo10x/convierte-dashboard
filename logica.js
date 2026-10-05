@@ -113,15 +113,26 @@ function extractRut(desc,rutCol){
   return raw.length>=9&&raw[0]==='0'?raw.slice(1,9):raw.slice(0,8);
 }
 
-function categorize(desc,rut,monto){
+// montoUSD se resuelve con la moneda original y el TC del mes del movimiento.
+function montoEnUSD(t, rateFn){
+  return t.usd ? t.montoOrig : t.monto / tcFor(t.date, rateFn);
+}
+function esCargoGhlSubcuentaRelay(t){
+  return t.src==='relay' && /^(HIGH\s?LEVEL|APP\s?LEVEL)\s+—\s+\S/i.test(t.desc||'');
+}
+function categorize(desc,rut,monto,montoUSD,contexto={}){
   const d=desc.toUpperCase();
+  const excepcion=excepcionLinea({...contexto, monto});
+  if(excepcion) return {name:desc.slice(0,50),cat:excepcion.cat,sub:excepcion.sub};
   // Costo único de salida: manda sobre el mapa de RUT, porque es la misma
   // persona pero el pago no es sueldo recurrente.
   if(/FINIQUITO|INDEMNIZAC/.test(d)) return {name:desc.slice(0,50),cat:'team',sub:'finiquito'};
   if(RUT_MAP[rut]) return {...RUT_MAP[rut]};
   for(const rule of KW_MAP) if(rule.kw.some(k=>d.includes(k))){
-    const a=Math.abs(monto);
-    if(rule.cat==='costo_servicio' && /^HIGHLEVEL — /.test(d) && ((a>=290&&a<=300)||(a>=490&&a<=500)))
+    const a=Math.abs(montoUSD);
+    // El plan mayor por tarjeta/MP es consumo de billetera; solo Relay
+    // con glosa de subcuenta permite reconocerlo como suscripción.
+    if(rule.sub==='ghl' && monto<0 && ((a>=290&&a<=315)||(a>=490&&a<=525&&esCargoGhlSubcuentaRelay({...contexto,desc}))))
       return {name:desc.slice(0,50),cat:'overhead',sub:'herramienta'};
     return {name:desc.slice(0,50),cat:rule.cat,sub:rule.sub};
   }
@@ -131,11 +142,18 @@ function categorize(desc,rut,monto){
 // Los países prepagan su consumo en Relay: entradas y pagos son fondos de
 // terceros (pasivo), no ingresos ni costos. Los traspasos internos siguen fuera.
 // Se evalúa sobre el movimiento completo para respetar fuente y categoría.
-function esPrepagoExp(t){
-  return t.src==='relay' && /INMOCRM EXP/i.test(t.desc||'') && t.cat!=='other';
+function esPrepagoExp(t, rateFn){
+  if(t.src!=='relay' || !/INMOCRM EXP/i.test(t.desc||'') || t.cat==='other') return false;
+  // La suscripción propia de eXp no usa fondos de los países. El rango
+  // de US$290–315 sí sigue como consumo prepagado en esta subcuenta.
+  if(t.monto<0 && esCargoGhlSubcuentaRelay(t)){
+    const a=Math.abs(montoEnUSD(t, rateFn));
+    if(a>=490 && a<=525) return false;
+  }
+  return true;
 }
-function clasificarPrepagoExp(t){
-  return esPrepagoExp(t)?{...t,cat:'prepago_exp',sub:t.monto<0?'consumo':'prepago'}:t;
+function clasificarPrepagoExp(t, rateFn){
+  return esPrepagoExp(t, rateFn)?{...t,cat:'prepago_exp',sub:t.monto<0?'consumo':'prepago'}:t;
 }
 
 function pd(s){
@@ -155,11 +173,11 @@ function normalizeHistorico(raw, rateFn){
       const usd   = !!r.usd;
       const monto = usd ? Math.round(r.monto * tcFor(r.date, rateFn)) : r.monto;
       const rut   = extractRut(r.desc, r.rut);
-      const cat   = categorize(r.desc, rut, monto);
+      const cat   = categorize(r.desc, rut, monto, montoEnUSD({...r, monto, montoOrig:r.monto, usd}, rateFn), r);
       // cat_hint from G66 overrides when no RUT match
       // pd() interpreta 'YYYY-MM-DD' como fecha LOCAL; new Date() lo leería como UTC
       // y en Chile (UTC-4) correría cada movimiento un día hacia atrás.
-      return clasificarPrepagoExp({ ...cat, ...r, rut, date: pd(r.date), monto, montoOrig: r.monto, usd, historico: true });
+      return clasificarPrepagoExp({ ...cat, ...r, rut, date: pd(r.date), monto, montoOrig: r.monto, usd, historico: true }, rateFn);
     });
   // El costo se reconoce al provisionar y se revierte al mes siguiente para
   // no duplicarlo al cargar el pago real. Revertimos el CLP ya convertido y
@@ -222,8 +240,21 @@ const GHL_EXP_PROPIO_DESDE = '2026-08';
 //   variables. La parte variable se separa por el monto refacturado, no por
 //   la cuenta desde la que se pagó (ver GHL_EXP_MENSUAL).
 // 'acelerador' = el resto del negocio, con toda la nómina, pauta y overhead.
+// Excepciones confirmadas por fecha + fuente + monto original. La suscripción
+// de eXp de agosto se pagó por MP y es herramienta por esta excepción,
+// independientemente del rango USD. Las recargas de junio/julio por tarjeta
+// o MP son consumo; no inferir suscripción ni línea por esos montos.
+const EXCEPCIONES_LINEA = [
+  {date:'2026-08-07', src:'mp', monto:-453055, linea:'exp', cat:'overhead', sub:'herramienta'},
+];
+function excepcionLinea(t){
+  const fecha=t.date instanceof Date?dk(t.date):String(t.date||'').slice(0,10);
+  return EXCEPCIONES_LINEA.find(e=>fecha===e.date && t.src===e.src && !t.usd && (t.montoOrig??t.monto)===e.monto);
+}
 function lineaDe(t, rateFn = () => rate()){
   if(t.reverso && t.linea) return t.linea;
+  const excepcion=excepcionLinea(t);
+  if(excepcion) return excepcion.linea;
   const d=(t.desc||'').toUpperCase();
   if(t.sub==='socio_exp') return 'exp';
   if(/AGENCY SUB|INMOCRM EXP/.test(d)) return 'exp';
@@ -260,20 +291,20 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   const trUSD   = fc.filter(x=>x.metodo==='Transferencia').reduce((s,x)=>s+x.monto,0);
   const mpUSD   = fc.filter(x=>x.metodo==='Mercado Pago').reduce((s,x)=>s+x.monto,0);
   // Los subtotales operacionales miran solo Acelerador; eXp va aparte
-  const ftA=ft.filter(t=>lineaDe(t, rate)!=='exp'), ftE=ft.filter(t=>lineaDe(t, rate)==='exp'&&!esPrepagoExp(t));
+  const ftA=ft.filter(t=>lineaDe(t, rate)!=='exp'), ftE=ft.filter(t=>lineaDe(t, rate)==='exp'&&!esPrepagoExp(t, rate));
   // Saldo a la fecha de cierre: usa fecha bancaria y todos los meses anteriores,
   // no el subconjunto del mes contable. Sin mes, cierra el último mes bancario.
   const mesSaldo=m||txns.filter(esMovimientoBancario).reduce((ultimo,t)=>{const k=mk(t.date);return k>ultimo?k:ultimo;},'');
-  const prepagos=txns.filter(t=>esMovimientoBancario(t)&&esPrepagoExp(t)&&(!m||mk(t.date)<=m));
+  const prepagos=txns.filter(t=>esMovimientoBancario(t)&&esPrepagoExp(t, rate)&&(!m||mk(t.date)<=m));
   // El pasivo permanece en USD: sumar centavos evita residuos de coma flotante.
   const saldoPrepagoExpUSD=prepagos.filter(t=>t.usd)
                                  .reduce((s,t)=>s+Math.round(t.montoOrig*100),0)/100;
   const saldoPrepagoExpCLP=prepagos.filter(t=>!t.usd).reduce((s,t)=>s+t.monto,0);
   const cierreSaldo=mesSaldo?new Date(+mesSaldo.slice(0,4),+mesSaldo.slice(5,7),0):null;
   const saldoPrepagoExp=Math.round(saldoPrepagoExpUSD*tcFor(cierreSaldo,rate))+saldoPrepagoExpCLP;
-  // Solo los reversos contables positivos reducen costos; los demás abonos
-  // conservan su tratamiento previo. No son ingresos por su signo positivo.
-  const esCosto=t=>t.monto<0||t.reverso;
+  // Los retornos desde las cuentas de sueldo de socios reducen la nómina,
+  // igual que los reversos contables. Otros abonos de team siguen excluidos.
+  const esCosto=t=>t.monto<0||t.reverso||(t.monto>0&&t.cat==='team'&&/FROM SUELDO/i.test(t.desc||''));
   const bc=(cat,sub)=>ftA.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&esCosto(t)).reduce((s,t)=>s-t.monto,0);
   const pauta=bc('pauta');
   const nomina=bc('team','nomina'), previred=bc('team','previred'), colabUSD=bc('team','colab_usd'), comision=bc('team','comision');
@@ -311,7 +342,7 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   // Consumo variable refacturado: se mueve desde el costo del servicio de Acelerador a eXp.
   // Nunca más de lo que efectivamente se pagó de GHL variable ese mes.
   const meses   = m?[m]:[...new Set(ft.map(txnMk))];
-  const ghlVar  = ftA.filter(t=>t.monto<0&&/highlevel/i.test(t.desc)&&!/AGENCY/i.test(t.desc))
+  const ghlVar  = ftA.filter(t=>t.cat==='costo_servicio'&&t.sub==='ghl'&&t.monto<0)
                      .reduce((s,t)=>s+Math.abs(t.monto),0);
   const ghlRef  = Math.min(ghlVar, meses.filter(k=>k<GHL_EXP_PROPIO_DESDE)
                      .reduce((s,k)=>s+(GHL_EXP_MENSUAL[k]||0)*(TC_MENSUAL[k]||r),0));
@@ -341,6 +372,6 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
 
 if (typeof module !== 'undefined' && module.exports) module.exports = {
   RUT_MAP, KW_MAP, TC_MENSUAL, GHL_EXP_MENSUAL, GHL_EXP_PROPIO_DESDE,
-  extractRut, categorize, esPrepagoExp, clasificarPrepagoExp, lineaDe, txnMk, mk, tcFor, filterBy, computePL,
+  extractRut, categorize, montoEnUSD, esPrepagoExp, clasificarPrepagoExp, lineaDe, txnMk, mk, tcFor, filterBy, computePL,
   pd, normalizeHistorico, esMovimientoBancario, mergeTxnArrays, dk,
 };

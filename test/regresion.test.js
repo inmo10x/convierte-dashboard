@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { normalizeHistorico, mergeTxnArrays, computePL, pd, dk, esMovimientoBancario } = require('../logica.js');
+const { normalizeHistorico, mergeTxnArrays, computePL, pd, dk, esMovimientoBancario, lineaDe, esPrepagoExp } = require('../logica.js');
 
 let passed = 0;
 let failed = 0;
@@ -39,7 +39,8 @@ try {
     // Se retiran $1.742.131 de res y resExp; Acelerador no cambia.
     // T6: finiquito final de Ignacio aumenta de $480.000 a $2.598.340:
     // res y resAcel bajan $2.118.340; resExp conserva el ajuste T3.
-    '2026-08': [1815861, -1868195, 3684056],
+    // T7: devolución sueldo +$275.298; suscripción $453.055 pasa a eXp.
+    '2026-08': [2091159, -1139842, 3231001],
   };
   for (const [mes, expected] of Object.entries(references)) {
     const pl = computePL({ txns, cobros: [], ventas: [], cuotas: [], rate, mes, ahora });
@@ -53,6 +54,114 @@ try {
   const plMes = (mes, movimientos = txns) => computePL({
     txns: movimientos, cobros: [], ventas: [], cuotas: [], rate, mes, ahora,
   });
+  for (const mes of Object.keys(references)) {
+    check(`${mes} costo del servicio neto no negativo`, () => {
+      assert.ok(plMes(mes).costoServ >= 0, `${mes}: ${plMes(mes).costoServ}`);
+    });
+  }
+  for (const [fecha, src, monto] of [
+    ['2026-06-25', 'santander', -472225],
+    ['2026-07-14', 'mp', -464420],
+    ['2026-07-29', 'mp', -468080],
+  ]) {
+    check(`${fecha} recarga GHL es consumo`, () => {
+      const matches = txns.filter(t=>dk(t.date)===fecha && t.src===src && t.montoOrig===monto);
+      assert.equal(matches.length, 1);
+      assert.equal(`${matches[0].cat}/${matches[0].sub}`, 'costo_servicio/ghl');
+    });
+  }
+  check('plan MP de US$298 sigue como herramienta', () => {
+    const t = txns.find(t=>dk(t.date)==='2026-07-08' && t.src==='mp' && t.montoOrig===-277875);
+    assert.ok(t);
+    assert.equal(`${t.cat}/${t.sub}`, 'overhead/herramienta');
+  });
+  check('excepción MP exige fecha, fuente y monto exactos', () => {
+    const caso = {date:'2026-08-07',src:'mp',desc:'MP: Highlevel Inc.',monto:-453055};
+    // Septiembre usa TC de respaldo; esta fecha no coincide con la excepción.
+    const [otro] = normalizeHistorico([{...caso,date:'2026-09-07'}], () => 1000);
+    assert.equal(otro.cat, 'costo_servicio');
+    for (const cambio of [{date:'2026-08-08'}, {src:'santander'}, {monto:-453056}]) {
+      const [t] = normalizeHistorico([{...caso,...cambio}], rate);
+      assert.equal(`${t.cat}/${t.sub}`, 'costo_servicio/ghl');
+    }
+  });
+  check('libro parcial: suscripción MP no se refactura como consumo a eXp', () => {
+    const movimientos = normalizeHistorico([
+      {date:'2026-07-08',desc:'MP: Highlevel Inc.',monto:-277875,src:'mp'},
+    ], rate);
+    const pl = plMes('2026-07', movimientos);
+    equalNumber('ghlRef', pl.ghlRef, 0);
+    equalNumber('costoServ', pl.costoServ, 0);
+    equalNumber('resExp', pl.resExp, 0);
+    equalNumber('resAcel', pl.resAcel, -277875);
+  });
+  check('suscripción Relay AC de US$297 usa monto original', () => {
+    const t = txns.find(t=>dk(t.date)==='2026-08-05' && t.src==='relay' && t.montoOrig===-297);
+    assert.ok(t);
+    assert.equal(t.monto, -272545);
+    assert.equal(`${t.cat}/${t.sub}`, 'overhead/herramienta');
+  });
+  check('excepción MP agosto y cargos similares de julio', () => {
+    const t = txns.find(t=>dk(t.date)==='2026-08-07' && t.src==='mp' && t.montoOrig===-453055);
+    assert.ok(t);
+    assert.equal(`${t.cat}/${t.sub}`, 'overhead/herramienta');
+    assert.equal(lineaDe(t, rate), 'exp');
+    for (const monto of [-464420, -468080]) {
+      const julio = txns.find(t=>dk(t.date).startsWith('2026-07') && t.src==='mp' && t.montoOrig===monto);
+      assert.ok(julio);
+      assert.equal(lineaDe(julio, rate), 'acelerador');
+    }
+    for (const cambio of [{date:pd('2026-08-08')}, {src:'santander'}, {montoOrig:-453056}]) {
+      assert.equal(lineaDe({...t,...cambio}, rate), 'acelerador');
+    }
+  });
+  check('From Sueldo Guillermo reduce nómina por $275.298', () => {
+    const retornos = txns.filter(t=>t.historico && t.cat==='team' && t.monto>0);
+    assert.equal(retornos.length, 1);
+    const t = retornos[0];
+    assert.equal(dk(t.date), '2026-08-04');
+    assert.equal(t.desc, 'From Sueldo Guillermo — Transfer');
+    equalNumber('retorno CLP', t.monto, Math.round(300 * 917.66));
+    equalNumber('reducción nómina', plMes('2026-08').nomina,
+      plMes('2026-08', txns.filter(x=>x!==t)).nomina - 275298);
+    const otros = normalizeHistorico([
+      {date:'2026-08-04',desc:'From Sueldo Karim',monto:100,src:'relay',usd:true},
+      {date:'2026-08-04',desc:'Sueldo Guillermo',monto:200,src:'relay',usd:true},
+      {date:'2026-08-04',desc:'Josna',monto:300,src:'relay',usd:true},
+    ], rate);
+    equalNumber('solo From Sueldo resta', plMes('2026-08', otros).nomina, -91766);
+    equalNumber('otros positivos team excluidos', plMes('2026-08', otros).colabUSD, 0);
+  });
+  check('suscripción eXp septiembre es gasto propio y no prepago', () => {
+    const movimientos = normalizeHistorico([
+      {date:'2026-09-01',desc:'InmoCRM eXp — ACH',monto:1000,src:'relay',usd:true},
+      {date:'2026-09-05',desc:'HighLevel — InmoCRM eXp',monto:-497,src:'relay',usd:true},
+      {date:'2026-09-14',desc:'HighLevel — InmoCRM eXp',monto:-300,src:'relay',usd:true},
+    ], rate);
+    const t = movimientos[1];
+    assert.equal(`${t.cat}/${t.sub}`, 'overhead/herramienta');
+    assert.equal(esPrepagoExp(t, rate), false);
+    assert.equal(lineaDe(t, rate), 'exp');
+    const pl = plMes('2026-09', movimientos);
+    equalNumber('gasto suscripción', pl.expGHL, 497 * rate());
+    equalNumber('resultado eXp', pl.resExp, -497 * rate());
+    equalNumber('saldo países', pl.saldoPrepagoExpUSD, 700);
+    const consumo = txns.find(t=>dk(t.date)==='2026-08-14' && t.src==='relay' && t.montoOrig===-300);
+    assert.ok(consumo);
+    assert.equal(`${consumo.cat}/${consumo.sub}`, 'prepago_exp/consumo');
+  });
+  check('rangos inclusivos en USD y CLP, HighLevel y AppLevel', () => {
+    for (const usd of [true, false]) for (const marca of ['HighLevel', 'AppLevel'])
+      for (const src of ['mp', 'santander', 'relay']) for (const subcuenta of [false, true]) {
+      for (const importe of [289.99, 290, 315, 315.01, 489.99, 490, 525, 525.01]) {
+        const suscripcion = (importe>=290 && importe<=315) || (importe>=490 && importe<=525 && src==='relay' && subcuenta);
+        const [t] = normalizeHistorico([{date:'2026-08-05',desc:marca+(subcuenta?' — InmoCRM AC':''),
+          monto:usd?-importe:-importe*917.66,usd,src}], rate);
+        assert.equal(t.cat, suscripcion?'overhead':'costo_servicio', `${marca} ${importe} usd=${usd} src=${src} subcuenta=${subcuenta}`);
+      }
+    }
+  });
+
   check('saldo prepago eXp agosto', () => {
     const pl = plMes('2026-08');
     equalNumber('saldoPrepagoExpUSD', pl.saldoPrepagoExpUSD, 1898.45);

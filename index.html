@@ -637,7 +637,7 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 function mergeTxns(newt){
   const combined=mergeTxnArrays(txns,newt);
   const added=combined.length-txns.length;
-  txns=combined.map(clasificarPrepagoExp);
+  txns=combined.map(t=>clasificarPrepagoExp(t, rate));
   if(added) saveTxns();
   return added;
 }
@@ -848,7 +848,7 @@ function ingest(data,src,fname,type){
     const rawRut=rawRutCol||rawRutDesc;
     // 9-10 dígitos con 0 inicial = formato "0 + RUT + DV" → extraer los 8 del medio
     const rut=rawRut.length>=9&&rawRut[0]==='0'?rawRut.slice(1,9):rawRut.slice(0,8);
-    const cat=categorize(desc,rut,monto);
+    const cat=categorize(desc,rut,monto,montoEnUSD({date,monto,montoOrig,usd}),{date,src,montoOrig,usd});
     newt.push({date,desc,monto,montoOrig,usd,rut,src,fname,...cat});
   }
   const added=mergeTxns(newt);
@@ -1298,7 +1298,7 @@ function renderPL(){
   </tbody></table></div>
   <div style="padding:7px 14px;font-size:10px;color:var(--muted)">
     * Ingresos y gastos salen de los movimientos bancarios (base caja). Quedan fuera: transferencias entre cuentas propias, préstamos internos y reversos de compras.<br>
-    * eXp/InmoCRM se presenta aparte: es un negocio externo que administra Daniel. Sus costos directos son la cuenta GHL de US$495, el consumo variable que se le refactura (pass-through: lo que se le cobra a los países es su consumo) y el 50% del líquido de Daniel. Falta cargar el consumo refacturado de enero a mayo — mientras tanto queda en overhead de Acelerador. Las ~4 h/mes de Karim en facturación y cobranza quedan dentro de Acelerador.<br>
+    * eXp/InmoCRM se presenta aparte: es un negocio externo que administra Daniel. Sus costos directos son la suscripción GHL de eXp (US$ 494–523 según el mes; US$ 497 desde septiembre 2026), el consumo variable que se le refactura (pass-through: lo que se le cobra a los países es su consumo) y el 50% del líquido de Daniel. Falta cargar el consumo refacturado de enero a mayo — mientras tanto queda en overhead de Acelerador. Las ~4 h/mes de Karim en facturación y cobranza quedan dentro de Acelerador.<br>
     * El prepago y consumo de los países en Relay eXp quedan fuera del resultado. El memo muestra el saldo acumulado en CLP al cierre de cada mes; la columna Total muestra el último cierre, sin sumar saldos.<br>
     * PREVIRED se imputa al mes de la remuneración (devengo): el pago bancario ocurre el mes siguiente. En Movimientos aparece con su fecha real de pago.</div>`;
 }
@@ -2053,7 +2053,7 @@ async function loadHistorico(){
     const raw = await res.json();
     const historico = normalizeHistorico(raw, rate);
     // Re-categorize any txns already in localStorage too (con RUT re-extraído)
-    txns = txns.map(t => { if(t.reverso) return t; const rut=extractRut(t.desc, t.rut); return { ...t, rut, ...categorize(t.desc, rut, t.monto) }; });
+    txns = txns.map(t => { if(t.reverso) return t; const rut=extractRut(t.desc, t.rut); return { ...t, rut, ...categorize(t.desc, rut, t.monto, montoEnUSD(t, rate), t) }; });
     mergeTxns(historico);
     ['santander','g66'].forEach(s=>{
       const n=txns.filter(t=>t.src===s&&t.historico&&esMovimientoBancario(t)).length;

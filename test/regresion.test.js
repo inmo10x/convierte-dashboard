@@ -35,7 +35,9 @@ try {
     '2026-05': [-3978368, -6624780, 2644876],
     '2026-06': [-673130, -1218763, 544865],
     '2026-07': [2561876, -5484435, 5460071],
-    '2026-08': [5676332, 250145, 5426187],
+    // Agosto: prepago menos consumo de países es un pasivo, no resultado.
+    // Se retiran $1.742.131 de res y resExp; Acelerador no cambia.
+    '2026-08': [3934201, 250145, 3684056],
   };
   for (const [mes, expected] of Object.entries(references)) {
     const pl = computePL({ txns, cobros: [], ventas: [], cuotas: [], rate, mes, ahora });
@@ -45,6 +47,69 @@ try {
       });
     });
   }
+
+  const plMes = (mes, movimientos = txns) => computePL({
+    txns: movimientos, cobros: [], ventas: [], cuotas: [], rate, mes, ahora,
+  });
+  check('saldo prepago eXp agosto', () => {
+    const pl = plMes('2026-08');
+    equalNumber('saldoPrepagoExpUSD', pl.saldoPrepagoExpUSD, 1898.45);
+    // $1.742.132: convertir y redondear el saldo una sola vez agrega $1 frente
+    // a los $1.742.131 obtenidos al sumar cada movimiento convertido y redondeado.
+    equalNumber('saldoPrepagoExp', pl.saldoPrepagoExp, Math.round(1898.45 * 917.66));
+  });
+  check('prepago USD consumido con otro TC no deja saldo', () => {
+    const movimientos = normalizeHistorico([
+      {date:'2026-08-31',desc:'InmoCRM eXp — ACH',monto:100,src:'relay',usd:true},
+      {date:'2026-09-30',desc:'HighLevel — InmoCRM eXp',monto:-100,src:'relay',usd:true},
+    ], rate);
+    assert.notEqual(movimientos[0].monto, -movimientos[1].monto);
+    equalNumber('agosto USD', plMes('2026-08', movimientos).saldoPrepagoExpUSD, 100);
+    equalNumber('agosto CLP', plMes('2026-08', movimientos).saldoPrepagoExp, 91766);
+    for (const mes of ['2026-09', null]) {
+      const pl = plMes(mes, movimientos);
+      equalNumber(`${mes} USD`, pl.saldoPrepagoExpUSD, 0);
+      equalNumber(`${mes} CLP`, pl.saldoPrepagoExp, 0);
+    }
+  });
+  check('saldo mixto usa TC de cierre y último mes bancario sin mes consultado', () => {
+    const movimientos = normalizeHistorico([
+      {date:'2026-07-31',desc:'InmoCRM eXp — ACH',monto:100,src:'relay',usd:true},
+      {date:'2026-07-31',desc:'InmoCRM eXp — ACH',monto:25,src:'relay',usd:false},
+      {date:'2026-08-31',desc:'Compra oficina',monto:-10,src:'santander'},
+    ], rate);
+    for (const mes of ['2026-08', null]) {
+      const pl = plMes(mes, movimientos);
+      equalNumber(`${mes} USD`, pl.saldoPrepagoExpUSD, 100);
+      equalNumber(`${mes} CLP`, pl.saldoPrepagoExp, 91766 + 25);
+    }
+    // Septiembre no tiene TC del SII: se usa el callback (950).
+    equalNumber('respaldo TC', plMes('2026-09', movimientos).saldoPrepagoExp, 95000 + 25);
+    movimientos.push(...normalizeHistorico([
+      {date:'2026-09-30',desc:'Compra oficina',monto:-10,src:'santander'},
+    ], rate));
+    equalNumber('último mes sin TC SII', plMes(null, movimientos).saldoPrepagoExp, 95000 + 25);
+  });
+  check('saldo acumulado incluye meses anteriores y excluye posteriores', () => {
+    const movimientos = normalizeHistorico([
+      {date:'2026-08-31',desc:'InmoCRM eXp — ACH',monto:100,src:'relay'},
+      {date:'2026-09-30',desc:'HighLevel — InmoCRM eXp',monto:-30,src:'relay'},
+      {date:'2026-10-01',desc:'InmoCRM eXp — ACH',monto:20,src:'relay'},
+      {date:'2026-09-01',desc:'Relay: traspaso interno (To InmoCRM eXp)',monto:-50,src:'relay'},
+      {date:'2026-09-01',desc:'InmoCRM eXp — ACH',monto:200,src:'santander'},
+    ], rate);
+    equalNumber('julio', plMes('2026-07', movimientos).saldoPrepagoExp, 0);
+    equalNumber('septiembre', plMes('2026-09', movimientos).saldoPrepagoExp, 70);
+    equalNumber('todo', plMes(null, movimientos).saldoPrepagoExp, 90);
+    assert.equal(movimientos[0].cat, 'prepago_exp');
+    assert.equal(movimientos[1].cat, 'prepago_exp');
+    assert.equal(movimientos[3].cat, 'other');
+    assert.equal(movimientos[4].cat, 'ingreso');
+    const soloPrepago = plMes(null, movimientos.slice(0, 4));
+    for (const field of ['ingExp', 'expGHL', 'expDaniel', 'ingOpUSD', 'res']) {
+      equalNumber(field, soloPrepago[field], 0);
+    }
+  });
 
   check('total normalizado', () => equalNumber('movimientos normalizados', normalized.length, 1571));
   check('total combinado', () => equalNumber('movimientos combinados', txns.length, 1571));

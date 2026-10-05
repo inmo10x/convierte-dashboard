@@ -128,6 +128,16 @@ function categorize(desc,rut,monto){
   return {name:desc.slice(0,50),cat:monto>0?'ingreso':'other',sub:monto>0?'transferencia':'sin_clasificar'};
 }
 
+// Los países prepagan su consumo en Relay: entradas y pagos son fondos de
+// terceros (pasivo), no ingresos ni costos. Los traspasos internos siguen fuera.
+// Se evalúa sobre el movimiento completo para respetar fuente y categoría.
+function esPrepagoExp(t){
+  return t.src==='relay' && /INMOCRM EXP/i.test(t.desc||'') && t.cat!=='other';
+}
+function clasificarPrepagoExp(t){
+  return esPrepagoExp(t)?{...t,cat:'prepago_exp',sub:t.monto<0?'consumo':'prepago'}:t;
+}
+
 function pd(s){
   if(!s) return null;
   const str=String(s).trim();
@@ -149,7 +159,7 @@ function normalizeHistorico(raw, rateFn){
       // cat_hint from G66 overrides when no RUT match
       // pd() interpreta 'YYYY-MM-DD' como fecha LOCAL; new Date() lo leería como UTC
       // y en Chile (UTC-4) correría cada movimiento un día hacia atrás.
-      return { ...cat, ...r, rut, date: pd(r.date), monto, montoOrig: r.monto, usd, historico: true };
+      return clasificarPrepagoExp({ ...cat, ...r, rut, date: pd(r.date), monto, montoOrig: r.monto, usd, historico: true });
     });
 }
 
@@ -234,7 +244,17 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   const trUSD   = fc.filter(x=>x.metodo==='Transferencia').reduce((s,x)=>s+x.monto,0);
   const mpUSD   = fc.filter(x=>x.metodo==='Mercado Pago').reduce((s,x)=>s+x.monto,0);
   // Los subtotales operacionales miran solo Acelerador; eXp va aparte
-  const ftA=ft.filter(t=>lineaDe(t, rate)!=='exp'), ftE=ft.filter(t=>lineaDe(t, rate)==='exp');
+  const ftA=ft.filter(t=>lineaDe(t, rate)!=='exp'), ftE=ft.filter(t=>lineaDe(t, rate)==='exp'&&!esPrepagoExp(t));
+  // Saldo a la fecha de cierre: usa fecha bancaria y todos los meses anteriores,
+  // no el subconjunto del mes contable. Sin mes, cierra el último mes bancario.
+  const mesSaldo=m||txns.reduce((ultimo,t)=>{const k=mk(t.date);return k>ultimo?k:ultimo;},'');
+  const prepagos=txns.filter(t=>esPrepagoExp(t)&&(!m||mk(t.date)<=m));
+  // El pasivo permanece en USD: sumar centavos evita residuos de coma flotante.
+  const saldoPrepagoExpUSD=prepagos.filter(t=>t.usd)
+                                 .reduce((s,t)=>s+Math.round(t.montoOrig*100),0)/100;
+  const saldoPrepagoExpCLP=prepagos.filter(t=>!t.usd).reduce((s,t)=>s+t.monto,0);
+  const cierreSaldo=mesSaldo?new Date(+mesSaldo.slice(0,4),+mesSaldo.slice(5,7),0):null;
+  const saldoPrepagoExp=Math.round(saldoPrepagoExpUSD*tcFor(cierreSaldo,rate))+saldoPrepagoExpCLP;
   const bc=(cat,sub)=>ftA.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&t.monto<0).reduce((s,t)=>s+Math.abs(t.monto),0);
   const pauta=bc('pauta');
   const nomina=bc('team','nomina'), previred=bc('team','previred'), colabUSD=bc('team','colab_usd'), comision=bc('team','comision');
@@ -293,7 +313,7 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   const vencidoUSD=cuotas.filter(c=>!c.pagado&&c.porPagar>0&&c.venc<now).reduce((s,c)=>s+c.porPagar,0);
   return {cobUSD,cobCLP,cobVUSD,ventaUSD,arUSD,whopUSD,trUSD,mpUSD,
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
-          gastoAcel,resAcel,ingExp,expDaniel,expGHL,gastoExp,resExp,
+          gastoAcel,resAcel,ingExp,expDaniel,expGHL,gastoExp,resExp,saldoPrepagoExp,saldoPrepagoExpUSD,
           pauta,nomina,previred,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
           herr,costoServ:costoServNeto,arr,adv,banc,tel,reu,mue,of,fin,free,totalOH,ghlRef,
           sii,cred,totalTax,mb,res,vencidoUSD,
@@ -302,6 +322,6 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
 
 if (typeof module !== 'undefined' && module.exports) module.exports = {
   RUT_MAP, KW_MAP, TC_MENSUAL, GHL_EXP_MENSUAL, GHL_EXP_PROPIO_DESDE,
-  extractRut, categorize, lineaDe, txnMk, mk, tcFor, filterBy, computePL,
+  extractRut, categorize, esPrepagoExp, clasificarPrepagoExp, lineaDe, txnMk, mk, tcFor, filterBy, computePL,
   pd, normalizeHistorico, mergeTxnArrays, dk,
 };

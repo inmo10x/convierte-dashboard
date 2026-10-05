@@ -854,7 +854,7 @@ function ingest(data,src,fname,type){
   const added=mergeTxns(newt);
   const label=src==='santander'?'Santander':'Global66';
   document.getElementById(`sc-${src}`).classList.add('loaded');
-  document.getElementById(`ss-${src}`).textContent=`${txns.filter(t=>t.src===src).length} movimientos`;
+  document.getElementById(`ss-${src}`).textContent=`${txns.filter(t=>t.src===src&&esMovimientoBancario(t)).length} movimientos`;
   alert2(`${added} movimientos agregados de ${label}`, added>0?'ok':'warn');
   updateTxnFilter();
   renderAll();
@@ -865,7 +865,7 @@ function _savePlatform(newt, src, label){
   const sc=document.getElementById(`sc-${src}`);
   if(sc) sc.classList.add('loaded');
   const ss=document.getElementById(`ss-${src}`);
-  if(ss) ss.textContent=`${txns.filter(t=>t.src===src).length} movimientos`;
+  if(ss) ss.textContent=`${txns.filter(t=>t.src===src&&esMovimientoBancario(t)).length} movimientos`;
   alert2(`${added} movimientos agregados de ${label}`, added>0?'ok':'warn');
   updateTxnFilter(); renderAll();
 }
@@ -1372,7 +1372,7 @@ function renderTxns(){
   if(sf) t=t.filter(x=>x.src===sf);
   const sq=(document.getElementById('f-search')?.value||'').trim().toLowerCase();
   if(sq) t=t.filter(x=>(x.desc||'').toLowerCase().includes(sq)||(x.sub||'').toLowerCase().includes(sq)||String(Math.abs(x.monto)).includes(sq)||(x.usd&&x.montoOrig!=null&&String(Math.abs(x.montoOrig)).includes(sq)));
-  document.getElementById('txn-n').textContent=`${t.length} movimientos`;
+  document.getElementById('txn-n').textContent=`${t.filter(esMovimientoBancario).length} movimientos bancarios · ${t.filter(x=>!esMovimientoBancario(x)).length} asientos contables`;
   if(!t.length){document.getElementById('txn-container').innerHTML='<div class="no-data">Sin movimientos para los filtros seleccionados</div>';return;}
   const cb=c=>{ const m={prepago_exp:'b-other',ingreso:'b-income',team:'b-team',overhead:'b-overhead',costo_servicio:'b-pauta',pauta:'b-pauta',impuestos:'b-impuestos',other:'b-other'}; const l={prepago_exp:'Prepago países',ingreso:'Ingreso',team:'Team',overhead:'Overhead',costo_servicio:'Costo servicio',pauta:'Pauta',impuestos:'Impuesto',other:'Otro'}; return `<span class="badge ${m[c]||'b-other'}">${l[c]||c}</span>`; };
   const rows=t.slice(-300).reverse().map(x=>{
@@ -1424,7 +1424,7 @@ function updateTxnFilter(){
 // PERSISTENCE
 // ═══════════════════════════════════════════════
 // El histórico no se persiste en localStorage — se re-merge desde historico.json en cada boot
-function saveTxns(){ try{localStorage.setItem('cv_txns',JSON.stringify(txns.filter(t=>!t.historico).map(t=>({...t,date:t.date.toISOString()}))));}catch(e){} }
+function saveTxns(){ try{localStorage.setItem('cv_txns',JSON.stringify(txns.filter(t=>!t.historico&&!t.reverso).map(t=>({...t,date:t.date.toISOString()}))));}catch(e){} }
 function loadTxns(){
   try{
     const raw=localStorage.getItem('cv_txns'); if(!raw){localStorage.setItem('cv_schema_v','2');return;}
@@ -1437,7 +1437,7 @@ function loadTxns(){
     }
     const r0=rate();
     txns=JSON.parse(raw)
-      .filter(t=>!t.historico)
+      .filter(t=>!t.historico&&!t.reverso)
       .map(t=>{
         // Migración: entradas antiguas sin montoOrig quedan como CLP fijo
         const usd=!!t.usd&&t.montoOrig!=null;
@@ -1454,13 +1454,15 @@ function loadSettings(){ try{const s=JSON.parse(localStorage.getItem('cv_cfg')||
 // archivo en el repo y que queden permanentes en cualquier dispositivo.
 function exportHistorico(){
   if(!txns.length){ alert2('No hay movimientos que exportar','warn'); return; }
-  const out=txns.map(t=>({
+  // Los reversos se regeneran al cargar; preservar la marca de la provisión.
+  const out=txns.filter(t=>!t.reverso).map(t=>({
     date: dk(t.date),
     desc: t.desc,
     monto: t.usd&&t.montoOrig!=null ? t.montoOrig : t.monto, // USD original; CLP tal cual
     usd: !!t.usd,
     rut: t.rut||'',
-    src: t.src
+    src: t.src,
+    ...(t.provision ? {provision:true} : {})
   })).sort((a,b)=>a.date.localeCompare(b.date));
   const blob=new Blob([JSON.stringify(out,null,1)],{type:'application/json'});
   const a=document.createElement('a');
@@ -2051,10 +2053,10 @@ async function loadHistorico(){
     const raw = await res.json();
     const historico = normalizeHistorico(raw, rate);
     // Re-categorize any txns already in localStorage too (con RUT re-extraído)
-    txns = txns.map(t => { const rut=extractRut(t.desc, t.rut); return { ...t, rut, ...categorize(t.desc, rut, t.monto) }; });
+    txns = txns.map(t => { if(t.reverso) return t; const rut=extractRut(t.desc, t.rut); return { ...t, rut, ...categorize(t.desc, rut, t.monto) }; });
     mergeTxns(historico);
     ['santander','g66'].forEach(s=>{
-      const n=txns.filter(t=>t.src===s&&t.historico).length;
+      const n=txns.filter(t=>t.src===s&&t.historico&&esMovimientoBancario(t)).length;
       if(n){ document.getElementById(`sc-${s}`).classList.add('loaded'); document.getElementById(`ss-${s}`).textContent=`${n} mov. históricos (Ene–Abr 2026)`; }
     });
     updateTxnFilter();
@@ -2076,7 +2078,7 @@ loadTxns();
 });
 
 // Restore cartola status
-['santander','g66'].forEach(s=>{ const n=txns.filter(t=>t.src===s).length; if(n){document.getElementById(`sc-${s}`).classList.add('loaded');document.getElementById(`ss-${s}`).textContent=`${n} movimientos`;} });
+['santander','g66'].forEach(s=>{ const n=txns.filter(t=>t.src===s&&esMovimientoBancario(t)).length; if(n){document.getElementById(`sc-${s}`).classList.add('loaded');document.getElementById(`ss-${s}`).textContent=`${n} movimientos`;} });
 
 updateTxnFilter();
 renderAll();

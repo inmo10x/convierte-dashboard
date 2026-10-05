@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { normalizeHistorico, mergeTxnArrays, computePL, pd, dk } = require('../logica.js');
+const { normalizeHistorico, mergeTxnArrays, computePL, pd, dk, esMovimientoBancario } = require('../logica.js');
 
 let passed = 0;
 let failed = 0;
@@ -37,7 +37,9 @@ try {
     '2026-07': [2561876, -5484435, 5460071],
     // Agosto: prepago menos consumo de países es un pasivo, no resultado.
     // Se retiran $1.742.131 de res y resExp; Acelerador no cambia.
-    '2026-08': [3934201, 250145, 3684056],
+    // T6: finiquito final de Ignacio aumenta de $480.000 a $2.598.340:
+    // res y resAcel bajan $2.118.340; resExp conserva el ajuste T3.
+    '2026-08': [1815861, -1868195, 3684056],
   };
   for (const [mes, expected] of Object.entries(references)) {
     const pl = computePL({ txns, cobros: [], ventas: [], cuotas: [], rate, mes, ahora });
@@ -111,8 +113,83 @@ try {
     }
   });
 
-  check('total normalizado', () => equalNumber('movimientos normalizados', normalized.length, 1571));
-  check('total combinado', () => equalNumber('movimientos combinados', txns.length, 1571));
+  // El ledger mantiene 1571 entradas; los dos asientos generados no son histórico.
+  check('total histórico', () => equalNumber('entradas originales', raw.length, 1571));
+  check('total normalizado', () => {
+    equalNumber('históricos normalizados', normalized.filter(t=>t.historico).length, 1571);
+    equalNumber('incluidos reversos', normalized.length, 1573);
+  });
+  check('total combinado', () => equalNumber('incluidos reversos', txns.length, 1573));
+
+  check('dos reversos reales en septiembre, con CLP y clasificación originales', () => {
+    const reversos = normalized.filter(t=>t.reverso);
+    assert.equal(reversos.length, 2);
+    assert.deepEqual(reversos.map(t=>[dk(t.date), t.cat, t.sub, t.monto]).sort(), [
+      ['2026-09-01', 'team', 'finiquito', 2598340],
+      ['2026-09-01', 'team', 'nomina', 1040626],
+    ]);
+    for (const provision of normalized.filter(t=>t.provision)) {
+      const reverso = reversos.find(t=>t.desc.includes(provision.desc));
+      assert.ok(reverso, 'cada provisión debe generar su reverso');
+      assert.equal(reverso.monto, -provision.monto);
+      assert.equal(reverso.montoOrig, reverso.monto);
+      assert.equal(reverso.usd, false);
+      assert.equal(reverso.provision, false);
+      assert.equal(reverso.historico, false);
+    }
+    equalNumber('conversión exacta Guillermo', -Math.round(-1134 * 917.66), 1040626);
+    equalNumber('resultado septiembre sin cartolas', plMes('2026-09').res, 3638966);
+  });
+  check('una provisión sola genera reverso, incluso al cambiar de año', () => {
+    const rawCaso = [{date:'2026-12-31',desc:'Provisión sueldo prueba',monto:-12345,src:'mp',provision:true}];
+    const copia = JSON.stringify(rawCaso);
+    const movimientos = normalizeHistorico(rawCaso, rate);
+    assert.equal(movimientos.length, 2);
+    assert.equal(movimientos[1].reverso, true);
+    assert.equal(dk(movimientos[1].date), '2027-01-01');
+    assert.equal(movimientos[1].monto, 12345);
+    assert.equal(movimientos[1].cat, movimientos[0].cat);
+    assert.equal(movimientos[1].sub, movimientos[0].sub);
+    assert.equal(JSON.stringify(rawCaso), copia, 'no muta el histórico');
+    assert.equal(normalizeHistorico([{...rawCaso[0],provision:false}], rate).length, 1);
+  });
+  check('provisión y pago real: costo cero al pagar y X entre ambos meses', () => {
+    const X = 123456;
+    const movimientos = normalizeHistorico([
+      {date:'2026-07-31',desc:'Provisión finiquito prueba',monto:-X,src:'mp',provision:true},
+      {date:'2026-08-10',desc:'Pago finiquito prueba',monto:-X,src:'mp'},
+    ], rate);
+    equalNumber('costo julio', plMes('2026-07', movimientos).finiquito, X);
+    equalNumber('costo agosto neto', plMes('2026-08', movimientos).finiquito, 0);
+    equalNumber('costo conjunto', plMes(null, movimientos).finiquito, X);
+    equalNumber('resultado conjunto', plMes(null, movimientos).res, -X);
+    assert.equal(movimientos.filter(esMovimientoBancario).length, 1);
+  });
+  check('pago USD conserva diferencia de cambio tras el reverso', () => {
+    const movimientos = normalizeHistorico([
+      {date:'2026-08-31',desc:'Provisión sueldo prueba',monto:-1134,src:'relay',usd:true,provision:true},
+      {date:'2026-09-03',desc:'Sueldo Guillermo',monto:-1134,src:'relay',usd:true},
+    ], rate);
+    equalNumber('diferencia de cambio', plMes('2026-09', movimientos).nomina,
+      -Math.round(-1134 * rate()) - 1040626);
+  });
+  check('reverso eXp reduce costo sin convertirse en ingreso', () => {
+    const movimientos = normalizeHistorico([
+      {date:'2026-08-31',desc:'Provisión Daniel Álvarez',monto:-100,src:'g66',provision:true},
+      {date:'2026-09-03',desc:'Pago Daniel Álvarez',monto:-100,src:'g66'},
+    ], rate);
+    const septiembre = plMes('2026-09', movimientos);
+    for (const campo of ['expDaniel', 'gastoExp', 'resExp', 'ingExp', 'ingOpUSD']) {
+      equalNumber(campo, septiembre[campo], 0);
+    }
+    equalNumber('costo total eXp', plMes(null, movimientos).expDaniel, 100);
+  });
+  check('asientos excluidos de cuentas y del último cierre bancario T3', () => {
+    equalNumber('movimientos bancarios', normalized.filter(esMovimientoBancario).length, 1569);
+    const sinAsientos = normalized.filter(esMovimientoBancario);
+    equalNumber('saldo agregado T3', plMes(null).saldoPrepagoExp, plMes(null, sinAsientos).saldoPrepagoExp);
+    equalNumber('saldo USD agregado T3', plMes(null).saldoPrepagoExpUSD, plMes(null, sinAsientos).saldoPrepagoExpUSD);
+  });
 
   // Identidades de los dos pendientes actuales: detecta también sustituciones
   // que mantengan el conteo en dos y lista fecha, glosa y monto de cada nuevo.

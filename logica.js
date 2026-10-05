@@ -151,7 +151,7 @@ function pd(s){
 }
 
 function normalizeHistorico(raw, rateFn){
-  return raw.map(r => {
+  const movimientos = raw.map(r => {
       const usd   = !!r.usd;
       const monto = usd ? Math.round(r.monto * tcFor(r.date, rateFn)) : r.monto;
       const rut   = extractRut(r.desc, r.rut);
@@ -161,7 +161,22 @@ function normalizeHistorico(raw, rateFn){
       // y en Chile (UTC-4) correría cada movimiento un día hacia atrás.
       return clasificarPrepagoExp({ ...cat, ...r, rut, date: pd(r.date), monto, montoOrig: r.monto, usd, historico: true });
     });
+  // El costo se reconoce al provisionar y se revierte al mes siguiente para
+  // no duplicarlo al cargar el pago real. Revertimos el CLP ya convertido y
+  // redondeado: aplicar el TC del pago borraría una diferencia de cambio real.
+  const reversos = movimientos.filter(t => t.provision === true).map(t => ({
+    ...t,
+    date: new Date(t.date.getFullYear(), t.date.getMonth()+1, 1),
+    desc: `Reverso de provisión (${dk(t.date)}): ${t.desc}`,
+    monto: -t.monto, montoOrig: -t.monto, usd: false,
+    provision: false, reverso: true, historico: false,
+    linea: lineaDe(t, rateFn),
+  }));
+  return [...movimientos, ...reversos];
 }
+
+// Provisiones y reversos son asientos contables, no movimientos de una cuenta.
+function esMovimientoBancario(t){ return !t.provision && !t.reverso; }
 
 // Clave de dedup: fecha completa + descripción + monto original + fuente.
 // El sufijo #n permite N pagos idénticos el mismo día (cartolas solapadas siguen dedupando).
@@ -208,6 +223,7 @@ const GHL_EXP_PROPIO_DESDE = '2026-08';
 //   la cuenta desde la que se pagó (ver GHL_EXP_MENSUAL).
 // 'acelerador' = el resto del negocio, con toda la nómina, pauta y overhead.
 function lineaDe(t, rateFn = () => rate()){
+  if(t.reverso && t.linea) return t.linea;
   const d=(t.desc||'').toUpperCase();
   if(t.sub==='socio_exp') return 'exp';
   if(/AGENCY SUB|INMOCRM EXP/.test(d)) return 'exp';
@@ -247,19 +263,22 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   const ftA=ft.filter(t=>lineaDe(t, rate)!=='exp'), ftE=ft.filter(t=>lineaDe(t, rate)==='exp'&&!esPrepagoExp(t));
   // Saldo a la fecha de cierre: usa fecha bancaria y todos los meses anteriores,
   // no el subconjunto del mes contable. Sin mes, cierra el último mes bancario.
-  const mesSaldo=m||txns.reduce((ultimo,t)=>{const k=mk(t.date);return k>ultimo?k:ultimo;},'');
-  const prepagos=txns.filter(t=>esPrepagoExp(t)&&(!m||mk(t.date)<=m));
+  const mesSaldo=m||txns.filter(esMovimientoBancario).reduce((ultimo,t)=>{const k=mk(t.date);return k>ultimo?k:ultimo;},'');
+  const prepagos=txns.filter(t=>esMovimientoBancario(t)&&esPrepagoExp(t)&&(!m||mk(t.date)<=m));
   // El pasivo permanece en USD: sumar centavos evita residuos de coma flotante.
   const saldoPrepagoExpUSD=prepagos.filter(t=>t.usd)
                                  .reduce((s,t)=>s+Math.round(t.montoOrig*100),0)/100;
   const saldoPrepagoExpCLP=prepagos.filter(t=>!t.usd).reduce((s,t)=>s+t.monto,0);
   const cierreSaldo=mesSaldo?new Date(+mesSaldo.slice(0,4),+mesSaldo.slice(5,7),0):null;
   const saldoPrepagoExp=Math.round(saldoPrepagoExpUSD*tcFor(cierreSaldo,rate))+saldoPrepagoExpCLP;
-  const bc=(cat,sub)=>ftA.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&t.monto<0).reduce((s,t)=>s+Math.abs(t.monto),0);
+  // Solo los reversos contables positivos reducen costos; los demás abonos
+  // conservan su tratamiento previo. No son ingresos por su signo positivo.
+  const esCosto=t=>t.monto<0||t.reverso;
+  const bc=(cat,sub)=>ftA.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&esCosto(t)).reduce((s,t)=>s-t.monto,0);
   const pauta=bc('pauta');
   const nomina=bc('team','nomina'), previred=bc('team','previred'), colabUSD=bc('team','colab_usd'), comision=bc('team','comision');
   const finiquito=bc('team','finiquito');
-  const teamOth=ftA.filter(t=>t.cat==='team'&&t.monto<0&&!['nomina','previred','colab_usd','comision','finiquito'].includes(t.sub)).reduce((s,t)=>s+Math.abs(t.monto),0);
+  const teamOth=ftA.filter(t=>t.cat==='team'&&esCosto(t)&&!['nomina','previred','colab_usd','comision','finiquito'].includes(t.sub)).reduce((s,t)=>s-t.monto,0);
   const totalTeam=nomina+previred+colabUSD+comision+finiquito+teamOth;
   const teamRec=totalTeam-finiquito;   // costo recurrente, sin costos únicos de salida
   const herr=bc('overhead','herramienta'), arr=bc('overhead','arriendo'), adv=bc('overhead','advisory');
@@ -280,15 +299,15 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   // Cash Collected del panel = ventas cobradas de ambas líneas, cada movimiento
   // convertido con el TC de su mes (vale también para el agregado del período)
   const ingOpUSD= ins.filter(t=>t.sub!=='no_operacional').reduce((s,t)=>s+t.monto/tcFor(t.date, rate),0)
-                + ftE.filter(t=>t.monto>0&&t.cat!=='other').reduce((s,t)=>s+t.monto/tcFor(t.date, rate),0);
+                + ftE.filter(t=>t.monto>0&&!t.reverso&&t.cat!=='other').reduce((s,t)=>s+t.monto/tcFor(t.date, rate),0);
   // Desglose de ingresos operacionales por origen
   const ingWhop = ins.filter(t=>t.sub==='whop').reduce((s,t)=>s+t.monto,0);
   const ingMP   = ins.filter(t=>t.sub==='mercadopago').reduce((s,t)=>s+t.monto,0);
   const ingTrf  = ingOp-ingWhop-ingMP;
   // ── eXp / InmoCRM: negocio externo, con sus propios ingresos y costos ──
   // Traspasos entre subcuentas propias (Relay To/From InmoCRM eXp) no son ingreso ni costo
-  const ingExp   =ftE.filter(t=>t.monto>0&&t.cat!=='other').reduce((s,t)=>s+t.monto,0);
-  const expDaniel=ftE.filter(t=>t.monto<0&&t.sub==='socio_exp').reduce((s,t)=>s+Math.abs(t.monto),0);
+  const ingExp   =ftE.filter(t=>t.monto>0&&!t.reverso&&t.cat!=='other').reduce((s,t)=>s+t.monto,0);
+  const expDaniel=ftE.filter(t=>esCosto(t)&&t.sub==='socio_exp').reduce((s,t)=>s-t.monto,0);
   // Consumo variable refacturado: se mueve desde el costo del servicio de Acelerador a eXp.
   // Nunca más de lo que efectivamente se pagó de GHL variable ese mes.
   const meses   = m?[m]:[...new Set(ft.map(txnMk))];
@@ -296,7 +315,7 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
                      .reduce((s,t)=>s+Math.abs(t.monto),0);
   const ghlRef  = Math.min(ghlVar, meses.filter(k=>k<GHL_EXP_PROPIO_DESDE)
                      .reduce((s,k)=>s+(GHL_EXP_MENSUAL[k]||0)*(TC_MENSUAL[k]||r),0));
-  const expGHL  =ftE.filter(t=>t.monto<0&&t.sub!=='socio_exp'&&t.cat!=='other').reduce((s,t)=>s+Math.abs(t.monto),0)+ghlRef;
+  const expGHL  =ftE.filter(t=>esCosto(t)&&t.sub!=='socio_exp'&&t.cat!=='other').reduce((s,t)=>s-t.monto,0)+ghlRef;
   const gastoExp =expDaniel+expGHL;
   const resExp   =ingExp-gastoExp;
   // ── Resultado operacional (Acelerador), ya neto del consumo refacturado ──
@@ -323,5 +342,5 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
 if (typeof module !== 'undefined' && module.exports) module.exports = {
   RUT_MAP, KW_MAP, TC_MENSUAL, GHL_EXP_MENSUAL, GHL_EXP_PROPIO_DESDE,
   extractRut, categorize, esPrepagoExp, clasificarPrepagoExp, lineaDe, txnMk, mk, tcFor, filterBy, computePL,
-  pd, normalizeHistorico, mergeTxnArrays, dk,
+  pd, normalizeHistorico, esMovimientoBancario, mergeTxnArrays, dk,
 };

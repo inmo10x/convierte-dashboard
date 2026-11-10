@@ -23,6 +23,9 @@ const RUT_MAP = {
   '01576359':{ name:'Ignacio (Closer)',           cat:'team',     sub:'comision' }, // "015763593K Transf a Ignacio"
 };
 const KW_MAP = [
+  {kw:['SKOOL — ACH'], cat:'ingreso', sub:'transferencia'},
+  {kw:['IMPUESTO SOBREGIRO'], cat:'overhead', sub:'bancario'},
+  {kw:['PAGO COBRANZAS POR CAJAS'], cat:'impuestos', sub:'credito'},
   // Excepciones específicas antes de marcas generales (Facebook / Railway).
   {kw:['FACEBOOK — OVERHEAD HH'], cat:'overhead', sub:'household'},
   {kw:['THE RAILWAY TAVERN'], cat:'overhead', sub:'bienestar'},
@@ -100,8 +103,21 @@ const KW_MAP = [
 // Fuente oficial: sii.cl → Valores y Fechas → Dólar observado (promedio mensual)
 const TC_MENSUAL = {
   '2026-01': 884, '2026-02': 862, '2026-03': 910, '2026-04': 898,
-  '2026-05': 898, '2026-06': 903, '2026-07': 931, '2026-08': 917.66, '2026-09': 947.27,
+  '2026-05': 898, '2026-06': 903, '2026-07': 931, '2026-08': 917.66, '2026-09': 947.27, '2026-10': 982.28,
 };
+// Devengo validado: desde mayo los pagos cancelan deuda acumulada.
+const PREVIRED_DEVENGO_DESDE = '2026-05';
+const PREVIRED_MENSUAL = {
+  '2026-05': 3003189, '2026-06': 2847690, '2026-07': 1994291,
+  '2026-08': 1978598, '2026-09': 1502418, '2026-10': 1504464,
+};
+function esPagoDeudaPrevired(t){
+  return esMovimientoBancario(t) && t.cat==='team' && t.sub==='previred' && dk(t.date)>='2026-06-01';
+}
+function devengoPrevired(m){
+  if(m<PREVIRED_DEVENGO_DESDE) return 0;
+  return PREVIRED_MENSUAL[m] ?? 0;
+}
 function tcFor(d, rateFn = () => rate()){
   const k = d instanceof Date ? mk(d) : String(d||'').slice(0,7);
   return TC_MENSUAL[k] || rateFn();
@@ -273,10 +289,24 @@ function lineaDe(t, rateFn = () => rate()){
   return 'acelerador';
 }
 
-// Mes contable de un movimiento. PREVIRED se paga el mes siguiente al de las
-// remuneraciones → se imputa (devenga) al mes anterior al del pago.
+// Último mes con datos propios (banco, cobros o ventas). Un anticipo de sueldo
+// no abre por sí solo un mes nuevo: el dashboard y el agregado usan este mismo
+// corte, para que el total cuadre con la suma de los meses mostrados.
+function ultimoMesConDatos(txns,cobros=[],ventas=[]){
+  let u='';
+  for(const t of txns) if(esMovimientoBancario(t)&&!t.anticipo){const k=mk(t.date); if(k>u) u=k;}
+  for(const r of [...cobros,...ventas]){const k=mk(r.date); if(k&&k>u) u=k;}
+  return u;
+}
+
+// Los pagos antiguos de PREVIRED conservan su imputación al mes anterior.
 function txnMk(t){
-  if(t.cat==='team'&&t.sub==='previred'){
+  // El anticipo conserva fecha bancaria y TC originales; cambia el mes de sueldo.
+  if(t.anticipo){
+    const d=new Date(t.date); d.setDate(1); d.setMonth(d.getMonth()+1);
+    return mk(d);
+  }
+  if(t.cat==='team'&&t.sub==='previred'&&!esPagoDeudaPrevired(t)){
     const d=new Date(t.date); d.setDate(1); d.setMonth(d.getMonth()-1);
     return mk(d);
   }
@@ -287,7 +317,25 @@ function filterBy(arr,m){ return m?arr.filter(r=>mk(r.date)===m):arr; }
 
 function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Date() }){
   const r=rate();
-  const fc=filterBy(cobros,m), fv=filterBy(ventas,m), ft=m?txns.filter(t=>txnMk(t)===m):txns;
+  const cierrePrevired=m||Object.keys(PREVIRED_MENSUAL).sort().at(-1);
+  const mesesPrevired=[];
+  for(let k=PREVIRED_DEVENGO_DESDE;k<=cierrePrevired;){
+    mesesPrevired.push(k);
+    const d=pd(k+'-01'); d.setMonth(d.getMonth()+1); k=mk(d);
+  }
+  // El agregado también puede contener anticipos de meses aún sin liquidación.
+  const mesesCalculados=m?mesesPrevired:[...new Set([...mesesPrevired,...txns.map(txnMk)])];
+  const mesesPreviredFaltantes=mesesCalculados.filter(k=>k>=PREVIRED_DEVENGO_DESDE&&PREVIRED_MENSUAL[k]==null).sort();
+  const previredFaltante=mesesPreviredFaltantes.length>0;
+  const acumuladoPrevired=mesesPrevired.reduce((s,k)=>s+devengoPrevired(k),0);
+  const deudaPrevired=acumuladoPrevired+txns.filter(t=>esPagoDeudaPrevired(t)&&mk(t.date)<=cierrePrevired)
+    .reduce((s,t)=>s+t.monto,0);
+  const previredDevengado=m?devengoPrevired(m):acumuladoPrevired;
+  // Sin mes, el agregado cierra en el último mes bancario: un anticipo pagado
+  // al cierre pertenece a un período que todavía no se muestra ni se cerró.
+  const ultimoBanco=ultimoMesConDatos(txns,cobros,ventas);
+  const fc=filterBy(cobros,m), fv=filterBy(ventas,m),
+        ft=m?txns.filter(t=>txnMk(t)===m):txns.filter(t=>!t.anticipo||txnMk(t)<=ultimoBanco);
   const cobUSD  = fc.reduce((s,x)=>s+x.monto,0);
   // Cada cobro se convierte con el TC de su propio mes
   const cobCLP  = fc.reduce((s,x)=>s+x.monto*tcFor(x.date, rate),0);
@@ -312,9 +360,9 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   // Los retornos desde las cuentas de sueldo de socios reducen la nómina,
   // igual que los reversos contables. Otros abonos de team siguen excluidos.
   const esCosto=t=>t.monto<0||t.reverso||(t.monto>0&&t.cat==='team'&&/FROM SUELDO/i.test(t.desc||''));
-  const bc=(cat,sub)=>ftA.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&esCosto(t)).reduce((s,t)=>s-t.monto,0);
+  const bc=(cat,sub)=>ftA.filter(t=>t.cat===cat&&(!sub||t.sub===sub)&&esCosto(t)&&!esPagoDeudaPrevired(t)).reduce((s,t)=>s-t.monto,0);
   const pauta=bc('pauta');
-  const nomina=bc('team','nomina'), previred=bc('team','previred'), colabUSD=bc('team','colab_usd'), comision=bc('team','comision');
+  const nomina=bc('team','nomina'), previred=bc('team','previred')+previredDevengado, colabUSD=bc('team','colab_usd'), comision=bc('team','comision');
   const finiquito=bc('team','finiquito');
   const teamOth=ftA.filter(t=>t.cat==='team'&&esCosto(t)&&!['nomina','previred','colab_usd','comision','finiquito'].includes(t.sub)).reduce((s,t)=>s-t.monto,0);
   const totalTeam=nomina+previred+colabUSD+comision+finiquito+teamOth;
@@ -347,6 +395,8 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   // ── eXp / InmoCRM: negocio externo, con sus propios ingresos y costos ──
   // Traspasos entre subcuentas propias (Relay To/From InmoCRM eXp) no son ingreso ni costo
   const ingExp   =ftE.filter(t=>t.monto>0&&!t.reverso&&t.cat!=='other').reduce((s,t)=>s+t.monto,0);
+  const ingExpRefacturacion=ftE.filter(t=>t.cat==='ingreso'&&t.sub==='refacturacion_ghl').reduce((s,t)=>s+t.monto,0);
+  const ingExpFee=ingExp-ingExpRefacturacion;
   const expDaniel=ftE.filter(t=>esCosto(t)&&t.sub==='socio_exp').reduce((s,t)=>s-t.monto,0);
   // Consumo variable refacturado: se mueve desde el costo del servicio de Acelerador a eXp.
   // Nunca más de lo que efectivamente se pagó de GHL variable ese mes.
@@ -372,15 +422,15 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   const vencidoUSD=cuotas.filter(c=>!c.pagado&&c.porPagar>0&&c.venc<now).reduce((s,c)=>s+c.porPagar,0);
   return {cobUSD,cobCLP,cobVUSD,ventaUSD,arUSD,whopUSD,trUSD,mpUSD,
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
-          gastoAcel,resAcel,ingExp,expDaniel,expGHL,gastoExp,resExp,saldoPrepagoExp,saldoPrepagoExpUSD,
-          pauta,nomina,previred,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
+          gastoAcel,resAcel,ingExp,ingExpFee,ingExpRefacturacion,expDaniel,expGHL,gastoExp,resExp,saldoPrepagoExp,saldoPrepagoExpUSD,deudaPrevired,
+          pauta,nomina,previred,previredFaltante,mesesPreviredFaltantes,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
           herr,costoServ:costoServNeto,arr,adv,banc,tel,reu,mue,of,fin,free,otrosOH,totalOH,ghlRef,
           sii,cred,totalTax,mb,res,vencidoUSD,
           tRate:ventaUSD?cobVUSD/ventaUSD*100:0};
 }
 
 if (typeof module !== 'undefined' && module.exports) module.exports = {
-  RUT_MAP, KW_MAP, TC_MENSUAL, GHL_EXP_MENSUAL, GHL_EXP_PROPIO_DESDE,
+  PREVIRED_DEVENGO_DESDE, PREVIRED_MENSUAL, esPagoDeudaPrevired, RUT_MAP, KW_MAP, TC_MENSUAL, GHL_EXP_MENSUAL, GHL_EXP_PROPIO_DESDE,
   extractRut, categorize, montoEnUSD, esPrepagoExp, clasificarPrepagoExp, lineaDe, txnMk, mk, tcFor, filterBy, computePL,
-  pd, normalizeHistorico, esMovimientoBancario, mergeTxnArrays, dk,
+  pd, normalizeHistorico, esMovimientoBancario, ultimoMesConDatos, mergeTxnArrays, dk,
 };

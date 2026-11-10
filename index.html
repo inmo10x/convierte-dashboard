@@ -973,7 +973,9 @@ function allMonths(){
   const s=new Set();
   cobros.forEach(r=>{const k=mk(r.date);if(k)s.add(k);});
   ventas.forEach(r=>{const k=mk(r.date);if(k)s.add(k);});
-  txns.forEach(r=>{const k=txnMk(r);if(k)s.add(k);});
+  // Un anticipo no abre por sí solo un cierre contable futuro.
+  const ultimoBanco=ultimoMesConDatos(txns,cobros,ventas);
+  txns.forEach(r=>{const k=txnMk(r);if(k&&(!r.anticipo||k<=ultimoBanco))s.add(k);});
   return [...s].sort();
 }
 
@@ -1236,8 +1238,8 @@ function renderPL(){
   const sum=arr=>arr.reduce((s,v)=>s+v,0);
 
   const th=`<tr><th class="left" style="min-width:200px">Concepto</th>${ms.map(k=>`<th>${ml(k)}</th>`).join('')}${showTot?'<th>Total</th>':''}</tr>`;
-  const row=(lbl,vals,cls='',neg=false,total=sum(vals))=>{
-    const tds=vals.map(v=>{const n=neg?-v:v; return `<td>${n<0?`<span class="neg">${fmt(n)}</span>`:fmt(n)}</td>`;}).join('');
+  const row=(lbl,vals,cls='',neg=false,total=sum(vals),faltantes=[])=>{
+    const tds=vals.map((v,i)=>{if(faltantes[i]) return '<td><span class="warn">falta liquidación</span></td>'; const n=neg?-v:v; return `<td>${n<0?`<span class="neg">${fmt(n)}</span>`:fmt(n)}</td>`;}).join('');
     const tot=neg?-total:total;
     return `<tr class="${cls}"><td>${lbl}</td>${tds}${showTot?`<td>${tot<0?`<span class="neg">${fmt(tot)}</span>`:fmt(tot)}</td>`:''}</tr>`;
   };
@@ -1263,7 +1265,7 @@ function renderPL(){
   ${rowp('% margen bruto',pls.map(p=>p.mb),pls.map(p=>p.ingOp))}
   ${sec('(-) TEAM SPEND')}
   ${row('Nómina (7 empleados)',pls.map(p=>p.nomina),'rs',true)}
-  ${row('PREVIRED',pls.map(p=>p.previred),'rs',true)}
+  ${row('PREVIRED',pls.map(p=>p.previred),'rs',true,undefined,pls.map(p=>p.previredFaltante))}
   ${row('Colabs internacionales USD',pls.map(p=>p.colabUSD),'rs',true)}
   ${row('Comisiones (Claudia/Sebastián)',pls.map(p=>p.comision),'rs',true)}
   ${row('Finiquitos e indemnizaciones',pls.map(p=>p.finiquito),'rs',true)}
@@ -1284,7 +1286,8 @@ function renderPL(){
   ${row('= RESULTADO OPERACIONAL (Acelerador)',pls.map(p=>p.resAcel),'rt')}
   ${rowp('% margen operacional',pls.map(p=>p.resAcel),pls.map(p=>p.ingOp))}
   ${sec('eXp / INMOCRM — NEGOCIO EXTERNO')}
-  ${row('Fees cobrados (8 países)',pls.map(p=>p.ingExp),'rs')}
+  ${row('Fees cobrados (8 países)',pls.map(p=>p.ingExpFee),'rs')}
+  ${row('Refacturación de consumo GHL',pls.map(p=>p.ingExpRefacturacion),'rs')}
   ${row('Daniel — 50% del líquido',pls.map(p=>p.expDaniel),'rs',true)}
   ${row('GHL InmoCRM (US$495 + consumo refacturado)',pls.map(p=>p.expGHL),'rs',true)}
   ${row('= RESULTADO eXp',pls.map(p=>p.resExp),'rt')}
@@ -1295,12 +1298,13 @@ function renderPL(){
   ${rowp('% margen neto',pls.map(p=>p.res),pls.map(p=>p.ingTot))}
   ${sec('MEMO — PASIVO FUERA DEL RESULTADO (saldo al cierre; total = último cierre)')}
   ${row('Saldo prepagado de los países',pls.map(p=>p.saldoPrepagoExp),'rs',false,pls[pls.length-1].saldoPrepagoExp)}
+  ${row('Deuda previsional (PREVIRED)',pls.map(p=>p.deudaPrevired),'rs',false,pls[pls.length-1].deudaPrevired)}
   </tbody></table></div>
   <div style="padding:7px 14px;font-size:10px;color:var(--muted)">
     * Ingresos y gastos salen de los movimientos bancarios (base caja). Quedan fuera: transferencias entre cuentas propias, préstamos internos y reversos de compras.<br>
     * eXp/InmoCRM se presenta aparte: es un negocio externo que administra Daniel. Sus costos directos son la suscripción GHL de eXp (US$ 494–523 según el mes; US$ 497 desde septiembre 2026), el consumo variable que se le refactura (pass-through: lo que se le cobra a los países es su consumo) y el 50% del líquido de Daniel. Falta cargar el consumo refacturado de enero a mayo — mientras tanto queda en overhead de Acelerador. Las ~4 h/mes de Karim en facturación y cobranza quedan dentro de Acelerador.<br>
     * El prepago y consumo de los países en Relay eXp quedan fuera del resultado. El memo muestra el saldo acumulado en CLP al cierre de cada mes; la columna Total muestra el último cierre, sin sumar saldos.<br>
-    * PREVIRED se imputa al mes de la remuneración (devengo): el pago bancario ocurre el mes siguiente. En Movimientos aparece con su fecha real de pago.</div>`;
+    * PREVIRED se devenga por tabla mensual desde mayo de 2026; los pagos desde junio reducen la deuda previsional. En Movimientos aparece con su fecha real de pago.</div>`;
 }
 
 // ─── Closer Table ───────────────────────────────
@@ -1462,7 +1466,9 @@ function exportHistorico(){
     usd: !!t.usd,
     rut: t.rut||'',
     src: t.src,
-    ...(t.provision ? {provision:true} : {})
+    ...(t.provision ? {provision:true} : {}),
+    ...(t.anticipo ? {anticipo:true} : {}),
+    ...(t.cuenta ? {cuenta:t.cuenta} : {})
   })).sort((a,b)=>a.date.localeCompare(b.date));
   const blob=new Blob([JSON.stringify(out,null,1)],{type:'application/json'});
   const a=document.createElement('a');

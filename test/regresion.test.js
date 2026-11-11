@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { normalizeHistorico, mergeTxnArrays, computePL, pd, dk, esMovimientoBancario, lineaDe, esPrepagoExp, TC_MENSUAL, PREVIRED_DEVENGO_DESDE, PREVIRED_MENSUAL, esPagoDeudaPrevired, txnMk } = require('../logica.js');
+const { normalizeHistorico, mergeTxnArrays, computePL, pd, dk, esMovimientoBancario, lineaDe, esPrepagoExp, clasificarPrepagoExp, TC_MENSUAL, PREVIRED_DEVENGO_DESDE, PREVIRED_MENSUAL, esPagoDeudaPrevired, txnMk } = require('../logica.js');
 
 let passed = 0;
 let failed = 0;
@@ -36,18 +36,17 @@ try {
     '2026-04': [-5180118, -4712272, -467846],
     '2026-05': [-3312356, -5958768, 2644876],
     '2026-06': [-3095569, -3641202, 544865],
-    '2026-07': [2999100, -5047211, 5460071],
-    // Agosto: prepago menos consumo de países es un pasivo, no resultado.
-    // Se retiran $1.742.131 de res y resExp; Acelerador no cambia.
-    // T6: finiquito final de Ignacio aumenta de $480.000 a $2.598.340:
-    // res y resAcel bajan $2.118.340; resExp conserva el ajuste T3.
-    // T7: devolución sueldo +$275.298; suscripción $453.055 pasa a eXp.
-    '2026-08': [112561, -3118440, 3231001],
-    // Septiembre: caja con devoluciones, Household, reversos de provisiones
-    // de finiquito y sueldo de agosto; suscripción eXp propia y países fuera
-    // del resultado. Incluye $120.549 de ingresos no operacionales en res.
-    '2026-09': [663439, -3112398, 3655288],
-    '2026-10': [7122294, -4151792, 11273988],
+    // T12: Stripe directo (productos/SaaS/fees), payouts como traspasos y
+    // pagos variables HighLevel como costo. Impacto revisado antes de actualizar.
+    // Corrección T12: consumo wallet reconocido como ingreso eXp: +$1.484.902,
+    // +$760.241 y +$1.985.895 en ago/sep/oct. Acelerador no cambia.
+    // Enero–julio conservan las referencias de T12 inicial.
+    '2026-07': [3739944, -4306367, 5460071],
+    '2026-08': [463821, -2779416, 3243237],
+    // Sep −1.364 y oct +24.125: el importador ahora carga los pagos reembolsados
+    // (cobro, comisión que Stripe no devuelve y reembolso en su propia fecha).
+    '2026-09': [900578, -2343961, 3123990],
+    '2026-10': [8474294, -3688698, 12162894],
   };
   for (const [mes, expected] of Object.entries(references)) {
     const pl = computePL({ txns, cobros: [], ventas: [], cuotas: [], rate, mes, ahora });
@@ -150,12 +149,12 @@ try {
     assert.equal(esPrepagoExp(t, rate), false);
     assert.equal(lineaDe(t, rate), 'exp');
     const pl = plMes('2026-09', movimientos);
-    equalNumber('gasto suscripción', pl.expGHL, Math.round(497 * 947.27));
-    equalNumber('resultado eXp', pl.resExp, -Math.round(497 * 947.27));
-    equalNumber('saldo países', pl.saldoPrepagoExpUSD, 700);
+    equalNumber('gasto suscripción', pl.expGHL, Math.round(497 * 947.27)+Math.round(300 * 947.27));
+    equalNumber('resultado eXp', pl.resExp, plMes('2026-09',[]).resExp-Math.round(497 * 947.27)-Math.round(300 * 947.27));
+    assert.equal(movimientos[0].sub, 'transferencia_interna');
     const consumo = txns.find(t=>dk(t.date)==='2026-08-14' && t.src==='relay' && t.montoOrig===-300);
     assert.ok(consumo);
-    assert.equal(`${consumo.cat}/${consumo.sub}`, 'prepago_exp/consumo');
+    assert.equal(`${consumo.cat}/${consumo.sub}`, 'costo_servicio/ghl');
   });
   check('rangos inclusivos en USD y CLP, HighLevel y AppLevel', () => {
     for (const usd of [true, false]) for (const marca of ['HighLevel', 'AppLevel'])
@@ -169,74 +168,158 @@ try {
     }
   });
 
-  check('saldo prepago eXp agosto', () => {
-    const pl = plMes('2026-08');
-    equalNumber('saldoPrepagoExpUSD', pl.saldoPrepagoExpUSD, 1898.45);
-    // $1.742.132: convertir y redondear el saldo una sola vez agrega $1 frente
-    // a los $1.742.131 obtenidos al sumar cada movimiento convertido y redondeado.
-    equalNumber('saldoPrepagoExp', pl.saldoPrepagoExp, Math.round(1898.45 * 917.66));
+  // T12 reemplaza los tests del antiguo pasivo ACH menos pagos por el
+  // ledger Stripe y el rebilling GHL, con cortes y monedas independientes.
+  check('importador Stripe: neto, status, corte UTC e idempotencia',()=>{
+    require('node:child_process').execFileSync('python3',['-B','-c',`
+import csv, importlib.util, json, pathlib, subprocess, sys, tempfile
+spec=importlib.util.spec_from_file_location('stripe', 'scripts/importar_stripe.py')
+mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+row={'id':'ch_test','Created date (UTC)':'2026-10-31 23:59:59','Amount':'100.00',
+     'Amount Refunded':'25.15','Fee':'3.20','Status':'Paid','Currency':'usd',
+     'Description':'Workshop, con comas\\nsegunda línea','Statement Descriptor':'ACELERADOR INMOB',
+     'walletId (metadata)':'','entityId (metadata)':'','saasPlanId (metadata)':''}
+assert [t['monto'] for t in mod.movimientos(row,'2026-10-31')]==[100.0,-3.2,-25.15]
+assert mod.movimientos(dict(row,Status='Failed'),'2026-10-31')==[]
+assert [t['monto'] for t in mod.movimientos(dict(row,Status='Refunded',**{'Refunded date (UTC)':'2026-10-31 23:59:59'}),'2026-10-31')]==[100.0,-3.2,-25.15]
+assert mod.movimientos(dict(row,**{'Created date (UTC)':'2026-11-01 00:00:00'}),'2026-10-31')==[]
+with tempfile.TemporaryDirectory() as tmp:
+    csvfile=pathlib.Path(tmp)/'stripe.csv'; ledger=pathlib.Path(tmp)/'historico.json'
+    ledger.write_text('[]')
+    with csvfile.open('w',newline='') as f:
+        w=csv.DictWriter(f,fieldnames=row); w.writeheader(); w.writerow(row)
+    cmd=[sys.executable,'-B','scripts/importar_stripe.py',str(csvfile),'--hasta','2026-10-31','--historico',str(ledger)]
+    subprocess.check_call(cmd,stdout=subprocess.DEVNULL)
+    original=ledger.read_bytes()
+    subprocess.check_call(cmd,stdout=subprocess.DEVNULL)
+    assert ledger.read_bytes()==original
+    assert json.loads(original)[0]['desc']==row['Description']
+`],{cwd:path.join(__dirname,'..')});
   });
-  check('prepago USD consumido con otro TC no deja saldo', () => {
-    const movimientos = normalizeHistorico([
-      {date:'2026-08-31',desc:'InmoCRM eXp — ACH',monto:100,src:'relay',usd:true},
-      {date:'2026-09-30',desc:'HighLevel — InmoCRM eXp',monto:-100,src:'relay',usd:true},
-    ], rate);
-    assert.notEqual(movimientos[0].monto, -movimientos[1].monto);
-    equalNumber('agosto USD', plMes('2026-08', movimientos).saldoPrepagoExpUSD, 100);
-    equalNumber('agosto CLP', plMes('2026-08', movimientos).saldoPrepagoExp, 91766);
-    for (const mes of ['2026-09', null]) {
-      const pl = plMes(mes, movimientos);
-      equalNumber(`${mes} USD`, pl.saldoPrepagoExpUSD, 0);
-      equalNumber(`${mes} CLP`, pl.saldoPrepagoExp, 0);
+  check('Stripe: 150 cobros (Paid y Refunded) hasta octubre con su fee, sin noviembre', () => {
+    const stripe=raw.filter(t=>t.src==='stripe');
+    assert.equal(stripe.length,301);   // 150 cobros + 150 fees + 1 reembolso hasta el corte (sin verificaciones de tarjeta)
+    assert.equal(new Set(stripe.map(t=>t.stripeId)).size,150);
+    assert.ok(stripe.every(t=>t.usd && t.date<='2026-10-31'));
+    for(const t of stripe.filter(t=>t.stripeTipo==='cobro'))
+      assert.equal(stripe.filter(f=>f.stripeId===t.stripeId&&f.stripeTipo==='fee').length,1);
+  });
+  for(const [label,filtro,cat,sub,linea,pais] of [
+    ['CL real',t=>/Sub-Account - CL/.test(t.desc),'prepago_exp','prepago','exp','CL'],
+    ['MX descripción manda sobre entityId de Karim',t=>/Sub-Account - MX/.test(t.desc),'prepago_exp','prepago','exp','MX'],
+    ['BR descripción manda sobre entityId sin país',t=>/Sub-Account - BR/.test(t.desc),'prepago_exp','prepago','exp','BR'],
+    ['CL manual',t=>/Manual Recharge/.test(t.desc)&&t.entityId==='XMQPGYDIk8qnssDMW1oX','prepago_exp','prepago','exp','CL'],
+    ['sin país',t=>/Manual Recharge/.test(t.desc)&&t.entityId==='1hLHWISsV3Zo9qE608zq','prepago_exp','prepago','exp','eXp sin país (Daniel, Qualitá)'],
+    ['aporte Karim',t=>/Manual Recharge/.test(t.desc)&&t.entityId==='Zr7BpeEMLEcTzko2DdeI','other','aporte_socio','exp',undefined],
+    ['SaaS metadata',t=>!!t.saasPlanId,'ingreso','saas','exp',undefined],
+    ['SaaS creación sin metadata',t=>t.desc==='Subscription creation'&&!t.saasPlanId,'ingreso','saas','exp',undefined],
+    ['campaña',t=>t.desc==='Campaña de Captación en 90 min ($17)','ingreso','stripe_producto','acelerador',undefined],
+    ['plantillas',t=>/Plantillas/.test(t.desc),'ingreso','stripe_producto','acelerador',undefined],
+    ['workshop',t=>/Workshop/.test(t.desc),'ingreso','stripe_producto','acelerador',undefined],
+    ['descriptor Acelerador',t=>t.desc==='ACELERADOR INMOB','ingreso','stripe_producto','acelerador',undefined],
+  ]) check('Stripe clasificación '+label,()=>{
+    const t=txns.find(t=>t.src==='stripe'&&t.stripeTipo==='cobro'&&filtro(t));
+    assert.ok(t,label);
+    assert.equal(t.cat,cat);assert.equal(t.sub,sub);assert.equal(lineaDe(t,rate),linea);assert.equal(t.pais,pais);
+    const fee=txns.find(f=>f.stripeId===t.stripeId&&f.stripeTipo==='fee');
+    assert.equal(fee.cat,'overhead');assert.equal(fee.sub,'bancario');assert.equal(lineaDe(fee,rate),linea);
+  });
+  check('aporte Karim principal no afecta resultados ni deuda países',()=>{
+    const aporte=txns.find(t=>t.sub==='aporte_socio');
+    assert.equal(aporte.montoOrig,500);
+    const sin=plMes('2026-10',txns.filter(t=>t!==aporte)), con=plMes('2026-10');
+    for(const k of ['res','resAcel','resExp','deudaPaisesUSD','porCobrarPaisesUSD']) equalNumber(k,con[k],sin[k]);
+    equalNumber('saldo Stripe incluye aporte',Math.round((con.saldoStripeUSD-sin.saldoStripeUSD)*100),50000);
+    // La comisión bancaria de US$14,80 sí es costo, como los demás fees.
+  });
+  check('deuda por país al 31-oct y control septiembre',()=>{
+    const p=plMes('2026-10');
+    for(const [pais,saldo] of Object.entries({CL:8.08,EC:469.53,COL:426.19,PR:434.40,BR:-254.58,MX:34.75,RD:-114.56,PE:-76.12,'eXp sin país (Daniel, Qualitá)':799}))
+      equalNumber(pais,p.detallePaises[pais].saldoUSD,saldo);
+    equalNumber('pasivos sin compensar',p.deudaPaisesUSD,2171.95);
+    equalNumber('activos sin compensar',p.porCobrarPaisesUSD,445.26);
+    const sep=plMes('2026-09');
+    for(const [pais,saldo] of Object.entries({EC:330.64,COL:467.42,PR:493.86}))
+      equalNumber(pais,sep.detallePaises[pais].saldoUSD,saldo);
+    // MX: recarga de agosto pasa a saldo inicial en octubre, sin duplicarla.
+    equalNumber('MX saldo inicial',p.detallePaises.MX.saldoInicialUSD,10);
+    equalNumber('MX aún sin wallet septiembre',sep.detallePaises.MX.saldoInicialUSD,0);
+    equalNumber('MX recargas desde octubre',p.detallePaises.MX.recargasUSD,250);
+    equalNumber('BR antes de wallet',sep.detallePaises.BR.consumoUSD,0);
+  });
+  // Efecto de cargar los pagos reembolsados (ver referencias de sep y oct).
+  const AJUSTE_REEMBOLSOS={'2026-09':-1364,'2026-10':24125};
+  check('consumo wallet es ingreso eXp del mes, separado de fees y caja',()=>{
+    const controles=[
+      ['2026-08',1618.14,1484902,1758335,-1021081,-2779416],
+      ['2026-09',802.56,760241,2363749,141701,-2342597],
+      ['2026-10',2021.72,1985895,10176999,6464274,-3712823],
+    ];
+    for(const [mes,usd,clp,expAntes,resAntes,acelAntes] of controles){
+      const p=plMes(mes), soloReporte=plMes(mes,[]);
+      equalNumber(mes+' USD',p.ingExpConsumoRevendidoUSD,usd);
+      equalNumber(mes+' CLP',p.ingExpConsumoRevendido,clp);
+      equalNumber(mes+' TC',clp,Math.round(usd*TC_MENSUAL[mes]));
+      equalNumber(mes+' incremento eXp',p.resExp-expAntes,clp);
+      equalNumber(mes+' incremento total',p.res-resAntes,clp+(AJUSTE_REEMBOLSOS[mes]||0));
+      equalNumber(mes+' Acelerador intacto',p.resAcel,acelAntes+(AJUSTE_REEMBOLSOS[mes]||0));
+      equalNumber(mes+' ingreso sin cartola ficticia',soloReporte.ingExp,clp);
+      equalNumber(mes+' caja sin movimiento',soloReporte.ingOpUSD,0);
+      equalNumber(mes+' desglose ingreso',p.ingExp,p.ingExpFee+p.ingExpRefacturacion+clp);
+    }
+    for(const mes of ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07'])
+      equalNumber(mes+' sin ingreso wallet',plMes(mes).ingExpConsumoRevendido,0);
+    equalNumber('agregado CLP por TC mensual',plMes(null).ingExpConsumoRevendido,4231038);
+  });
+  check('wallet: deuda neta + ingreso reconocido = recargas + saldo inicial',()=>{
+    let reconocido=0;
+    for(const mes of ['2026-08','2026-09','2026-10']){
+      const p=plMes(mes);
+      reconocido+=Math.round(p.ingExpConsumoRevendidoUSD*100);
+      let consumo=0, fondos=0;
+      for(const [pais,d] of Object.entries(p.detallePaises)){
+        // Cuando el saldo es negativo, deuda neta = deuda menos por cobrar.
+        equalNumber(mes+' '+pais,
+          Math.round(d.deudaUSD*100)-Math.round(d.porCobrarUSD*100)+Math.round(d.consumoUSD*100),
+          Math.round(d.recargasUSD*100)+Math.round(d.saldoInicialUSD*100));
+        consumo+=Math.round(d.consumoUSD*100);
+        fondos+=Math.round(d.recargasUSD*100)+Math.round(d.saldoInicialUSD*100);
+      }
+      equalNumber(mes+' consumo acumulado reconocido',consumo,reconocido);
+      equalNumber(mes+' identidad consolidada',
+        Math.round(p.deudaPaisesUSD*100)-Math.round(p.porCobrarPaisesUSD*100)+reconocido,fondos);
     }
   });
-  check('saldo mixto usa TC de cierre y último mes bancario sin mes consultado', () => {
-    const movimientos = normalizeHistorico([
-      {date:'2026-07-31',desc:'InmoCRM eXp — ACH',monto:100,src:'relay',usd:true},
-      {date:'2026-07-31',desc:'InmoCRM eXp — ACH',monto:25,src:'relay',usd:false},
-      {date:'2026-08-31',desc:'Compra oficina',monto:-10,src:'santander'},
-    ], rate);
-    for (const mes of ['2026-08', null]) {
-      const pl = plMes(mes, movimientos);
-      equalNumber(`${mes} USD`, pl.saldoPrepagoExpUSD, 100);
-      equalNumber(`${mes} CLP`, pl.saldoPrepagoExp, 91766 + 25);
+  check('memo acumulado, TC de cierre y meses futuros excluidos',()=>{
+    const p=plMes('2026-10');
+    equalNumber('Stripe',p.saldoStripeUSD,843.31);
+    equalNumber('HighLevel',p.porPagarHighLevelUSD,1378.90);
+    for(const campo of ['deudaPaises','porCobrarPaises','porPagarHighLevel','saldoStripe']){
+      equalNumber(campo,p[campo],Math.round(p[campo+'USD']*982.28));
+      equalNumber('total último cierre '+campo,plMes(null)[campo],p[campo]);
     }
-    // Septiembre y octubre usan sus respectivos TC SII.
-    equalNumber('TC septiembre', plMes('2026-09', movimientos).saldoPrepagoExp, 94727 + 25);
-    equalNumber('TC octubre', plMes('2026-10', movimientos).saldoPrepagoExp, 98228 + 25);
-    movimientos.push(...normalizeHistorico([
-      {date:'2026-09-30',desc:'Compra oficina',monto:-10,src:'santander'},
-    ], rate));
-    equalNumber('último mes con TC SII', plMes(null, movimientos).saldoPrepagoExp, 94727 + 25);
+    const futuro=normalizeHistorico([{...raw.find(t=>t.src==='stripe'&&t.walletId),date:'2026-11-01',monto:999}],rate);
+    assert.deepEqual(plMes('2026-10',[...txns,...futuro]),p);
+    for(const campo of ['deudaPaisesUSD','porCobrarPaisesUSD','porPagarHighLevelUSD','saldoStripeUSD'])
+      equalNumber('junio '+campo,plMes('2026-06')[campo],0);
   });
-  check('saldo acumulado incluye meses anteriores y excluye posteriores', () => {
-    const movimientos = normalizeHistorico([
-      {date:'2026-08-31',desc:'InmoCRM eXp — ACH',monto:100,src:'relay'},
-      {date:'2026-09-30',desc:'HighLevel — InmoCRM eXp',monto:-30,src:'relay'},
-      {date:'2026-10-01',desc:'InmoCRM eXp — ACH',monto:20,src:'relay'},
-      {date:'2026-09-01',desc:'Relay: traspaso interno (To InmoCRM eXp)',monto:-50,src:'relay'},
-      {date:'2026-09-01',desc:'InmoCRM eXp — ACH',monto:200,src:'santander'},
-    ], rate);
-    equalNumber('julio', plMes('2026-07', movimientos).saldoPrepagoExp, 0);
-    equalNumber('septiembre', plMes('2026-09', movimientos).saldoPrepagoExp, 70);
-    equalNumber('todo', plMes(null, movimientos).saldoPrepagoExp, 90);
-    assert.equal(movimientos[0].cat, 'prepago_exp');
-    assert.equal(movimientos[1].cat, 'prepago_exp');
-    assert.equal(movimientos[3].cat, 'other');
-    assert.equal(movimientos[4].cat, 'ingreso');
-    const soloPrepago = plMes(null, movimientos.slice(0, 4));
-    for (const field of ['ingExp', 'expGHL', 'expDaniel', 'ingOpUSD', 'res']) {
-      equalNumber(field, soloPrepago[field], field==='res'?-Object.values(PREVIRED_MENSUAL).reduce((s,v)=>s+v,0):0);
+  check('payouts ACH son traspasos; STRIPE — ACH de otra cuenta sigue ingreso',()=>{
+    for(const desc of ['InmoCRM eXp — ACH','ACELERADOR INMOB — ACH','InmoCRM eXp — ACH Pull']){
+      const [t]=normalizeHistorico([{date:'2026-09-01',desc,monto:100,usd:true,src:'relay',cat:'prepago_exp'}],rate);
+      assert.equal(t.cat,'other');assert.equal(t.sub,'transferencia_interna');
+      assert.equal(clasificarPrepagoExp(t,rate).cat,'other');
     }
+    const ts=txns.filter(t=>t.src==='relay'&&t.desc==='STRIPE — ACH');
+    assert.ok(ts.length);assert.ok(ts.every(t=>t.cat==='ingreso'));
   });
 
-  // El ledger mantiene 2139 entradas; los dos asientos generados no son histórico.
-  check('total histórico', () => equalNumber('entradas originales', raw.length, 2139));
+  // El ledger mantiene 2435 entradas; los dos asientos generados no son histórico.
+  check('total histórico', () => equalNumber('entradas originales', raw.length, 2440));
   check('total normalizado', () => {
-    equalNumber('históricos normalizados', normalized.filter(t=>t.historico).length, 2139);
-    equalNumber('incluidos reversos', normalized.length, 2141);
+    equalNumber('históricos normalizados', normalized.filter(t=>t.historico).length, 2440);
+    equalNumber('incluidos reversos', normalized.length, 2442);
   });
-  check('total combinado', () => equalNumber('incluidos reversos', txns.length, 2141));
+  check('total combinado', () => equalNumber('incluidos reversos', txns.length, 2442));
 
   check('dos reversos reales en septiembre, con CLP y clasificación originales', () => {
     const reversos = normalized.filter(t=>t.reverso);
@@ -255,7 +338,7 @@ try {
       assert.equal(reverso.historico, false);
     }
     equalNumber('conversión exacta Guillermo', -Math.round(-1134 * 917.66), 1040626);
-    equalNumber('resultado septiembre sin cartolas', plMes('2026-09', normalized.filter(t=>t.reverso)).res, 3638966-PREVIRED_MENSUAL['2026-09']);
+    equalNumber('resultado septiembre sin cartolas', plMes('2026-09', normalized.filter(t=>t.reverso)).res, 3638966+plMes('2026-09',[]).res);
   });
   check('una provisión sola genera reverso, incluso al cambiar de año', () => {
     const rawCaso = [{date:'2026-12-31',desc:'Provisión sueldo prueba',monto:-12345,src:'mp',provision:true}];
@@ -279,7 +362,7 @@ try {
     equalNumber('costo julio', plMes('2026-07', movimientos).finiquito, X);
     equalNumber('costo agosto neto', plMes('2026-08', movimientos).finiquito, 0);
     equalNumber('costo conjunto', plMes(null, movimientos).finiquito, X);
-    equalNumber('resultado conjunto', plMes(null, movimientos).res, -X-Object.values(PREVIRED_MENSUAL).reduce((s,v)=>s+v,0));
+    equalNumber('resultado conjunto', plMes(null, movimientos).res, -X-Object.values(PREVIRED_MENSUAL).reduce((s,v)=>s+v,0)+1484902);
     assert.equal(movimientos.filter(esMovimientoBancario).length, 1);
   });
   check('pago USD conserva diferencia de cambio tras el reverso', () => {
@@ -297,15 +380,15 @@ try {
     ], rate);
     const septiembre = plMes('2026-09', movimientos);
     for (const campo of ['expDaniel', 'gastoExp', 'resExp', 'ingExp', 'ingOpUSD']) {
-      equalNumber(campo, septiembre[campo], 0);
+      equalNumber(campo, septiembre[campo], plMes('2026-09',[])[campo]);
     }
     equalNumber('costo total eXp', plMes(null, movimientos).expDaniel, 100);
   });
   check('asientos excluidos de cuentas y del último cierre bancario T3', () => {
-    equalNumber('movimientos bancarios', normalized.filter(esMovimientoBancario).length, 2137);
+    equalNumber('movimientos bancarios', normalized.filter(esMovimientoBancario).length, 2438);
     const sinAsientos = normalized.filter(esMovimientoBancario);
-    equalNumber('saldo agregado T3', plMes(null).saldoPrepagoExp, plMes(null, sinAsientos).saldoPrepagoExp);
-    equalNumber('saldo USD agregado T3', plMes(null).saldoPrepagoExpUSD, plMes(null, sinAsientos).saldoPrepagoExpUSD);
+    equalNumber('saldo agregado T3', plMes(null).deudaPaises, plMes(null, sinAsientos).deudaPaises);
+    equalNumber('saldo USD agregado T3', plMes(null).deudaPaisesUSD, plMes(null, sinAsientos).deudaPaisesUSD);
   });
 
   // Identidades de los dos pendientes actuales: detecta también sustituciones
@@ -344,12 +427,12 @@ try {
 
   check('histórico anterior a septiembre intacto y libro ordenado', () => {
     const crypto = require('node:crypto');
-    const anteriores = raw.filter(t=>t.date<'2026-09');
+    const anteriores = raw.filter(t=>t.src!=='stripe'&&t.date<'2026-09');
     assert.equal(crypto.createHash('sha256').update(JSON.stringify(anteriores)).digest('hex'),
       'b0511985caf2061d6d8d23e80ba4090a9d744c667079464079fcc4746456653e');
     assert.ok(raw.every((t,i)=>!i || t.date>=raw[i-1].date));
   });
-  const sepRaw = raw.filter(t=>t.date.startsWith('2026-09'));
+  const sepRaw = raw.filter(t=>t.src!=='stripe'&&t.date.startsWith('2026-09'));
   const sep = normalized.filter(t=>t.historico && dk(t.date).startsWith('2026-09'));
   const sumaOriginal = ts => ts.reduce((s,t)=>s+Math.round(t.montoOrig*100),0)/100;
   check('septiembre: 267 movimientos y cero sin clasificar', () => {
@@ -408,9 +491,9 @@ try {
   casoSep('devolución Urban Green',t=>/URBAN GREEN/i.test(t.desc),1,-150000,'ingreso','devolucion');
   casoSep('reserva Urban Green cobrada',t=>t.src==='scotiabank'&&t.montoOrig===150000,1,150000,'ingreso','transferencia');
   casoSep('eXp Chile',t=>t.src==='santander'&&/EXP CHILE/i.test(t.desc),8,2818234,'ingreso','transferencia','exp');
-  casoSep('prepago recibido países',t=>t.src==='relay'&&t.cat==='prepago_exp'&&t.monto>0,15,2085.46,'prepago_exp','prepago','exp');
-  casoSep('ACH Pull países',t=>/ACH PULL/i.test(t.desc),1,-24.93,'prepago_exp','consumo','exp');
-  casoSep('consumo países',t=>t.cuenta==='InmoCRM eXp'&&/HIGHLEVEL/i.test(t.desc)&&t.montoOrig!==-497,6,-1330,'prepago_exp','consumo','exp');
+  casoSep('payout Stripe recibido',t=>t.src==='relay'&&t.desc==='InmoCRM eXp — ACH'&&t.monto>0,15,2085.46,'other','transferencia_interna','exp');
+  casoSep('ACH Pull países',t=>/ACH PULL/i.test(t.desc),1,-24.93,'other','transferencia_interna','exp');
+  casoSep('consumo países',t=>t.cuenta==='InmoCRM eXp'&&/HIGHLEVEL/i.test(t.desc)&&t.montoOrig!==-497,6,-1330,'costo_servicio','ghl','exp');
   casoSep('suscripción eXp',t=>t.cuenta==='InmoCRM eXp'&&t.montoOrig===-497,1,-497,'overhead','herramienta','exp');
   casoSep('suscripción AC',t=>t.cuenta==='InmoCRM AC'&&t.montoOrig===-497,1,-497,'overhead','herramienta');
   casoSep('consumo AC',t=>t.cuenta==='InmoCRM AC'&&/HIGHLEVEL/i.test(t.desc)&&t.montoOrig!==-497,27,-519.54,'costo_servicio','ghl');
@@ -429,7 +512,7 @@ try {
   check('septiembre finiquito neto y saldo países', () => {
     const pl=plMes('2026-09');
     equalNumber('finiquito neteado',pl.finiquito,0);
-    equalNumber('saldo países USD',pl.saldoPrepagoExpUSD,2628.98);
+    equalNumber('deuda países USD',pl.deudaPaisesUSD,1860.67);
     equalNumber('nómina neta de retornos y reverso',pl.nomina,6650926);
   });
   check('todo costo Acelerador entra a gastoAcel', () => {
@@ -504,11 +587,11 @@ try {
     equalNumber('total último mes tabla',plMes(null).deudaPrevired,plMes('2026-10').deudaPrevired);
   });
 
-  const octRaw=raw.filter(t=>t.date.startsWith('2026-10'));
+  const octRaw=raw.filter(t=>t.src!=='stripe'&&t.date.startsWith('2026-10'));
   const oct=normalized.filter(t=>t.historico&&dk(t.date).startsWith('2026-10'));
   check('octubre: histórico anterior intacto, 301 nuevos y cero sin clasificar', () => {
     assert.equal(require('node:crypto').createHash('sha256')
-      .update(JSON.stringify(raw.filter(t=>t.date<'2026-10'))).digest('hex'),
+      .update(JSON.stringify(raw.filter(t=>t.src!=='stripe'&&t.date<'2026-10'))).digest('hex'),
       'b54355d06e1ba94505bf5dbadea6d22904be6ddba4b6ade80590aee67708ac31');
     assert.equal(octRaw.length,301);
     assert.equal(oct.filter(t=>t.sub==='sin_clasificar').length,0);
@@ -567,16 +650,16 @@ try {
   });
   check('octubre desglose del cierre',()=>{
     const p=plMes('2026-10');
-    const esperado={ingOp:15907431,ingExp:11762181,ingExpFee:11493268,
+    const esperado={ingOp:16398569,ingExp:13827639,ingExpFee:11572831,
       ingExpRefacturacion:268913,pauta:2363109,costoServ:545791,
       nomina:8693211,previred:1504464,colabUSD:3472360,comision:174420,
-      totalTeam:13844455,totalOH:1466551,sii:461486,cred:1377831,
-      expGHL:488193,expDaniel:0,ingNoOp:98,
-      saldoPrepagoExpUSD:3917.26,saldoPrepagoExp:3847846,deudaPrevired:2295343};
+      totalTeam:13844455,totalOH:1494595,sii:461486,cred:1377831,
+      expGHL:1598925,expBanc:65820,expDaniel:0,ingNoOp:98,
+      deudaPaisesUSD:2171.95,porCobrarPaisesUSD:445.26,deudaPrevired:2295343};
     for(const [k,v] of Object.entries(esperado)) equalNumber(k,p[k],v);
     const devoluciones=oct.filter(t=>t.sub==='devolucion').reduce((s,t)=>s+t.monto,0);
     equalNumber('devoluciones',devoluciones,-2244684);
-    equalNumber('ventas brutas',p.ingOp-devoluciones,18152115);
+    equalNumber('ventas brutas',p.ingOp-devoluciones,18643253);
     equalNumber('memo total último cierre',plMes(null).deudaPrevired,p.deudaPrevired);
   });
 
@@ -613,6 +696,26 @@ try {
     const recargado = normalizeHistorico(exportado, rate);
     assert.ok(recargado.every(t=>t.anticipo && txnMk(t)==='2026-11'));
     assert.match(fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8'), /anticipo:true/);
+  });
+  // Revisión adversarial de T12 (resuelto por Opus): reembolsos en el importador de Stripe.
+  check('importador Stripe: Paid → Refunded no deja cobros obsoletos y es idempotente', () => {
+    const os = require('node:os'); const cp = require('node:child_process');
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'stripe-'));
+    const hist = path.join(dir, 'h.json'); fs.writeFileSync(hist, '[]');
+    const cols = ['id','Created date (UTC)','Amount','Amount Refunded','Currency','Fee','Refunded date (UTC)','Status','Description','Statement Descriptor','walletId (metadata)','entityId (metadata)','saasPlanId (metadata)'];
+    const csvDe = fila => cols.join(',')+'\n'+cols.map(c=>fila[c]??'').join(',')+'\n';
+    const base = {id:'ch_test','Created date (UTC)':'2026-10-06 10:00:00',Amount:'100.00',Currency:'usd',Fee:'3.00',Description:'Workshop'};
+    const correr = (fila, hasta='2026-11-30') => { const f=path.join(dir,'x.csv'); fs.writeFileSync(f,csvDe(fila));
+      const r=cp.spawnSync('python3',['-I',path.join(__dirname,'..','scripts','importar_stripe.py'),f,'--hasta',hasta,'--historico',hist]);
+      assert.equal(r.status,0,String(r.stderr)); return JSON.parse(fs.readFileSync(hist,'utf8')); };
+    const total = l => Math.round(l.reduce((s,t)=>s+t.monto,0)*100)/100;
+    assert.equal(total(correr({...base,Status:'Paid','Amount Refunded':'0'})), 97);
+    const reemb = {...base,Status:'Refunded','Amount Refunded':'100.00','Refunded date (UTC)':'2026-11-06 09:00:00'};
+    let l = correr(reemb);
+    assert.equal(total(l), -3);                       // se pierde la comisión, no el cobro
+    assert.equal(l.find(t=>t.stripeTipo==='reembolso').date, '2026-11-06');
+    assert.deepEqual(correr(reemb), l);               // idempotente
+    assert.equal(total(correr(reemb,'2026-10-31')), 97); // reembolso posterior al corte queda fuera
   });
 } catch (error) {
   failed++;

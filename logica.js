@@ -162,21 +162,90 @@ function categorize(desc,rut,monto,montoUSD,contexto={}){
   return {name:desc.slice(0,50),cat:monto>0?'ingreso':'other',sub:monto>0?'transferencia':'sin_clasificar'};
 }
 
-// Los países prepagan su consumo en Relay: entradas y pagos son fondos de
-// terceros (pasivo), no ingresos ni costos. Los traspasos internos siguen fuera.
-// Se evalúa sobre el movimiento completo para respetar fuente y categoría.
-function esPrepagoExp(t, rateFn){
-  if(t.src!=='relay' || !/INMOCRM EXP/i.test(t.desc||'') || t.cat==='other') return false;
-  // La suscripción propia de eXp no usa fondos de los países. El rango
-  // de US$290–315 sí sigue como consumo prepagado en esta subcuenta.
-  if(t.monto<0 && esCargoGhlSubcuentaRelay(t)){
-    const a=Math.abs(montoEnUSD(t, rateFn));
-    if(a>=490 && a<=525) return false;
-  }
-  return true;
+// T12: el payout de esta cuenta Stripe es un traspaso, incluido ACH Pull.
+// STRIPE — ACH pertenece a otra cuenta y conserva su clasificación.
+function esTraspasoStripe(t){
+  return t.src==='relay' && /^(INMOCRM EXP|ACELERADOR INMOB) — ACH(?: Pull)?$/i.test(t.desc||'');
 }
+function clasificacionStripe(t){
+  const pais=(t.desc||'').match(/Sub-Account\s*-\s*(CL|BR|EC|MX|RD|PE|COL|PR)\s*-/i)?.[1].toUpperCase();
+  const wallet=!!t.walletId || /Recharge/i.test(t.desc||'');
+  const paisWallet=pais || ({XMQPGYDIk8qnssDMW1oX:'CL',
+    '1hLHWISsV3Zo9qE608zq':'eXp sin país (Daniel, Qualitá)'}[t.entityId]);
+  const aporte=wallet && !pais && t.entityId==='Zr7BpeEMLEcTzko2DdeI';
+  const saas=!!t.saasPlanId || /Subscription creation/i.test(t.desc||'');
+  const linea=wallet||saas?'exp':'acelerador';
+  if(t.stripeTipo==='fee') return {cat:'overhead',sub:'bancario',linea};
+  if(aporte) return {cat:'other',sub:'aporte_socio',linea};
+  // Reembolso de un producto: resta de las ventas como cualquier devolución.
+  if(t.stripeTipo==='reembolso' && !wallet) return {cat:'ingreso',sub:'devolucion',linea};
+  if(wallet){
+    if(!paisWallet) throw new Error('Recarga Stripe sin país conocido: '+t.stripeId);
+    return {cat:'prepago_exp',sub:'prepago',linea,pais:paisWallet};
+  }
+  return {cat:'ingreso',sub:saas?'saas':'stripe_producto',linea};
+}
+function esPrepagoExp(t){ return t.src==='stripe' && t.cat==='prepago_exp'; }
+// También reclasifica cachés locales que conservaban la categoría anterior.
 function clasificarPrepagoExp(t, rateFn){
-  return esPrepagoExp(t, rateFn)?{...t,cat:'prepago_exp',sub:t.monto<0?'consumo':'prepago'}:t;
+  if(t.src==='stripe') return {...t,...clasificacionStripe(t)};
+  if(esTraspasoStripe(t)) return {...t,cat:'other',sub:'transferencia_interna'};
+  if(t.src==='relay' && /INMOCRM EXP/i.test(t.desc||'') && esCargoGhlSubcuentaRelay(t)){
+    const suscripcion=Math.abs(montoEnUSD(t,rateFn))>=490 && Math.abs(montoEnUSD(t,rateFn))<=525;
+    return {...t,cat:suscripcion?'overhead':'costo_servicio',sub:suscripcion?'herramienta':'ghl'};
+  }
+  return t;
+}
+
+const CONSUMO_GHL_PAISES = {
+  '2026-08':{CL:1303.81,BR:122.48,EC:177.97,MX:140,RD:0.38,PE:96.44,COL:84.56,PR:51.80},
+  '2026-09':{CL:627.44,BR:337.34,EC:137.69,MX:89.13,RD:70.10,PE:52.38,COL:31.29,PR:6.14},
+  '2026-10':{CL:639.41,BR:754.58,EC:111.11,MX:225.25,RD:114.56,PE:76.12,COL:41.23,PR:59.46},
+};
+// MX abre octubre con la recarga de US$10 del 26-ago; no se suma otra vez
+// en recargas del período wallet. Los demás saldos iniciales son los acordados.
+const WALLETS_EXP = {
+  CL:['2026-08',0], EC:['2026-08',146.30], COL:['2026-08',73.26], PR:['2026-08',51.80],
+  BR:['2026-10',0], MX:['2026-10',10], RD:['2026-10',0], PE:['2026-10',0],
+  'eXp sin país (Daniel, Qualitá)':['2026-08',0],
+};
+// Ingreso al consumir el wallet, sin crear un movimiento bancario ficticio.
+// Se excluyen los países aún refacturados por factura y el consumo desconocido.
+function consumoWalletUSD(mes){
+  return Object.entries(CONSUMO_GHL_PAISES[mes]||{})
+    .filter(([pais])=>WALLETS_EXP[pais] && mes>=WALLETS_EXP[pais][0])
+    .reduce((s,[,consumo])=>s+Math.round(consumo*100),0)/100;
+}
+function memoStripePaises(txns, cierre, rateFn){
+  const centavos=n=>Math.round(n*100);
+  const banco=txns.filter(t=>esMovimientoBancario(t)&&mk(t.date)<=cierre);
+  const detallePaises={};
+  for(const [pais,[desde,inicial]] of Object.entries(WALLETS_EXP)){
+    const recargas=banco.filter(t=>esPrepagoExp(t)&&t.pais===pais&&mk(t.date)>=desde)
+      .reduce((s,t)=>s+centavos(montoEnUSD(t,rateFn)),0);
+    const consumo=Object.entries(CONSUMO_GHL_PAISES).filter(([m])=>m>=desde&&m<=cierre)
+      .reduce((s,[,p])=>s+centavos(p[pais]||0),0);
+    const saldoInicial=cierre>=desde?centavos(inicial):0;
+    const saldo=saldoInicial+recargas-consumo;
+    detallePaises[pais]={saldoInicialUSD:saldoInicial/100,recargasUSD:recargas/100,consumoUSD:consumo/100,
+      saldoUSD:saldo/100,deudaUSD:Math.max(0,saldo)/100,porCobrarUSD:Math.max(0,-saldo)/100};
+  }
+  const deudaPaisesUSD=Object.values(detallePaises).reduce((s,p)=>s+centavos(p.deudaUSD),0)/100;
+  const porCobrarPaisesUSD=Object.values(detallePaises).reduce((s,p)=>s+centavos(p.porCobrarUSD),0)/100;
+  const saldoStripeUSD=banco.filter(t=>t.src==='stripe'||esTraspasoStripe(t))
+    .reduce((s,t)=>s+(t.src==='stripe'?1:-1)*centavos(montoEnUSD(t,rateFn)),0)/100;
+  // Cuenta por pagar acumulada desde agosto: rebilling completo, incluso países
+  // que aún pagaban por factura; excluye las suscripciones propias de agencia.
+  const consumo=Object.entries(CONSUMO_GHL_PAISES).filter(([m])=>m<=cierre)
+    .reduce((s,[,p])=>s+Object.values(p).reduce((a,v)=>a+centavos(v),0),0);
+  const pagado=banco.filter(t=>mk(t.date)>='2026-08'&&t.src==='relay'&&
+    /INMOCRM EXP/i.test(t.desc||'')&&t.sub==='ghl')
+    .reduce((s,t)=>s-centavos(montoEnUSD(t,rateFn)),0);
+  const porPagarHighLevelUSD=(consumo-pagado)/100;
+  const tc=tcFor(cierre,rateFn);
+  return {detallePaises,deudaPaisesUSD,porCobrarPaisesUSD,saldoStripeUSD,porPagarHighLevelUSD,
+    deudaPaises:Math.round(deudaPaisesUSD*tc),porCobrarPaises:Math.round(porCobrarPaisesUSD*tc),
+    saldoStripe:Math.round(saldoStripeUSD*tc),porPagarHighLevel:Math.round(porPagarHighLevelUSD*tc)};
 }
 
 function pd(s){
@@ -275,6 +344,7 @@ function excepcionLinea(t){
   return EXCEPCIONES_LINEA.find(e=>fecha===e.date && t.src===e.src && !t.usd && (t.montoOrig??t.monto)===e.monto);
 }
 function lineaDe(t, rateFn = () => rate()){
+  if(t.src==='stripe') return clasificacionStripe(t).linea;
   if(t.reverso && t.linea) return t.linea;
   const excepcion=excepcionLinea(t);
   if(excepcion) return excepcion.linea;
@@ -350,13 +420,7 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   // Saldo a la fecha de cierre: usa fecha bancaria y todos los meses anteriores,
   // no el subconjunto del mes contable. Sin mes, cierra el último mes bancario.
   const mesSaldo=m||txns.filter(esMovimientoBancario).reduce((ultimo,t)=>{const k=mk(t.date);return k>ultimo?k:ultimo;},'');
-  const prepagos=txns.filter(t=>esMovimientoBancario(t)&&esPrepagoExp(t, rate)&&(!m||mk(t.date)<=m));
-  // El pasivo permanece en USD: sumar centavos evita residuos de coma flotante.
-  const saldoPrepagoExpUSD=prepagos.filter(t=>t.usd)
-                                 .reduce((s,t)=>s+Math.round(t.montoOrig*100),0)/100;
-  const saldoPrepagoExpCLP=prepagos.filter(t=>!t.usd).reduce((s,t)=>s+t.monto,0);
-  const cierreSaldo=mesSaldo?new Date(+mesSaldo.slice(0,4),+mesSaldo.slice(5,7),0):null;
-  const saldoPrepagoExp=Math.round(saldoPrepagoExpUSD*tcFor(cierreSaldo,rate))+saldoPrepagoExpCLP;
+  const memo= memoStripePaises(txns,mesSaldo,rate);
   // Los retornos desde las cuentas de sueldo de socios reducen la nómina,
   // igual que los reversos contables. Otros abonos de team siguen excluidos.
   const esCosto=t=>t.monto<0||t.reverso||(t.monto>0&&t.cat==='team'&&/FROM SUELDO/i.test(t.desc||''));
@@ -394,9 +458,13 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   const ingTrf  = ingOp-ingWhop-ingMP;
   // ── eXp / InmoCRM: negocio externo, con sus propios ingresos y costos ──
   // Traspasos entre subcuentas propias (Relay To/From InmoCRM eXp) no son ingreso ni costo
-  const ingExp   =ftE.filter(t=>t.monto>0&&!t.reverso&&t.cat!=='other').reduce((s,t)=>s+t.monto,0);
+  const mesesReventa=Object.keys(CONSUMO_GHL_PAISES).filter(k=>m?k===m:k<=ultimoBanco);
+  const ingExpConsumoRevendidoUSD=mesesReventa.reduce((s,k)=>s+Math.round(consumoWalletUSD(k)*100),0)/100;
+  // Redondear cada total mensual a CLP; el agregado suma esos mismos importes.
+  const ingExpConsumoRevendido=mesesReventa.reduce((s,k)=>s+Math.round(consumoWalletUSD(k)*tcFor(k,rate)),0);
+  const ingExp   =ingExpConsumoRevendido+ftE.filter(t=>t.monto>0&&!t.reverso&&t.cat!=='other').reduce((s,t)=>s+t.monto,0);
   const ingExpRefacturacion=ftE.filter(t=>t.cat==='ingreso'&&t.sub==='refacturacion_ghl').reduce((s,t)=>s+t.monto,0);
-  const ingExpFee=ingExp-ingExpRefacturacion;
+  const ingExpFee=ingExp-ingExpRefacturacion-ingExpConsumoRevendido;
   const expDaniel=ftE.filter(t=>esCosto(t)&&t.sub==='socio_exp').reduce((s,t)=>s-t.monto,0);
   // Consumo variable refacturado: se mueve desde el costo del servicio de Acelerador a eXp.
   // Nunca más de lo que efectivamente se pagó de GHL variable ese mes.
@@ -405,8 +473,9 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
                      .reduce((s,t)=>s+Math.abs(t.monto),0);
   const ghlRef  = Math.min(ghlVar, meses.filter(k=>k<GHL_EXP_PROPIO_DESDE)
                      .reduce((s,k)=>s+(GHL_EXP_MENSUAL[k]||0)*(TC_MENSUAL[k]||r),0));
-  const expGHL  =ftE.filter(t=>esCosto(t)&&t.sub!=='socio_exp'&&t.cat!=='other').reduce((s,t)=>s-t.monto,0)+ghlRef;
-  const gastoExp =expDaniel+expGHL;
+  const expBanc =ftE.filter(t=>esCosto(t)&&t.cat==='overhead'&&t.sub==='bancario').reduce((s,t)=>s-t.monto,0);
+  const expGHL  =ftE.filter(t=>esCosto(t)&&t.sub!=='socio_exp'&&t.sub!=='bancario'&&t.cat!=='other').reduce((s,t)=>s-t.monto,0)+ghlRef;
+  const gastoExp =expDaniel+expGHL+expBanc;
   const resExp   =ingExp-gastoExp;
   // ── Resultado operacional (Acelerador), ya neto del consumo refacturado ──
   // Lo refacturado sale del costo del servicio (nunca de las suscripciones)
@@ -415,14 +484,14 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
   const gastoAcel=pauta+costoServNeto+totalTeam+totalOH+totalTax;
   const resAcel  =ingOp-gastoAcel;
   // ── Resultado neto = operacional + eXp + otros no operacionales ──
-  const ingTot=ingOp+ingExp+ingNoOp;          // todo lo cobrado
+  const ingTot=ingOp+ingExp+ingNoOp;          // incluye consumo reconocido desde wallet
   const res=resAcel+resExp+ingNoOp;
   // AR vencido (cuotas no pagadas con vencimiento pasado)
   const now=ahora;
   const vencidoUSD=cuotas.filter(c=>!c.pagado&&c.porPagar>0&&c.venc<now).reduce((s,c)=>s+c.porPagar,0);
   return {cobUSD,cobCLP,cobVUSD,ventaUSD,arUSD,whopUSD,trUSD,mpUSD,
           ingOp,ingNoOp,ingTot,ingOpUSD,ingWhop,ingMP,ingTrf,
-          gastoAcel,resAcel,ingExp,ingExpFee,ingExpRefacturacion,expDaniel,expGHL,gastoExp,resExp,saldoPrepagoExp,saldoPrepagoExpUSD,deudaPrevired,
+          gastoAcel,resAcel,ingExp,ingExpFee,ingExpRefacturacion,ingExpConsumoRevendido,ingExpConsumoRevendidoUSD,expDaniel,expGHL,expBanc,gastoExp,resExp,...memo,deudaPrevired,
           pauta,nomina,previred,previredFaltante,mesesPreviredFaltantes,colabUSD,comision,finiquito,teamOth,totalTeam,teamRec,
           herr,costoServ:costoServNeto,arr,adv,banc,tel,reu,mue,of,fin,free,otrosOH,totalOH,ghlRef,
           sii,cred,totalTax,mb,res,vencidoUSD,
@@ -432,5 +501,6 @@ function computePL({ txns, cobros, ventas, cuotas, rate, mes: m, ahora = new Dat
 if (typeof module !== 'undefined' && module.exports) module.exports = {
   PREVIRED_DEVENGO_DESDE, PREVIRED_MENSUAL, esPagoDeudaPrevired, RUT_MAP, KW_MAP, TC_MENSUAL, GHL_EXP_MENSUAL, GHL_EXP_PROPIO_DESDE,
   extractRut, categorize, montoEnUSD, esPrepagoExp, clasificarPrepagoExp, lineaDe, txnMk, mk, tcFor, filterBy, computePL,
+  clasificacionStripe, esTraspasoStripe, consumoWalletUSD, memoStripePaises, CONSUMO_GHL_PAISES, WALLETS_EXP,
   pd, normalizeHistorico, esMovimientoBancario, ultimoMesConDatos, mergeTxnArrays, dk,
 };
